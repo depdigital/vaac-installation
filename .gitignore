@@ -1,0 +1,54 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.nfs*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+
+# Logs
+*.log
+
+# Temporary Files
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Build Artifacts
+dist/
+build/
+
+# SuperCollider
+scsynth_*.log
