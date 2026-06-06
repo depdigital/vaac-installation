@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Vāac 1.0</title>
+
+<link rel="icon" href="/dashboard/favicon.ico">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<link
+    rel="stylesheet"
+    href="/static/style.css">
+
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOP SECTION -->
+
+<div class="dashboard-top">
+
+    <!-- VAAC HEADER -->
+
+    <div class="vaac-header">
+
+        <div class="vaac-watermark">
+
+    বাক্
+
+</div>
+
+    <div class="header-toolbar">
+
+        <button
+            id="connectBtn"
+            class="header-connect-btn">
+
+            Connect
+
+        </button>
+
+        <button
+            id="runInstallationBtn"
+            class="header-run-btn">
+
+            Run
+
+        </button>
+
+        <button
+            id="stopSceneBtn"
+            class="header-stop-btn">
+
+            Halt
+
+        </button>
+
+    </div>
+
+        <h1 class="vaac-title">
+            Vāac 1.0
+        </h1>
+
+        <div class="vaac-subtitle">
+            Interactive Sounds
+        </div>
+
+        <div class="vaac-description">
+
+    Transforming environmental data into
+    generative audio experiences.
+
+</div>
+
+<div class="vaac-workflow">
+
+    SENSORS → CALIBRATION → MAPPING → SOUND
+
+</div>
+
+<div class="vaac-credit">
+
+    by Craftronixlab Technologies
+
+</div>
+
+
+    </div>
+
+</div>
+
+<div class="tab-bar">
+
+    <button
+        class="tab-button"
+        data-tab="audioSetup">
+
+        Audio Assets
+
+    </button>
+
+    <button
+        class="tab-button active"
+        data-tab="sensorCalibration">
+
+        Sensor Calibration
+
+    </button>
+
+    <button
+        class="tab-button"
+        data-tab="audioMapping">
+
+        Audio Mapping
+
+    </button>
+
+    <button
+    class="tab-button"
+    data-tab="systemHealth">
+
+    System Health
+
+    </button>
+
+    <button
+    class="tab-button"
+    data-tab="userManual">
+
+    User Manual
+
+</button>
+
+</div>
+
+<div
+    id="userManual"
+    class="tab-page">
+
+    <h2>User Manual</h2>
+
+    <div class="manual-panel">
+
+        <h3>Run the Installation</h3>
+
+        <ol>
+
+            <li>
+                Press Connect (Should be connected by default).
+            </li>
+
+            <li>
+                Verify Runtime Status shows Serial: Connected.
+            </li>
+
+            <li>
+                Press Run.
+            </li>
+
+            <li>
+                Interact with sensors from 
+                Sensor Calibration tab and set working range for each sensors and press Save Calibration.
+            </li>
+
+            <li>
+                Map sensors to a list of synths, and compose.
+            </li>
+
+            <li>
+                Press Halt to stop playback.
+            </li>
+
+        </ol>
+
+    </div>
+
+    <div class="manual-panel">
+        <strong>System Shutdown</strong>
+
+        </p>
+
+        <ol>
+
+            <li>
+                Press Halt.
+            </li>
+
+            <li>
+                Press Disconnect.
+            </li>
+
+            <li>
+                Close the browser.
+            </li>
+
+            <li>
+                Disconnect the main power.
+            </li>
+
+        </ol>
+    </div>
+
+    <div class="manual-panel">
+
+        <h3>Controls</h3>
+
+        <p>
+
+            <strong>Connect</strong><br>
+            Connects the sensor hub to the system.
+
+        </p>
+
+        <p>
+
+            <strong>Run</strong><br>
+            Run creates a new scene.
+            Each Run command may generate
+            different audio combinations.
+
+        </p>
+
+        <p>
+
+            <strong>Halt</strong><br>
+            Stops the current audio scene.
+
+        </p>
+
+    </div>
+
+    <div class="manual-panel">
+
+        <h3>System Health Check</h3>
+
+        <p>
+
+            <strong>Connected</strong><br>
+            Sensor system online.
+
+        </p>
+
+         <p>
+
+            <strong>Disconnected</strong><br>
+            Sensor system offline.
+
+        </p>
+
+        <p>
+
+            <strong>Heartbeat Alive</strong><br>
+            Audio engine running.
+
+        </p>
+
+        <p>
+
+            <strong>Heartbeat Lost</strong><br>
+            Audio engine stopped.
+
+        </p>
+
+        <p>
+
+            <strong>Quick Check</strong><br>
+            If all the System Health data is GREEN, system is working fine.
+
+        </p>
+
+    </div>
+
+    <div class="manual-panel">
+
+        <h3>Troubleshooting</h3>
+
+        <p>
+
+            <strong>No Sound</strong>
+
+        </p>
+
+        <ol>
+
+            <li>
+                Check Runtime Status from System Health tab.
+            </li>
+
+            <li>
+                Verify Heartbeat is Alive.
+            </li>
+
+            <li>
+                Press Run.
+            </li>
+
+        </ol>
+
+        <p>
+
+            <strong>No Sensor Response</strong>
+
+        </p>
+
+        <ol>
+
+            <li>
+                Verify sensor hub is connected with USB. Verify Serial: Connected from the System Health tab.
+            </li>
+
+            <li>
+                Move hand near sensors. You can see sensor values changing in TELEMETRY section from the System Health tab.
+            </li>
+
+            <li>
+                Reconnect sensor hub. Sometimes USB cable fails, use a good quality one.
+            </li>
+
+        </ol>
+
+        <p>
+
+    </div>
+
+    <div class="manual-panel">
+        <strong>Support</strong>
+
+        <ol>
+            For support and feedback,
+            email : craftronixlab@gmail.com
+
+        </ol>
+    </div>
+
+</div>
+
+<div
+    id="audioSetup"
+    class="tab-page">
+
+  <h2>Audio Asset Pool</h2>
+
+<div class="panel">
+
+    <h3>Assets Folder</h3>
+
+    <div class="asset-folder">
+
+    /assets
+
+</div>
+
+    <hr>
+
+    <div id="audioAssetList">
+
+        Loading...
+
+    </div>
+
+    <hr>
+
+    <div>
+
+        Assets Loaded:
+        <span id="audioAssetCount">
+
+            0
+
+        </span>
+
+    </div>
+
+    <div>
+
+    Total Pool Size:
+    <span id="audioPoolSize">
+
+        0
+
+    </span> MB
+
+    </div>
+
+    <br>
+
+    <button id="refreshAssetsBtn">
+
+        Refresh Assets
+
+    </button>
+
+</div>
+
+</div>
+
+<div
+    id="audioMapping"
+    class="tab-page">
+
+    <h2>Audio Mapping Engine</h2>
+
+    <div class="panel">
+
+        <h3>Distance</h3>
+
+        <select>
+
+            <option>Pitch</option>
+
+            <option>Delay Time</option>
+
+            <option>Filter Cutoff</option>
+
+        </select>
+
+    </div>
+
+    <div class="panel">
+
+        <h3>Lux</h3>
+
+        <select>
+
+            <option>Filter Cutoff</option>
+
+            <option>Pitch</option>
+
+        </select>
+
+    </div>
+
+    <div class="panel">
+
+        <h3>Temperature</h3>
+
+        <select>
+
+            <option>Feedback</option>
+
+        </select>
+
+    </div>
+
+    <div class="panel">
+
+        <h3>Humidity</h3>
+
+        <select>
+
+            <option>Stereo Width</option>
+
+        </select>
+
+    </div>
+
+</div>
+
+<div
+    id="systemHealth"
+    class="tab-page">
+
+    <h2>
+        System Health
+    </h2>
+
+    <div class="health-console">
+
+    <h3>RUNTIME STATUS</h3>
+
+    <div id="runtimeStatus">
+
+        <div>
+            Backend:
+            --
+        </div>
+
+        <div>
+            Heartbeat:
+            --
+        </div>
+
+        <div>
+            Serial:
+            --
+        </div>
+
+        <div>
+            Watchdog:
+            --
+        </div>
+
+    </div>
+
+</div>
+
+<div class="health-console">
+
+    <h3>SCENE ENGINE</h3>
+
+    <div id="sceneStatus">
+
+        <div>
+            Active:
+            --
+        </div>
+
+        <div>
+            Scene Count:
+            --
+        </div>
+
+        <div>
+            Completed:
+            --
+        </div>
+
+        <div>
+            Last Duration:
+            --
+        </div>
+
+    </div>
+
+</div>
+
+    <div class="health-console">
+
+        <div class="console-header">
+
+            <div class="console-title">
+                OSC MONITOR
+            </div>
+
+        </div>
+
+<div>
+    STATUS
+    <span id="oscStatus">
+        --
+    </span>
+</div>
+
+<div>
+    HOST
+    <span id="oscHost">
+        --
+    </span>
+</div>
+
+<div>
+    PORT
+    <span id="oscPort">
+        --
+    </span>
+</div>
+
+<div>
+    LAST TX
+    <span id="oscLastTx">
+        --
+    </span>s
+</div>
+
+<div>
+    RATE
+    <span id="oscRate">
+        --
+    </span>
+</div>
+
+    </div>
+
+    <div class="health-console">
+
+        <div class="console-panel">
+
+            <div class="console-header">
+
+        <div class="console-title">
+
+        TELEMETRY
+
+        </div>
+
+</div>
+
+            <div>
+                STATUS
+                <span id="connectionStatus">
+                    DISCONNECTED
+                </span>
+            </div>
+
+            <div>
+                AGE
+                <span id="packetAge">
+                    --
+                </span>s
+            </div>
+
+            <div>
+                DEVICE
+                <span id="deviceName">
+                    --
+                </span>
+            </div>
+
+            <div>
+                FW
+                <span id="firmwareVersion">
+                    --
+                </span>
+            </div>
+
+            <div>
+                PROTOCOL
+                <span id="protocolVersion">
+                    --
+                </span>
+            </div>
+
+            <div>
+                PORT
+                <span id="portName">
+                    --
+                </span>
+            </div>
+
+            <div>
+                FRAME
+                <span id="frameValue">0</span>
+            </div>
+
+            <div>
+                DIST(mm)
+                <span id="distanceValue">0</span>
+            </div>
+
+            <div>
+                LUX
+                <span id="luxValue">0</span>
+            </div>
+
+            <div>
+                TEMP(°C)
+                <span id="tempValue">0</span>
+            </div>
+
+            <div>
+                HUM(%RH)
+                <span id="humidityValue">0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+
+    <div
+    id="sensorCalibration"
+    class="tab-page active">
+
+    <!-- GLOBAL CONTROLS -->
+    
+    <div class="control-toolbar">
+
+    <button
+        id="saveConfig"
+        class="save-btn">
+
+        💾 Save Calibration
+
+    </button>
+
+    <button
+        id="reloadConfig"
+        class="restore-btn">
+
+        🔄 Restore Last Saved
+
+    </button>
+
+    <span id="saveStatus">
+
+        ✓ Saved
+
+    </span>
+
+</div>
+
+    <!-- SENSOR CALIBRATION -->
+
+    <h2>Sensor Calibration</h2>
+
+    <div class="sensor-grid">
+
+    <!-- DISTANCE -->
+    <div class="sensor-card">
+        <h3>
+
+    Distance (mm)
+
+    <span
+        id="distanceStatus"
+        class="sensor-status sensor-active">
+
+        ACTIVE
+
+    </span>
+
+</h3>
+
+        <div class="sensor-row">
+
+            <div class="runtime-controls">
+
+    <button
+        id="distanceEnabledBtn"
+        class="runtime-btn enabled">
+
+        Disable
+
+    </button>
+
+    <button
+        id="distanceInvertBtn"
+        class="runtime-btn direct">
+
+        Direct
+
+    </button>
+
+</div>
+
+<input
+    type="checkbox"
+    id="distanceEnabled"
+    hidden>
+
+<input
+    type="checkbox"
+    id="distanceInvert"
+    hidden>
+
+            <div class="deadzone-control">
+
+    <label>
+
+        Deadzone
+
+    </label>
+
+    <input
+        type="range"
+        id="distanceDeadzone"
+        min="0"
+        max="100">
+
+    <span
+        id="distanceDeadzoneValue">
+
+        0%
+
+    </span>
+
+</div>
+
+        </div>
+
+        <div class="sensor-row">
+
+            <div class="calibration-row">
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Min
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="distanceMin">
+
+            <button
+                id="distanceCurrentMin"
+                class= "set-min-btn">
+
+                📌 Set Min
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Max
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="distanceMax">
+
+            <button
+                id="distanceCurrentMax"
+                class= "set-max-btn">
+
+                📌 Set Max
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+        <div class="observed-block">
+
+    <div class="observed-title">
+        Observed Range
+    </div>
+
+    <div class="observed-values">
+
+        <div>
+            Min:
+            <span id="distanceObservedMin">--</span>
+        </div>
+
+        <div>
+            Max:
+            <span id="distanceObservedMax">--</span>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+        <div class="progress-container">
+    <div
+        id="distanceBar"
+        class="progress-bar">
+    </div>
+</div>
+
+<div class="signal-block">
+
+    <div class="signal-item">
+        Raw:
+        <span id="distanceRaw">0</span>
+    </div>
+
+    <div class="signal-item">
+        Calibrated:
+        <span id="distanceCalibrated">0</span>
+    </div>
+
+    <div class="signal-item">
+        Normalized:
+        <span id="distanceNormalized">0.00</span>
+    </div>
+
+</div>
+
+<label class="raw-toggle">
+
+    <input
+        type="checkbox"
+        id="distanceShowRaw">
+
+    Show Raw Overlay
+
+</label>
+
+<canvas id="distanceChart"></canvas>
+
+        <button
+            id="distanceResetObserved">
+            Reset Observation
+        </button>
+
+    </div>
+
+    <!-- LUX -->
+
+    <div class="sensor-card">
+
+        <h3>
+
+    Ambient Light (LUX)
+
+    <span
+        id="luxStatus"
+        class="sensor-status sensor-active">
+
+        ACTIVE
+
+    </span>
+
+</h3>
+
+        <div class="sensor-row">
+
+            <div class="runtime-controls">
+
+    <button
+        id="luxEnabledBtn"
+        class="runtime-btn enabled">
+
+        Disable
+
+    </button>
+
+    <button
+        id="luxInvertBtn"
+        class="runtime-btn direct">
+
+        Direct
+
+    </button>
+
+</div>
+
+<input
+    type="checkbox"
+    id="luxEnabled"
+    hidden>
+
+<input
+    type="checkbox"
+    id="luxInvert"
+    hidden>
+
+            <div class="deadzone-control">
+
+    <label>
+
+        Deadzone
+
+    </label>
+
+    <input
+        type="range"
+        id="luxDeadzone"
+        min="0"
+        max="100">
+
+    <span
+        id="luxDeadzoneValue">
+
+        0%
+
+    </span>
+
+</div>
+
+        </div>
+
+        <div class="sensor-row">
+
+            <div class="calibration-row">
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Min
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="luxMin">
+
+            <button
+                id="luxCurrentMin"
+                class= "set-min-btn">
+
+                📌 Set Min
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Max
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="luxMax">
+
+            <button
+                id="luxCurrentMax"
+                class= "set-max-btn">
+
+                📌 Set Max
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+        <div class="observed-block">
+
+    <div class="observed-title">
+        Observed Range
+    </div>
+
+    <div class="observed-values">
+
+        <div>
+            Min:
+            <span id="luxObservedMin">--</span>
+        </div>
+
+        <div>
+            Max:
+            <span id="luxObservedMax">--</span>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+        <div class="progress-container">
+    <div
+        id="luxBar"
+        class="progress-bar">
+    </div>
+</div>
+
+<div class="signal-block">
+
+    <div class="signal-item">
+        Raw:
+        <span id="luxRaw">0</span>
+    </div>
+
+    <div class="signal-item">
+        Calibrated:
+        <span id="luxCalibrated">0</span>
+    </div>
+
+    <div class="signal-item">
+        Normalized:
+        <span id="luxNormalized">0.00</span>
+    </div>
+
+</div>
+
+<label class="raw-toggle">
+
+    <input
+        type="checkbox"
+        id="luxShowRaw">
+
+    Show Raw Overlay
+
+</label>
+
+<canvas id="luxChart"></canvas>
+
+        <button
+            id="luxResetObserved">
+            Reset Observation
+        </button>
+
+    </div>
+
+    <!-- TEMPERATURE -->
+
+    <div class="sensor-card">
+
+        <h3>
+
+    Temperature (°C)
+
+    <span
+        id="tempStatus"
+        class="sensor-status sensor-active">
+
+        ACTIVE
+
+    </span>
+
+</h3>
+
+        <div class="sensor-row">
+
+            <div class="runtime-controls">
+
+    <button
+        id="tempEnabledBtn"
+        class="runtime-btn enabled">
+
+        Disable
+
+    </button>
+
+    <button
+        id="tempInvertBtn"
+        class="runtime-btn direct">
+
+        Direct
+
+    </button>
+
+</div>
+
+<input
+    type="checkbox"
+    id="tempEnabled"
+    hidden>
+
+<input
+    type="checkbox"
+    id="tempInvert"
+    hidden>
+
+            <div class="deadzone-control">
+
+    <label>
+
+        Deadzone
+
+    </label>
+
+    <input
+        type="range"
+        id="tempDeadzone"
+        min="0"
+        max="100">
+
+    <span
+        id="tempDeadzoneValue">
+
+        0%
+
+    </span>
+
+</div>
+
+        </div>
+
+        <div class="sensor-row">
+
+            <div class="calibration-row">
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Min
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="tempMin">
+
+            <button
+                id="tempCurrentMin"
+                class= "set-min-btn">
+
+                📌 Set Min
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Max
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="tempMax">
+
+            <button
+                id="tempCurrentMax"
+                class="set-max-btn">
+
+                📌 Set Max
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+        <div class="observed-block">
+
+    <div class="observed-title">
+        Observed Range
+    </div>
+
+    <div class="observed-values">
+
+        <div>
+            Min:
+            <span id="tempObservedMin">--</span>
+        </div>
+
+        <div>
+            Max:
+            <span id="tempObservedMax">--</span>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+        <div class="progress-container">
+    <div
+        id="tempBar"
+        class="progress-bar">
+    </div>
+</div>
+
+<div class="signal-block">
+
+    <div class="signal-item">
+        Raw:
+        <span id="tempRaw">0</span>
+    </div>
+
+    <div class="signal-item">
+        Calibrated:
+        <span id="tempCalibrated">0</span>
+    </div>
+
+    <div class="signal-item">
+        Normalized:
+        <span id="tempNormalized">0.00</span>
+    </div>
+
+</div>
+
+<label class="raw-toggle">
+
+    <input
+        type="checkbox"
+        id="tempShowRaw">
+
+    Show Raw Overlay
+
+</label>
+
+<canvas id="tempChart"></canvas>
+
+        <button
+            id="tempResetObserved">
+            Reset Observation
+        </button>
+
+    </div>
+
+    <!-- HUMIDITY -->
+
+    <div class="sensor-card">
+
+        <h3>
+
+    Humidity (%RH)
+
+    <span
+        id="humidityStatus"
+        class="sensor-status sensor-active">
+
+        ACTIVE
+
+    </span>
+
+</h3>
+
+        <div class="sensor-row">
+
+            <div class="runtime-controls">
+
+    <button
+        id="humidityEnabledBtn"
+        class="runtime-btn enabled">
+
+        Disable
+
+    </button>
+
+    <button
+        id="humidityInvertBtn"
+        class="runtime-btn direct">
+
+        Direct
+
+    </button>
+
+</div>
+
+<input
+    type="checkbox"
+    id="humidityEnabled"
+    hidden>
+
+<input
+    type="checkbox"
+    id="humidityInvert"
+    hidden>
+
+            <div class="deadzone-control">
+
+    <label>
+
+        Deadzone
+
+    </label>
+
+    <input
+        type="range"
+        id="humidityDeadzone"
+        min="0"
+        max="100">
+
+    <span
+        id="humidityDeadzoneValue">
+
+        0%
+
+    </span>
+
+</div>
+
+        </div>
+
+        <div class="sensor-row">
+
+            <div class="calibration-row">
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Min
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="humidityMin">
+
+            <button
+                id="humidityCurrentMin"
+                class="set-min-btn">
+
+                📌 Set Min
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="calibration-column">
+
+        <label>
+
+            Calibration Max
+
+        </label>
+
+        <div class="calibration-input">
+
+            <input
+                type="number"
+                id="humidityMax">
+
+            <button
+                id="humidityCurrentMax"
+                class="set-max-btn">
+
+                📌 Set Max
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+        <div class="observed-block">
+
+    <div class="observed-title">
+        Observed Range
+    </div>
+
+    <div class="observed-values">
+
+        <div>
+            Min:
+            <span id="humidityObservedMin">--</span>
+        </div>
+
+        <div>
+            Max:
+            <span id="humidityObservedMax">--</span>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+        <div class="progress-container">
+    <div
+        id="humidityBar"
+        class="progress-bar">
+    </div>
+</div>
+
+<div class="signal-block">
+
+    <div class="signal-item">
+        Raw:
+        <span id="humidityRaw">0</span>
+    </div>
+
+    <div class="signal-item">
+        Calibrated:
+        <span id="humidityCalibrated">0</span>
+    </div>
+
+    <div class="signal-item">
+        Normalized:
+        <span id="humidityNormalized">0.00</span>
+    </div>
+
+</div>
+
+<label class="raw-toggle">
+
+    <input
+        type="checkbox"
+        id="humidityShowRaw">
+
+    Show Raw Overlay
+
+</label>
+
+<canvas id="humidityChart"></canvas>
+
+        <button
+            id="humidityResetObserved">
+            Reset Observation
+        </button>
+
+    </div>
+</div>
+
+</div>
+
+<script src="/static/app.js"></script>
+
+</body>
+
+</html>

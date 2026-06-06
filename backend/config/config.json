@@ -1,0 +1,30 @@
+{
+    "distance": {
+        "enabled": true,
+        "invert": false,
+        "deadzone": 0,
+        "min": 209,
+        "max": 1213
+    },
+    "lux": {
+        "enabled": true,
+        "invert": false,
+        "deadzone": 0,
+        "min": 2,
+        "max": 200
+    },
+    "temp": {
+        "enabled": true,
+        "invert": false,
+        "deadzone": 0,
+        "min": 20,
+        "max": 40
+    },
+    "humidity": {
+        "enabled": true,
+        "invert": false,
+        "deadzone": 0,
+        "min": 30,
+        "max": 90
+    }
+}

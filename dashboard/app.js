@@ -1,0 +1,1522 @@
+const MAX_POINTS = 200;
+
+let latestData = null;
+let currentConfig = null;
+let ws = null;
+
+function updateSensorStatus(
+    sensor,
+    enabled
+)
+{
+    const el =
+    document.getElementById(
+        sensor + "Status"
+    );
+
+    if(!el)
+        return;
+
+    if(enabled)
+    {
+        el.innerText =
+        "ACTIVE";
+
+        el.className =
+        "sensor-status sensor-active";
+    }
+    else
+    {
+        el.innerText =
+        "DISABLED";
+
+        el.className =
+        "sensor-status sensor-disabled";
+    }
+}
+
+function createChart(id, label)
+{
+return new Chart(
+document.getElementById(id),
+{
+type: "line",
+
+
+        data: {
+            labels: [],
+            datasets: [
+
+{
+    label: "Calibration Signal",
+    data: [],
+    borderWidth: 3
+},
+
+{
+    label: "Raw Signal",
+    data: [],
+    borderWidth: 1,
+    hidden: true
+},
+
+{
+    label: "Min Range",
+    data: [],
+    borderWidth: 3,
+    borderDash: [8,4],
+    pointRadius: 0
+},
+
+{
+    label: "Max Range",
+    data: [],
+    borderWidth: 3,
+    borderDash: [8,4],
+    pointRadius: 0
+}
+
+]
+        },
+
+        options: {
+            responsive: true,
+            animation: false
+        }
+    }
+);
+
+
+}
+
+const charts = {
+distance: createChart(
+"distanceChart",
+"Distance"
+),
+
+lux: createChart(
+    "luxChart",
+    "Lux"
+),
+
+temp: createChart(
+    "tempChart",
+    "Temperature"
+),
+
+humidity: createChart(
+    "humidityChart",
+    "Humidity"
+)
+
+};
+
+function pushValues(
+    chart,
+    calibrated,
+    raw,
+    minValue,
+    maxValue
+)
+{
+    chart.data.labels.push("");
+
+    chart.data.datasets[0].data.push(
+        calibrated
+    );
+
+    chart.data.datasets[1].data.push(
+        raw
+    );
+
+    chart.data.datasets[2].data.push(
+        minValue
+    );
+
+    chart.data.datasets[3].data.push(
+        maxValue
+    );
+
+    if(
+        chart.data.labels.length >
+        MAX_POINTS
+    )
+    {
+        chart.data.labels.shift();
+
+        chart.data.datasets[0].data.shift();
+        chart.data.datasets[1].data.shift();
+        chart.data.datasets[2].data.shift();
+        chart.data.datasets[3].data.shift();
+    }
+
+    chart.update();
+}
+
+async function loadConfig()
+{
+    
+const response =
+await fetch("/config");
+
+
+currentConfig =
+await response.json();
+
+populateConfig();
+
+
+}
+
+function populateConfig()
+{
+const sensors = [
+"distance",
+"lux",
+"temp",
+"humidity"
+];
+
+
+sensors.forEach(sensor =>
+{
+    document.getElementById(
+        sensor + "Enabled"
+    ).checked =
+    currentConfig[sensor].enabled;
+
+    document.getElementById(
+        sensor + "Invert"
+    ).checked =
+    currentConfig[sensor].invert;
+
+    document.getElementById(
+        sensor + "Deadzone"
+    ).value =
+    currentConfig[sensor].deadzone;
+
+    document.getElementById(
+        sensor + "Min"
+    ).value =
+    currentConfig[sensor].min;
+
+    document.getElementById(
+        sensor + "Max"
+    ).value =
+    currentConfig[sensor].max;
+
+    // NEW
+
+    refreshRuntimeButtons(
+    sensor
+    );
+});
+
+
+}
+
+function collectConfig()
+{
+const sensors = [
+"distance",
+"lux",
+"temp",
+"humidity"
+];
+
+
+const config = {};
+
+sensors.forEach(sensor =>
+{
+    config[sensor] =
+    {
+        enabled:
+        document.getElementById(
+            sensor + "Enabled"
+        ).checked,
+
+        invert:
+        document.getElementById(
+            sensor + "Invert"
+        ).checked,
+
+        deadzone:
+        Number(
+            document.getElementById(
+                sensor + "Deadzone"
+            ).value
+        ),
+
+        min:
+        Number(
+            document.getElementById(
+                sensor + "Min"
+            ).value
+        ),
+
+        max:
+        Number(
+            document.getElementById(
+                sensor + "Max"
+            ).value
+        )
+    };
+});
+
+return config;
+
+
+}
+
+function getCurrentSensorValue(sensor)
+{
+    if(!latestData)
+        return null;
+
+    switch(sensor)
+    {
+        case "distance":
+            return latestData.distance_filtered;
+
+        case "lux":
+            return latestData.lux_filtered;
+
+        case "temp":
+            return latestData.temp;
+
+        case "humidity":
+            return latestData.humidity;
+
+        default:
+            return null;
+    }
+}
+
+async function applyRuntimeSettings()
+{
+    const config =
+    collectConfig();
+
+    await fetch(
+        "/config",
+        {
+            method: "POST",
+
+            headers:
+            {
+                "Content-Type":
+                "application/json"
+            },
+
+            body:
+            JSON.stringify(config)
+        }
+    );
+}
+
+async function saveConfig()
+{
+await fetch(
+"/config",
+{
+method: "POST",
+
+
+        headers:
+        {
+            "Content-Type":
+            "application/json"
+        },
+
+        body:
+        JSON.stringify(
+            collectConfig()
+        )
+    }
+);
+
+const saveStatus =
+document.getElementById(
+    "saveStatus"
+);
+
+saveStatus.innerText =
+"✓ Saved";
+
+saveStatus.style.display =
+"inline";
+
+setTimeout(() =>
+{
+    saveStatus.style.display =
+    "none";
+},
+3000);
+
+
+}
+
+async function reloadConfig()
+{
+await loadConfig();
+
+
+document.getElementById(
+    "saveStatus"
+).innerText =
+"Reloaded";
+
+
+}
+
+async function updateConnection()
+{
+const response =
+await fetch(
+"/connection"
+);
+
+const info =
+await response.json();
+
+const status =
+document.getElementById(
+    "connectionStatus"
+);
+
+const button =
+document.getElementById(
+    "connectBtn"
+);
+
+document.getElementById(
+    "packetAge"
+).innerText =
+info.packet_age;
+
+if(info.connected)
+{
+    button.innerText =
+        "Disconnect";
+
+    button.style.background =
+        "#040404";
+
+    status.innerHTML =
+        '<span class="status-good">CONNECTED</span>';
+}
+else
+{
+    button.innerText =
+        "Connect";
+
+    button.style.background =
+        "#2c67c6";
+
+    status.innerHTML =
+        '<span class="status-bad">DISCONNECTED</span>';
+}
+
+    document.getElementById(
+        "deviceName"
+    ).innerText =
+    info.device || "--";
+
+    document.getElementById(
+        "firmwareVersion"
+    ).innerText =
+    info.firmware || "--";
+
+    document.getElementById(
+        "protocolVersion"
+    ).innerText =
+    info.protocol || "--";
+
+    document.getElementById(
+        "portName"
+    ).innerText =
+    info.port || "--";
+
+}
+
+async function toggleConnection()
+{
+const response =
+await fetch(
+"/connection"
+);
+
+const info =
+await response.json();
+
+if(info.connected)
+{
+    await fetch(
+        "/disconnect",
+        {
+            method:"POST"
+        }
+    );
+}
+else
+{
+    await fetch(
+        "/connect",
+        {
+            method:"POST"
+        }
+    );
+}
+
+await updateConnection();
+
+}
+
+async function resetObserved()
+{
+await fetch(
+"/reset-observed",
+{
+method:"POST"
+}
+);
+}
+
+function updateProgressBar(
+    id,
+    normalized
+)
+{
+    const bar =
+    document.getElementById(id);
+
+    const width =
+    normalized * 100;
+
+    bar.style.width =
+    Math.max(width, 1) + "%";
+}
+
+function startWebSocket()
+{
+ws = new WebSocket(
+`ws://${location.host}/ws`
+);
+
+ws.onmessage = event =>
+{
+    const d =
+    JSON.parse(
+        event.data
+    );
+
+    latestData = d;
+
+    // DISTANCE
+
+document.getElementById(
+    "distanceRaw"
+).innerText =
+Math.round(
+    d.distance_filtered
+);
+
+document.getElementById(
+    "distanceCalibrated"
+).innerText =
+Math.round(
+    d.distance_calibrated
+);
+
+document.getElementById(
+    "distanceNormalized"
+).innerText =
+Number(
+    d.distance_normalized
+).toFixed(2);
+
+
+// LUX
+
+document.getElementById(
+    "luxRaw"
+).innerText =
+Number(
+    d.lux_filtered
+).toFixed(1);
+
+document.getElementById(
+    "luxCalibrated"
+).innerText =
+Number(
+    d.lux_calibrated
+).toFixed(1);
+
+document.getElementById(
+    "luxNormalized"
+).innerText =
+Number(
+    d.lux_normalized
+).toFixed(2);
+
+
+// TEMP
+
+document.getElementById(
+    "tempRaw"
+).innerText =
+Number(
+    d.temp
+).toFixed(1);
+
+document.getElementById(
+    "tempCalibrated"
+).innerText =
+Number(
+    d.temp_calibrated
+).toFixed(1);
+
+document.getElementById(
+    "tempNormalized"
+).innerText =
+Number(
+    d.temp_normalized
+).toFixed(2);
+
+
+// HUMIDITY
+
+document.getElementById(
+    "humidityRaw"
+).innerText =
+Number(
+    d.humidity
+).toFixed(1);
+
+document.getElementById(
+    "humidityCalibrated"
+).innerText =
+Number(
+    d.humidity_calibrated
+).toFixed(1);
+
+document.getElementById(
+    "humidityNormalized"
+).innerText =
+Number(
+    d.humidity_normalized
+).toFixed(2);
+
+    document.getElementById(
+        "frameValue"
+    ).innerText =
+    d.frame;
+
+    document.getElementById(
+        "distanceValue"
+    ).innerText =
+    d.distance_filtered;
+
+    document.getElementById(
+        "luxValue"
+    ).innerText =
+    Number(
+        d.lux_filtered
+    ).toFixed(1);
+
+    document.getElementById(
+        "tempValue"
+    ).innerText =
+    Number(
+        d.temp
+    ).toFixed(1);
+
+    document.getElementById(
+        "humidityValue"
+    ).innerText =
+    Number(
+        d.humidity
+    ).toFixed(1);
+
+    document.getElementById(
+        "distanceObservedMin"
+    ).innerText =
+    d.distance_observed_min;
+
+    document.getElementById(
+        "distanceObservedMax"
+    ).innerText =
+    d.distance_observed_max;
+
+    document.getElementById(
+        "luxObservedMin"
+    ).innerText =
+    d.lux_observed_min;
+
+    document.getElementById(
+        "luxObservedMax"
+    ).innerText =
+    d.lux_observed_max;
+
+    document.getElementById(
+        "tempObservedMin"
+    ).innerText =
+    d.temp_observed_min;
+
+    document.getElementById(
+        "tempObservedMax"
+    ).innerText =
+    d.temp_observed_max;
+
+    document.getElementById(
+        "humidityObservedMin"
+    ).innerText =
+    d.humidity_observed_min;
+
+    document.getElementById(
+        "humidityObservedMax"
+    ).innerText =
+    d.humidity_observed_max;
+
+    updateProgressBar(
+        "distanceBar",
+        d.distance_normalized
+    );
+
+    updateProgressBar(
+        "luxBar",
+        d.lux_normalized
+    );
+
+    updateProgressBar(
+        "tempBar",
+        d.temp_normalized
+    );
+
+    updateProgressBar(
+        "humidityBar",
+        d.humidity_normalized
+    );
+
+    pushValues(
+    charts.distance,
+    d.distance_calibrated,
+    d.distance_filtered,
+
+    Number(
+        document.getElementById(
+            "distanceMin"
+        ).value
+    ),
+
+    Number(
+        document.getElementById(
+            "distanceMax"
+        ).value
+    )
+);
+
+    pushValues(
+    charts.lux,
+    d.lux_calibrated,
+    d.lux_filtered,
+
+    Number(
+        document.getElementById(
+            "luxMin"
+        ).value
+    ),
+
+    Number(
+        document.getElementById(
+            "luxMax"
+        ).value
+    )
+);
+
+    pushValues(
+    charts.temp,
+    d.temp_calibrated,
+    d.temp,
+
+    Number(
+        document.getElementById(
+            "tempMin"
+        ).value
+    ),
+
+    Number(
+        document.getElementById(
+            "tempMax"
+        ).value
+    )
+);
+
+    pushValues(
+    charts.humidity,
+    d.humidity_calibrated,
+    d.humidity,
+
+    Number(
+        document.getElementById(
+            "humidityMin"
+        ).value
+    ),
+
+    Number(
+        document.getElementById(
+            "humidityMax"
+        ).value
+    )
+);
+};
+
+}
+
+document.getElementById(
+"saveConfig"
+).onclick =
+saveConfig;
+
+document.getElementById(
+"reloadConfig"
+).onclick =
+reloadConfig;
+
+document.getElementById(
+"connectBtn"
+).onclick =
+toggleConnection;
+
+document.getElementById(
+"distanceResetObserved"
+).onclick =
+resetObserved;
+
+document.getElementById(
+"luxResetObserved"
+).onclick =
+resetObserved;
+
+document.getElementById(
+"tempResetObserved"
+).onclick =
+resetObserved;
+
+document.getElementById(
+"humidityResetObserved"
+).onclick =
+resetObserved;
+
+[
+    "distance",
+    "lux",
+    "temp",
+    "humidity"
+]
+.forEach(sensor =>
+{
+    const checkbox =
+    document.getElementById(
+        sensor + "ShowRaw"
+    );
+
+    if(!checkbox)
+        return;
+
+    checkbox.addEventListener(
+        "change",
+        e =>
+    {
+        charts[sensor]
+            .data
+            .datasets[1]
+            .hidden =
+            !e.target.checked;
+
+        charts[sensor].update();
+    });
+});
+
+const runtimeSensors =
+[
+    "distance",
+    "lux",
+    "temp",
+    "humidity"
+];
+
+runtimeSensors.forEach(sensor =>
+{
+    // ENABLED
+
+    document
+    .getElementById(
+        sensor + "Enabled"
+    )
+    .addEventListener(
+        "change",
+        async () =>
+    {
+        updateSensorStatus(
+            sensor,
+            document
+            .getElementById(
+                sensor + "Enabled"
+            )
+            .checked
+        );
+
+        await applyRuntimeSettings();
+    });
+
+    // INVERT
+
+    document
+    .getElementById(
+        sensor + "Invert"
+    )
+    .addEventListener(
+        "change",
+        async () =>
+    {
+        await applyRuntimeSettings();
+    });
+
+    // DEADZONE
+
+    document
+    .getElementById(
+        sensor + "Deadzone"
+    )
+    .addEventListener(
+        "change",
+        async () =>
+    {
+        await applyRuntimeSettings();
+    });
+});
+
+[
+    "distance",
+    "lux",
+    "temp",
+    "humidity"
+]
+.forEach(sensor =>
+{
+    const minBtn =
+    document.getElementById(
+        sensor + "CurrentMin"
+    );
+
+    if(minBtn)
+    {
+        minBtn.addEventListener(
+            "click",
+            () =>
+        {
+            const value =
+            getCurrentSensorValue(
+                sensor
+            );
+
+            if(value === null)
+                return;
+
+            document.getElementById(
+                sensor + "Min"
+            ).value =
+            Number(value).toFixed(1)
+        });
+    }
+});
+
+[
+    "distance",
+    "lux",
+    "temp",
+    "humidity"
+]
+.forEach(sensor =>
+{
+    const maxBtn =
+    document.getElementById(
+        sensor + "CurrentMax"
+    );
+
+    if(maxBtn)
+    {
+        maxBtn.addEventListener(
+            "click",
+            () =>
+        {
+            const value =
+            getCurrentSensorValue(
+                sensor
+            );
+
+            if(value === null)
+                return;
+
+            document.getElementById(
+                sensor + "Max"
+            ).value =
+            Number(value).toFixed(1)
+        });
+    }
+});
+
+loadConfig();
+
+updateConnection();
+
+setInterval(
+updateConnection,
+1000
+);
+
+startWebSocket();
+
+document
+.querySelectorAll(".tab-button")
+.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document
+        .querySelectorAll(".tab-button")
+        .forEach(btn =>
+            btn.classList.remove("active")
+        );
+
+        document
+        .querySelectorAll(".tab-page")
+        .forEach(page =>
+            page.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        document
+        .getElementById(
+            button.dataset.tab
+        )
+        .classList.add("active");
+
+    });
+
+});
+
+function refreshRuntimeButtons(sensor)
+{
+    const enabledCheckbox =
+        document.getElementById(
+            sensor + "Enabled"
+        );
+
+    const invertCheckbox =
+        document.getElementById(
+            sensor + "Invert"
+        );
+
+    const enabledBtn =
+        document.getElementById(
+            sensor + "EnabledBtn"
+        );
+
+    const invertBtn =
+        document.getElementById(
+            sensor + "InvertBtn"
+        );
+
+    if(
+        !enabledCheckbox ||
+        !invertCheckbox ||
+        !enabledBtn ||
+        !invertBtn
+    )
+    {
+        return;
+    }
+
+    enabledBtn.textContent =
+        enabledCheckbox.checked
+        ? "Disable"
+        : "Enable";
+
+    enabledBtn.className =
+        enabledCheckbox.checked
+        ? "runtime-btn enabled"
+        : "runtime-btn disabled";
+
+    invertBtn.textContent =
+        invertCheckbox.checked
+        ? "Inverted"
+        : "Direct";
+
+    invertBtn.className =
+        invertCheckbox.checked
+        ? "runtime-btn inverted"
+        : "runtime-btn direct";
+
+    updateSensorStatus(
+        sensor,
+        enabledCheckbox.checked
+    );
+}
+
+function setupRuntimeButtons(sensor)
+{
+    const enabledCheckbox =
+        document.getElementById(
+            sensor + "Enabled"
+        );
+
+    const invertCheckbox =
+        document.getElementById(
+            sensor + "Invert"
+        );
+
+    const enabledBtn =
+        document.getElementById(
+            sensor + "EnabledBtn"
+        );
+
+    const invertBtn =
+        document.getElementById(
+            sensor + "InvertBtn"
+        );
+
+
+    enabledBtn.onclick = () =>
+    {
+        enabledCheckbox.checked =
+            !enabledCheckbox.checked;
+
+        enabledCheckbox.dispatchEvent(
+            new Event("change")
+        );
+
+        refreshRuntimeButtons(sensor);
+    };
+
+    invertBtn.onclick = () =>
+    {
+        invertCheckbox.checked =
+            !invertCheckbox.checked;
+
+        invertCheckbox.dispatchEvent(
+            new Event("change")
+        );
+
+        refreshRuntimeButtons(sensor);
+    };
+
+    refreshRuntimeButtons(sensor);
+}
+
+[
+ "distance",
+ "lux",
+ "temp",
+ "humidity"
+]
+.forEach(setupRuntimeButtons);
+
+function setupDeadzoneSlider(sensor)
+{
+    const slider =
+        document.getElementById(
+            sensor + "Deadzone"
+        );
+
+    const value =
+        document.getElementById(
+            sensor + "DeadzoneValue"
+        );
+
+    slider.addEventListener(
+        "input",
+        () =>
+        {
+            value.textContent =
+                slider.value + "%";
+        }
+    );
+}
+
+[
+ "distance",
+ "lux",
+ "temp",
+ "humidity"
+]
+.forEach(setupDeadzoneSlider);
+
+async function updateOscStatus()
+{
+    try
+    {
+        const r =
+            await fetch("/osc-status");
+
+        const d =
+            await r.json();
+
+        document.getElementById(
+            "oscStatus"
+        ).textContent = d.status;
+
+        document.getElementById(
+            "oscHost"
+        ).textContent = d.host;
+
+        document.getElementById(
+            "oscPort"
+        ).textContent = d.port;
+
+        document.getElementById(
+            "oscLastTx"
+        ).textContent = d.last_tx;
+
+        document.getElementById(
+            "oscRate"
+        ).textContent = d.rate;
+    }
+    catch(e)
+    {
+        console.error(e);
+    }
+}
+
+updateOscStatus();
+
+setInterval(
+    updateOscStatus,
+    1000
+);
+
+async function loadAudioAssets()
+{
+    try
+    {
+        const response =
+            await fetch(
+                "/audio-assets"
+            );
+
+        const data =
+            await response.json();
+
+        const list =
+            document.getElementById(
+                "audioAssetList"
+            );
+
+        if(data.assets.length === 0)
+{
+    list.innerHTML =
+        "No audio assets found";
+}
+else
+{
+    list.innerHTML = "";
+        
+        data.assets.forEach(
+    asset =>
+    {
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.textContent =
+    `${asset.name} (${asset.size_mb} MB)`;
+
+        list.appendChild(
+            row
+        );
+    }
+);
+
+}
+
+        document.getElementById(
+            "audioAssetCount"
+        ).textContent =
+            data.count;
+
+            document.getElementById(
+            "audioPoolSize"
+        ).textContent =
+            data.total_mb;
+    }
+    catch(err)
+    {
+        console.error(
+            err
+        );
+    }
+}
+
+const runBtn =
+    document.getElementById(
+        "runInstallationBtn"
+    );
+
+if (runBtn)
+{
+    runBtn.addEventListener(
+    "click",
+    async () =>
+    {
+        runBtn.disabled = true;
+        runBtn.textContent = "Sending...";
+
+        try
+        {
+            const response =
+                await fetch(
+                    "/scene/send"
+                );
+
+            await response.json();
+
+            runBtn.textContent =
+                "Packet Sent";
+        }
+        catch(err)
+        {
+            runBtn.textContent =
+                "Failed";
+
+            console.error(err);
+        }
+
+        setTimeout(() =>
+        {
+            runBtn.disabled = false;
+
+            runBtn.textContent =
+                "Run";
+        },
+        2000);
+    }
+);
+}
+
+const stopSceneBtn =
+    document.getElementById(
+        "stopSceneBtn"
+    );
+
+if (stopSceneBtn)
+{
+    stopSceneBtn.addEventListener(
+        "click",
+        async () =>
+        {
+            try
+            {
+                stopSceneBtn.disabled =
+                    true;
+
+                stopSceneBtn.textContent =
+                    "Stopping...";
+
+                await fetch(
+                    "/scene/stop"
+                );
+
+                stopSceneBtn.textContent =
+                    "Stopped";
+
+                setTimeout(
+                    () =>
+                    {
+                        stopSceneBtn.disabled =
+                            false;
+
+                        stopSceneBtn.textContent =
+                            "Halt";
+                    },
+                    2000
+                );
+            }
+            catch(err)
+            {
+                console.error(
+                    err
+                );
+
+                stopSceneBtn.disabled =
+                    false;
+
+                stopSceneBtn.textContent =
+                    "Stop Scene";
+            }
+        }
+    );
+}
+
+document
+.getElementById(
+    "refreshAssetsBtn"
+)
+.addEventListener(
+    "click",
+    loadAudioAssets
+);
+
+loadAudioAssets();
+
+async function updateRuntimeStatus()
+{
+    try
+    {
+        const response =
+            await fetch("/health");
+
+        const data =
+            await response.json();
+
+        document.getElementById(
+            "runtimeStatus"
+        ).innerHTML = `
+
+            <div>
+                Backend:
+                ${
+                    data.healthy
+                    ? '<span class="status-good">Healthy</span>'
+                    : '<span class="status-bad">Fault</span>'
+                }
+            </div>
+
+            <div>
+                Heartbeat:
+                ${
+                    data.heartbeat_age < 15
+                    ? '<span class="status-good">Alive</span>'
+                    : '<span class="status-bad">Lost</span>'
+                }
+            </div>
+
+            <div>
+                Serial:
+                ${
+                    data.connected
+                    ? '<span class="status-good">Connected</span>'
+                    : '<span class="status-bad">Disconnected</span>'
+                }
+            </div>
+
+            <div>
+                Watchdog:
+                ${
+                    data.watchdog_age < 10
+                    ? '<span class="status-good">✓ Running</span>'
+                    : '<span class="status-bad">✗ Stalled</span>'
+                }
+            </div>
+
+        `;
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
+}
+
+async function updateSceneStatus()
+{
+    try
+    {
+        const response =
+            await fetch(
+                "/scene/status"
+            );
+
+        const data =
+            await response.json();
+
+        document.getElementById(
+            "sceneStatus"
+        ).innerHTML = `
+
+            <div>
+                Active:
+                ${
+                    data.active
+                    ? '<span class="status-good">Yes</span>'
+                    : '<span class="status-bad">No</span>'
+                }
+            </div>
+
+            <div>
+                Scene Count:
+                ${
+                    data.scene_count
+                }
+            </div>
+
+            <div>
+                Completed:
+                ${
+                    data.scene_completed
+                }
+            </div>
+
+
+            <div>
+                Success Rate:
+                ${
+                    data.scene_count > 0
+                    ? Math.round(
+                        (data.scene_completed /
+                        data.scene_count) * 100
+                    )
+                    : 0
+                }%
+            </div>
+
+            <div>
+                Last Duration:
+                ${
+                    data.last_scene_duration
+                }s
+            </div>
+
+            <div>
+                Uptime:
+                ${
+                    Math.round(
+                        data.uptime_seconds
+                    )
+                }s
+            </div>
+
+        `;
+    }
+    catch(err)
+    {
+        console.error(err);
+    }
+}
+
+updateRuntimeStatus();
+updateSceneStatus();
+
+setInterval(
+    updateRuntimeStatus,
+    2000
+);
+
+setInterval(
+    updateSceneStatus,
+    2000
+);
+
