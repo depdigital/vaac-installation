@@ -406,13 +406,50 @@
 
 </div>
 
+<!-- ===================================================== -->
+<!-- AUDIO MAPPING ENGINE                                  -->
+<!-- ===================================================== -->
+<!--
+Structure:
+
+Audio Mapping
+│
+├── Global Controls
+│
+├── Effect Sidebar
+│
+└── Effect Editor
+    │
+    ├── Delay
+    ├── Flanger
+    ├── Reverb
+    └── Future Effects
+
+Do not place System Health inside this block.
+-->
+
 <div
     id="audioMapping"
     class="tab-page">
 
     <h2>Audio Mapping Engine</h2>
 
-    <!-- GLOBAL -->
+    <!-- ===================================================== -->
+    <!-- GLOBAL AUDIO CONTROLS                                 -->
+    <!-- ===================================================== -->
+    <!--
+
+    Master Gain
+    Synth ON/OFF
+    Apply Audio Mapping
+    Save Audio Mapping
+
+    Future:
+    Master Output Meter
+    Preset Manager
+    Global Bypass
+
+    -->
 
     <div class="panel">
 
@@ -465,7 +502,28 @@
 
     <div class="audio-mapping-layout">
 
-        <!-- LEFT SIDEBAR -->
+        <!-- ===================================================== -->
+        <!-- EFFECT SIDEBAR                                        -->
+        <!-- ===================================================== -->
+        <!--
+
+        One button per DSP module.
+
+        Pattern:
+
+        <button
+            class="effect-tab"
+            data-effect="flangerPanel">
+
+            Flanger
+
+        </button>
+
+        When adding new effects:
+        1. Add tab here
+        2. Add matching effect-panel below
+
+        -->
 
         <div class="effect-sidebar">
 
@@ -495,7 +553,33 @@
 
         </div>
 
-        <!-- RIGHT EDITOR -->
+        <!-- ===================================================== -->
+        <!-- EFFECT PANEL TEMPLATE                                 -->
+        <!-- ===================================================== -->
+        <!--
+
+        Every DSP module follows:
+
+        effect-panel
+        │
+        ├── Enable Button
+        │
+        ├── Parameter Card
+        │
+        ├── Parameter Card
+        │
+        └── Parameter Card
+
+        Copy this structure when creating:
+
+        Flanger
+        Reverb
+        Filter
+        Granular
+        Pitch Shift
+        etc.
+
+        -->
 
         <div class="effect-editor">
 
@@ -523,8 +607,65 @@
 
                 <hr>
 
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
             <div class="parameter-card">
                 <h4>Delay Time</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
 
                 <div class="parameter-row">
 
