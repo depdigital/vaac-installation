@@ -138,7 +138,7 @@ SynthDef(\ghostEngine, {
     gain=1.0,
     delayTime=0.05,
     delayFeedback=0.1,
-    delayMix=0.5|
+    delayMix=0.0|
 
     var sig;
     var delayed;

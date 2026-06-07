@@ -1604,3 +1604,519 @@ document.addEventListener(
 
 );
 
+const masterGain =
+document.getElementById(
+    "masterGain"
+);
+
+if(masterGain)
+{
+    masterGain.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "masterGainValue"
+            ).textContent =
+            Number(
+                masterGain.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const delayTimeMaster =
+document.getElementById(
+    "delayTimeMaster"
+);
+
+if(delayTimeMaster)
+{
+    delayTimeMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayTimeMasterValue"
+            ).textContent =
+            Number(
+                delayTimeMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const delayTimeAmount =
+document.getElementById(
+    "delayTimeAmount"
+);
+
+if(delayTimeAmount)
+{
+    delayTimeAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayTimeAmountValue"
+            ).textContent =
+            Number(
+                delayTimeAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const delayFeedbackMaster =
+document.getElementById(
+    "delayFeedbackMaster"
+);
+
+if(delayFeedbackMaster)
+{
+    delayFeedbackMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayFeedbackMasterValue"
+            ).textContent =
+            Number(
+                delayFeedbackMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const delayFeedbackAmount =
+document.getElementById(
+    "delayFeedbackAmount"
+);
+
+if(delayFeedbackAmount)
+{
+    delayFeedbackAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayFeedbackAmountValue"
+            ).textContent =
+            Number(
+                delayFeedbackAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const delayMixMaster =
+document.getElementById(
+    "delayMixMaster"
+);
+
+if(delayMixMaster)
+{
+    delayMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayMixMasterValue"
+            ).textContent =
+            Number(
+                delayMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const delayMixAmount =
+document.getElementById(
+    "delayMixAmount"
+);
+
+if(delayMixAmount)
+{
+    delayMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "delayMixAmountValue"
+            ).textContent =
+            Number(
+                delayMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+function buildAudioConfig()
+{
+    return {
+
+        global:
+        {
+            masterGain:
+            Number(
+                document.getElementById(
+                    "masterGain"
+                ).value
+            )
+        },
+
+        delay:
+        {
+            enabled:
+            document.getElementById(
+                "delayEnabled"
+            ).checked,
+
+
+            time:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "delayTimeMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "delayTimeSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "delayTimeAmount"
+                    ).value
+                )
+            },
+
+            feedback:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "delayFeedbackMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "delayFeedbackSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "delayFeedbackAmount"
+                    ).value
+                )
+            },
+
+            mix:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "delayMixMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "delayMixSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "delayMixAmount"
+                    ).value
+                )
+            }
+        }
+    };
+}
+
+const delayEnabledBtn =
+document.getElementById(
+    "delayEnabledBtn"
+);
+
+const delayEnabled =
+document.getElementById(
+    "delayEnabled"
+);
+
+if(
+    delayEnabledBtn &&
+    delayEnabled
+)
+{
+    delayEnabledBtn.onclick =
+    () =>
+    {
+        delayEnabled.checked =
+            !delayEnabled.checked;
+
+        if(delayEnabled.checked)
+        {
+            delayEnabledBtn.textContent =
+                "ENABLED";
+
+            delayEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            delayEnabledBtn.textContent =
+                "DISABLED";
+
+            delayEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    };
+}
+
+const applyAudioMappingBtn =
+document.getElementById(
+    "applyAudioMapping"
+);
+
+const saveAudioMappingBtn =
+document.getElementById(
+    "saveAudioMapping"
+);
+
+if(applyAudioMappingBtn)
+{
+    applyAudioMappingBtn.addEventListener(
+        "click",
+        async () =>
+        {
+            const config =
+            buildAudioConfig();
+
+            await fetch(
+                "/audio-config/apply",
+                {
+                    method:"POST",
+
+                    headers:
+                    {
+                        "Content-Type":
+                        "application/json"
+                    },
+
+                    body:
+                    JSON.stringify(
+                        config
+                    )
+                }
+            );
+
+            alert(
+                "Audio Mapping Applied"
+            );
+        }
+    );
+}
+
+if(saveAudioMappingBtn)
+{
+    saveAudioMappingBtn.addEventListener(
+        "click",
+        async () =>
+        {
+            const config =
+            buildAudioConfig();
+
+            await fetch(
+                "/audio-config",
+                {
+                    method:"POST",
+
+                    headers:
+                    {
+                        "Content-Type":
+                        "application/json"
+                    },
+
+                    body:
+                    JSON.stringify(
+                        config
+                    )
+                }
+            );
+
+            alert(
+                "Audio Mapping Saved"
+            );
+        }
+    );
+}
+
+async function loadAudioMapping()
+{
+    const response =
+    await fetch(
+        "/audio-config"
+    );
+
+    const config =
+    await response.json();
+
+    document.getElementById(
+        "masterGain"
+    ).value =
+    config.global.masterGain;
+
+    document.getElementById(
+        "masterGainValue"
+    ).textContent =
+    Number(
+        config.global.masterGain
+    ).toFixed(2);
+
+    document.getElementById(
+        "delayEnabled"
+    ).checked =
+    config.delay.enabled;
+
+    document.getElementById(
+    "delayTimeMaster"
+    ).value =
+    config.delay.time.master;
+
+    document.getElementById(
+        "delayTimeMasterValue"
+    ).textContent =
+    Number(
+        config.delay.time.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "delayTimeSensor"
+    ).value =
+    config.delay.time.sensor;
+
+    document.getElementById(
+        "delayTimeAmount"
+    ).value =
+    config.delay.time.amount;
+
+    document.getElementById(
+        "delayTimeAmountValue"
+    ).textContent =
+    Number(
+        config.delay.time.amount
+    ).toFixed(2);
+
+    document.getElementById(
+    "delayFeedbackMaster"
+    ).value =
+    config.delay.feedback.master;
+
+    document.getElementById(
+        "delayFeedbackMasterValue"
+    ).textContent =
+    Number(
+        config.delay.feedback.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "delayFeedbackSensor"
+    ).value =
+    config.delay.feedback.sensor;
+
+    document.getElementById(
+        "delayFeedbackAmount"
+    ).value =
+    config.delay.feedback.amount;
+
+    document.getElementById(
+        "delayFeedbackAmountValue"
+    ).textContent =
+    Number(
+        config.delay.feedback.amount
+    ).toFixed(1);
+
+    document.getElementById(
+        "delayMixMaster"
+        ).value =
+        config.delay.mix.master;
+
+    document.getElementById(
+        "delayMixMasterValue"
+        ).textContent =
+        Number(
+        config.delay.mix.master
+        ).toFixed(2);
+
+    document.getElementById(
+        "delayMixSensor"
+    ).value =
+    config.delay.mix.sensor;
+
+    document.getElementById(
+        "delayMixAmount"
+    ).value =
+    config.delay.mix.amount;
+
+    document.getElementById(
+        "delayMixAmountValue"
+    ).textContent =
+    Number(
+        config.delay.mix.amount
+    ).toFixed(2);
+}
+
+loadAudioMapping();
+
+document
+.querySelectorAll(
+    ".effect-tab"
+)
+.forEach(btn =>
+{
+    btn.addEventListener(
+        "click",
+        () =>
+    {
+        document
+        .querySelectorAll(
+            ".effect-tab"
+        )
+        .forEach(tab =>
+            tab.classList.remove(
+                "active"
+            )
+        );
+
+        document
+        .querySelectorAll(
+            ".effect-panel"
+        )
+        .forEach(panel =>
+            panel.classList.remove(
+                "active"
+            )
+        );
+
+        btn.classList.add(
+            "active"
+        );
+
+        document
+        .getElementById(
+            btn.dataset.effect
+        )
+        .classList.add(
+            "active"
+        );
+    });
+});

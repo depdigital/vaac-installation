@@ -412,14 +412,13 @@
 
     <h2>Audio Mapping Engine</h2>
 
+    <!-- GLOBAL -->
+
     <div class="panel">
 
-        <h3>GLOBAL</h3>
-
+        <div class="master-gain-row">
         <label>
-
             Master Gain
-
         </label>
 
         <input
@@ -431,115 +430,313 @@
             value="1">
 
         <span id="masterGainValue">
-
             1.00
-
         </span>
+        </div>
 
-    </div>
+        <div class="audio-engine-toolbar">
 
-    <div class="panel">
+            <button
+                id="globalEffectsBtn"
+                class="audio-toolbar-btn synth">
+                SYNTH ON
 
-        <h3>DELAY</h3>
+            </button>
 
-        <label>
+        <button
+            id="applyAudioMapping"
+            class="audio-toolbar-btn apply">
 
-            <input
-                type="checkbox"
-                id="delayEnabled"
-                checked>
+            Apply Audio Mapping
 
-            Enable Delay
+        </button>
 
-        </label>
-
-        <hr>
-
-        <label>
-
-            Delay Mix
-
-        </label>
-
-        <input
-            type="range"
-            id="delayMixMaster"
-            min="0"
-            max="1"
-            step="0.01"
-            value="0">
-
-        <span id="delayMixMasterValue">
-
-            0.00
-
-        </span>
-
-        <br><br>
-
-        <label>
-
-            Sensor
-
-        </label>
-
-        <select id="delayMixSensor">
-
-            <option value="none">
-                None
-            </option>
-
-            <option value="distance">
-                Distance
-            </option>
-
-            <option value="lux">
-                Lux
-            </option>
-
-            <option value="temp">
-                Temperature
-            </option>
-
-            <option value="humidity">
-                Humidity
-            </option>
-
-        </select>
-
-        <br><br>
-
-        <label>
-
-            Amount
-
-        </label>
-
-        <input
-            type="range"
-            id="delayMixAmount"
-            min="0"
-            max="2"
-            step="0.01"
-            value="1">
-
-        <span id="delayMixAmountValue">
-
-            1.00
-
-        </span>
-
-        <br><br>
-
-        <button id="saveAudioMapping">
+        <button
+            id="saveAudioMapping"
+            class="audio-toolbar-btn save">
 
             Save Audio Mapping
 
         </button>
+    </div>
+    <br><br>
+
+    <!-- AUDIO MAPPING WORKSPACE -->
+
+    <div class="audio-mapping-layout">
+
+        <!-- LEFT SIDEBAR -->
+
+        <div class="effect-sidebar">
+
+            <button
+                class="effect-tab active"
+                data-effect="delayPanel">
+
+                Delay
+
+            </button>
+
+            <button
+                class="effect-tab"
+                data-effect="flangerPanel">
+
+                Flanger
+
+            </button>
+
+            <button
+                class="effect-tab"
+                data-effect="reverbPanel">
+
+                Reverb
+
+            </button>
+
+        </div>
+
+        <!-- RIGHT EDITOR -->
+
+        <div class="effect-editor">
+
+            <div
+                id="delayPanel"
+                class="effect-panel active">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="delayEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="delayEnabled"
+        checked
+        hidden>
+
+</div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Delay Time</h4>
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="delayTimeMaster">
+
+                    <span id="delayTimeMasterValue">
+                        0.05
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="delayTimeSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="delayTimeAmount"
+                    min="0"
+                    max="0.50"
+                    step="0.01"
+                    value="0">
+
+                <span id="delayTimeAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Delay Feedback</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="delayFeedbackMaster"
+                    min="0.1"
+                    max="5.0"
+                    step="0.1"
+                    value="0.1">
+
+                <span id="delayFeedbackMasterValue">
+                    0.1
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="delayFeedbackSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="delayFeedbackAmount"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="0">
+
+                <span id="delayFeedbackAmountValue">
+                    0.0
+                </span>
+                
+                </div>
+
+            </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Delay Mix</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="delayMixMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="delayMixMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="delayMixSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="delayMixAmount"
+                    min="0"
+                    max="2"
+                    step="0.01"
+                    value="1">
+
+                <span id="delayMixAmountValue">
+                    1.00
+                </span>
+
+                </div>
+            
+            </div>
+
+            <div
+                id="flangerPanel"
+                class="effect-panel">
+
+                <h3>Flanger</h3>
+
+                Coming Soon
+
+            </div>
+
+            <div
+                id="reverbPanel"
+                class="effect-panel">
+
+                <h3>Reverb</h3>
+
+                Coming Soon
+
+            </div>
+
+        </div>
 
     </div>
 
 </div>
+    </div>
+    </div>
 
 <div
     id="systemHealth"

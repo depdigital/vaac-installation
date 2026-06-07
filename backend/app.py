@@ -1,7 +1,6 @@
 import threading
 import time
 from fastapi import FastAPI
-import calibration
 from fastapi import Body
 from fastapi import WebSocket
 from fastapi.responses import FileResponse
@@ -12,6 +11,8 @@ from contextlib import asynccontextmanager
 
 import asyncio
 import sensor_deamon
+import calibration
+import audio_mapping
 import audio_manager
 import scene_manager
 import osc_transport
@@ -21,6 +22,10 @@ from fastapi.responses import FileResponse
 from osc_transport import OSCTransport
 
 osc = OSCTransport()
+
+runtime_audio_config = (
+    audio_mapping.load_config()
+)
 
 def scene_finished_callback(
     address,
@@ -256,6 +261,43 @@ def save_config(
         "status": "saved"
     }
 
+@app.get("/audio-config")
+def get_audio_config():
+
+    return audio_mapping.load_config()
+
+
+@app.post("/audio-config")
+def save_audio_config(
+    config: dict = Body(...)
+):
+
+    global runtime_audio_config
+
+    runtime_audio_config = config
+
+    audio_mapping.save_config(
+        config
+    )
+
+    return {
+        "status": "saved"
+    }
+
+@app.post("/audio-config/apply")
+def apply_audio_config(
+    config: dict = Body(...)
+):
+
+    global runtime_audio_config
+
+    runtime_audio_config = config
+
+    return {
+        "status": "applied"
+    }
+
+
 @app.get("/connection")
 def get_connection():
 
@@ -300,6 +342,57 @@ def reset_observed():
         "status": "reset"
     }
 
+def compute_parameter(
+    packet,
+    parameter_config
+):
+
+    value = parameter_config[
+        "master"
+    ]
+
+    sensor = parameter_config[
+        "sensor"
+    ]
+
+    influence = parameter_config[
+        "amount"
+    ]
+
+    sensor_value = 0.0
+
+    if sensor == "distance":
+
+        sensor_value = packet[
+            "distance_normalized"
+        ]
+
+    elif sensor == "lux":
+
+        sensor_value = packet[
+            "lux_normalized"
+        ]
+
+    elif sensor == "temp":
+
+        sensor_value = packet[
+            "temp_normalized"
+        ]
+
+    elif sensor == "humidity":
+
+        sensor_value = packet[
+            "humidity_normalized"
+        ]
+
+    value += (
+        sensor_value
+        * influence
+    )
+
+    return value
+
+
 def send_osc(packet):
 
     osc.send(
@@ -322,16 +415,82 @@ def send_osc(packet):
         packet["humidity_normalized"]
     )
 
+    global runtime_audio_config
+
+    config = runtime_audio_config
+
+    print(
+    "RUNTIME CONFIG MIX:",
+    config["delay"]["mix"]["master"]
+    )
+
+    delay_time = compute_parameter(
+        packet,
+        config["delay"].get(
+            "time",
+            {
+                "master": 0.05,
+                "sensor": "none",
+                "amount": 0.0
+            }
+        )
+    )
+
+    delay_feedback = compute_parameter(
+            packet,
+            config["delay"].get(
+                "feedback",
+                {
+                    "master": 0.01,
+                    "sensor": "none",
+                    "amount": 0.0
+                }
+            )
+        )
+
+    delay_mix = compute_parameter(
+            packet,
+            config["delay"]["mix"]
+        )
+
+    delay_mix = max(
+        0.0,
+        min(1.0, delay_mix)
+)
     """
     print(
-        "DELAY SENT:",
-        value
+    "TIME",
+    round(delay_time, 3),
+    "FB",
+    round(delay_feedback, 3),
+    "MIX",
+    round(delay_mix, 3)
     )
     """
+    
+    osc.send(
+        "/ghost/delayTime",
+        delay_time
+    )
+
+    osc.send(
+        "/ghost/delayFeedback",
+        delay_feedback
+    )
+
     osc.send(
         "/ghost/delayMix",
-        packet["distance_normalized"]
+        delay_mix
     )
+
+    #"""
+    print(
+    "TIME", round(delay_time, 3),
+    "FB", round(delay_feedback, 3),
+    "MIX", round(delay_mix, 3)
+    )
+    #"""
+    
     
 
 @app.get("/health")
