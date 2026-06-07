@@ -322,6 +322,18 @@ def send_osc(packet):
         packet["humidity_normalized"]
     )
 
+    """
+    print(
+        "DELAY SENT:",
+        value
+    )
+    """
+    osc.send(
+        "/ghost/delayMix",
+        packet["distance_normalized"]
+    )
+    
+
 @app.get("/health")
 def health():
 
@@ -446,8 +458,6 @@ def heartbeat_status():
         "alive":
             age < 30
     }
-
-
 
 
     

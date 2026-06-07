@@ -414,55 +414,128 @@
 
     <div class="panel">
 
-        <h3>Distance</h3>
+        <h3>GLOBAL</h3>
 
-        <select>
+        <label>
 
-            <option>Pitch</option>
+            Master Gain
 
-            <option>Delay Time</option>
+        </label>
 
-            <option>Filter Cutoff</option>
+        <input
+            type="range"
+            id="masterGain"
+            min="0"
+            max="2"
+            step="0.01"
+            value="1">
 
-        </select>
+        <span id="masterGainValue">
 
-    </div>
+            1.00
 
-    <div class="panel">
-
-        <h3>Lux</h3>
-
-        <select>
-
-            <option>Filter Cutoff</option>
-
-            <option>Pitch</option>
-
-        </select>
+        </span>
 
     </div>
 
     <div class="panel">
 
-        <h3>Temperature</h3>
+        <h3>DELAY</h3>
 
-        <select>
+        <label>
 
-            <option>Feedback</option>
+            <input
+                type="checkbox"
+                id="delayEnabled"
+                checked>
+
+            Enable Delay
+
+        </label>
+
+        <hr>
+
+        <label>
+
+            Delay Mix
+
+        </label>
+
+        <input
+            type="range"
+            id="delayMixMaster"
+            min="0"
+            max="1"
+            step="0.01"
+            value="0">
+
+        <span id="delayMixMasterValue">
+
+            0.00
+
+        </span>
+
+        <br><br>
+
+        <label>
+
+            Sensor
+
+        </label>
+
+        <select id="delayMixSensor">
+
+            <option value="none">
+                None
+            </option>
+
+            <option value="distance">
+                Distance
+            </option>
+
+            <option value="lux">
+                Lux
+            </option>
+
+            <option value="temp">
+                Temperature
+            </option>
+
+            <option value="humidity">
+                Humidity
+            </option>
 
         </select>
 
-    </div>
+        <br><br>
 
-    <div class="panel">
+        <label>
 
-        <h3>Humidity</h3>
+            Amount
 
-        <select>
+        </label>
 
-            <option>Stereo Width</option>
+        <input
+            type="range"
+            id="delayMixAmount"
+            min="0"
+            max="2"
+            step="0.01"
+            value="1">
 
-        </select>
+        <span id="delayMixAmountValue">
+
+            1.00
+
+        </span>
+
+        <br><br>
+
+        <button id="saveAudioMapping">
+
+            Save Audio Mapping
+
+        </button>
 
     </div>
 

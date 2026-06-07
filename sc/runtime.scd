@@ -1,8 +1,10 @@
-/////////////////////////////////////////////////////
-// BOOT
-/////////////////////////////////////////////////////
 
+// BOOT
 s.boot;
+
+~sceneBus = Bus.audio(s, 2);
+
+~ghostEngine = nil;
 
 ~runtimePath =
     PathName(
@@ -39,6 +41,13 @@ s.boot;
 "PROJECT ROOT:".postln;
 ~projectRoot.postln;
 
+~leftBuf = nil;
+~rightBuf = nil;
+
+~leftSynth = nil;
+~rightSynth = nil;
+
+~sceneStarted = false;
 
 ~heartbeatRoutine = Routine({
 
@@ -59,13 +68,28 @@ s.boot;
 
     "STOPPING SCENE".postln;
 
-    s.freeAll;
+    if(~leftSynth.notNil) {
+        ~leftSynth.free;
+        ~leftSynth = nil;
+    };
+
+    if(~rightSynth.notNil) {
+        ~rightSynth.free;
+        ~rightSynth = nil;
+    };
+
+    if(~leftBuf.notNil) {
+        ~leftBuf.free;
+        ~leftBuf = nil;
+    };
+
+    if(~rightBuf.notNil) {
+        ~rightBuf.free;
+        ~rightBuf = nil;
+    };
 
     ~finishedCount = 0;
-
-    ~leftDone = false;
-
-    ~rightDone = false;
+    ~sceneStarted = false;
 
     "SCENE STOPPED".postln;
 };
@@ -75,9 +99,8 @@ s.boot;
         thisProcess.nowExecutingPath
     ).fullPath;
 
-/////////////////////////////////////////////////////
+
 // PLAYER
-/////////////////////////////////////////////////////
 
 SynthDef(\scenePlayer, {
 
@@ -101,8 +124,73 @@ SynthDef(\scenePlayer, {
     );
 
     Out.ar(
-        0,
+        ~sceneBus,
         [sig, sig]
+    );
+
+}).add;
+
+// GHOST ENGINE
+
+SynthDef(\ghostEngine, {
+
+	|inBus=0,
+    gain=1.0,
+    delayTime=0.05,
+    delayFeedback=0.1,
+    delayMix=0.5|
+
+    var sig;
+    var delayed;
+
+    var gainSmooth;
+    var delayTimeSmooth;
+    var delayMixSmooth;
+    var delayFeedbackSmooth;
+
+    gainSmooth = Lag.kr(
+        gain,
+        1.0
+    );
+
+    delayTimeSmooth = Lag.kr(
+        delayTime,
+        1.0
+    );
+
+    delayMixSmooth = Lag.kr(
+        delayMix,
+        1.0
+    );
+
+    delayFeedbackSmooth = Lag.kr(
+        delayFeedback,
+        1.0
+    );
+
+    sig = In.ar(
+        inBus,
+        2
+    );
+
+    delayed = CombL.ar(
+        sig,
+        0.5,
+        delayTimeSmooth,
+        delayFeedbackSmooth
+    );
+
+    sig = XFade2.ar(
+        sig,
+        delayed,
+        (delayMixSmooth * 2) - 1
+    );
+
+    sig = sig * gainSmooth;
+
+    Out.ar(
+        0,
+        sig
     );
 
 }).add;
@@ -139,58 +227,113 @@ OSCdef(
     s.addr
 );
 
-/////////////////////////////////////////////////////
+
 // PLAYBACK FUNCTION
-/////////////////////////////////////////////////////
 
 ~playScene = {
 
-	var l, r;
+    var leftReady = false;
+    var rightReady = false;
+
+    ~stopScene.value;
 
     "Loading Scene".postln;
+    ("Left : " ++ ~leftPath).postln;
+    ("Right: " ++ ~rightPath).postln;
 
-    l = Buffer.read(
+    ~leftBuf = Buffer.read(
         s,
-        ~leftPath
+        ~leftPath,
+
+        action: { |buf|
+
+            ~leftBuf = buf;
+
+            leftReady = true;
+
+            "LEFT LOADED".postln;
+
+            if(
+                (leftReady && rightReady)
+                &&
+                (~sceneStarted.not)
+            ) {
+
+                ~sceneStarted = true;
+
+                "Playing Scene".postln;
+
+                ~finishedCount = 0;
+
+                ~leftSynth = Synth(
+                    \scenePlayer,
+                    [
+                        \buf, ~leftBuf.bufnum,
+                        \playerId, 1
+                    ]
+                );
+
+                ~rightSynth = Synth(
+                    \scenePlayer,
+                    [
+                        \buf, ~rightBuf.bufnum,
+                        \playerId, 2
+                    ]
+                );
+
+            };
+
+        }
     );
 
-    r = Buffer.read(
+    ~rightBuf = Buffer.read(
         s,
-        ~rightPath
+        ~rightPath,
+
+        action: { |buf|
+
+            ~rightBuf = buf;
+
+            rightReady = true;
+
+            "RIGHT LOADED".postln;
+
+            if(
+                (leftReady && rightReady)
+                &&
+                (~sceneStarted.not)
+            ) {
+
+                ~sceneStarted = true;
+
+                "Playing Scene".postln;
+
+                ~finishedCount = 0;
+
+                ~leftSynth = Synth(
+                    \scenePlayer,
+                    [
+                        \buf, ~leftBuf.bufnum,
+                        \playerId, 1
+                    ]
+                );
+
+                ~rightSynth = Synth(
+                    \scenePlayer,
+                    [
+                        \buf, ~rightBuf.bufnum,
+                        \playerId, 2
+                    ]
+                );
+
+            };
+
+        }
     );
-
-    AppClock.sched(1.0, {
-
-        "Playing Scene".postln;
-
-        ~finishedCount = 0;
-
-	Synth(
-			\scenePlayer,
-		[
-			\buf, l.bufnum,
-			\playerId, 1
-		]
-	);
-
-	Synth(
-			\scenePlayer,
-		[
-			\buf, r.bufnum,
-			\playerId, 2
-		]
-	);
-
-
-        nil;
-
-    });
 
 };
 
-/////////////////////////////////////////////////////
 // OSC RECEIVERS
-/////////////////////////////////////////////////////
 
 OSCdef(
     \sceneLeft,
@@ -222,7 +365,7 @@ OSCdef(
         {
             "AUTO PLAY".postln;
 
-			~playScene.class.postln;
+			//~playScene.class.postln;
 
 			~playScene.value;
         };
@@ -241,4 +384,91 @@ OSCdef(
 	'/scene/stop'
 );
 
+// REAL TIME OSC SYNTH
+
+OSCdef(
+    \ghostDelayTime,
+    {
+        |msg|
+
+        msg.postln;
+
+        ~ghostEngine.set(
+            \delayTime,
+            msg[1]
+        );
+
+    },
+    "/ghost/delayTime"
+);
+
+OSCdef(
+    \ghostDelayMix,
+    {
+        |msg|
+
+        var value;
+
+        value = msg[1];
+
+        ~ghostEngine.set(
+            \delayMix,
+            value
+        );
+
+        ("delayMix: " ++ value)
+        .postln;
+
+    },
+    "/ghost/delayMix"
+);
+
+OSCdef(
+    \ghostDelayFeedback,
+    {
+        |msg|
+
+        var value;
+
+        value = msg[1];
+
+        ~ghostEngine.set(
+            \delayFeedback,
+            value
+        );
+
+        ("delayFeedback: " ++ value)
+        .postln;
+
+    },
+    "/ghost/delayFeedback"
+);
+
 "Scene Receiver Ready".postln;
+
+// PLOT LOADED BUFFER
+
+//s.plotTree;
+//s.queryAllNodes;
+
+if(~ghostEngine.notNil) {
+    ~ghostEngine.free;
+};
+
+~ghostEngine = Synth.tail(
+    s,
+    \ghostEngine,
+    [
+        \inBus, ~sceneBus,
+        \gain, 1.0
+    ]
+);
+
+"Ghost Engine Started".postln;
+
+n = NetAddr(
+    "127.0.0.1",
+    NetAddr.langPort
+);
+
+//OSCdef.all;

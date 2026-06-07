@@ -3,6 +3,9 @@ const MAX_POINTS = 200;
 let latestData = null;
 let currentConfig = null;
 let ws = null;
+let lastPacketTime = Date.now();
+let reconnectTimer = null;
+
 
 function updateSensorStatus(
     sensor,
@@ -512,6 +515,7 @@ ws.onmessage = event =>
         event.data
     );
 
+    lastPacketTime = Date.now();
     latestData = d;
 
     // DISTANCE
@@ -771,6 +775,14 @@ Number(
         ).value
     )
 );
+};
+
+ws.onerror = err =>
+{
+    console.error(
+        "WebSocket ERROR",
+        err
+    );
 };
 
 }
@@ -1518,5 +1530,77 @@ setInterval(
 setInterval(
     updateSceneStatus,
     2000
+);
+
+setInterval(() =>
+{
+    const age =
+        Date.now() -
+        lastPacketTime;
+
+    if(age > 5000)
+{
+    console.warn(
+        "Packet timeout"
+    );
+
+    try
+    {
+        if(ws)
+        {
+            ws.close();
+        }
+    }
+    catch(e)
+    {
+        console.error(e);
+    }
+
+    ws = null;
+
+    startWebSocket();
+
+    lastPacketTime =
+        Date.now();
+}
+
+}, 1000);
+
+document.addEventListener(
+    "visibilitychange",
+    () =>
+    {
+        if(!document.hidden)
+        {
+            console.log(
+                "Page visible again"
+            );
+
+            console.log(
+                "Current WS state:",
+                ws
+                    ? ws.readyState
+                    : "null"
+            );
+
+            try
+            {
+                if(ws)
+                {
+                    ws.close();
+                }
+            }
+            catch(e)
+            {
+                console.error(e);
+            }
+
+            startWebSocket();
+
+            lastPacketTime =
+                Date.now();
+        }
+    }
+
 );
 
