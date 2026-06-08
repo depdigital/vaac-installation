@@ -1,541 +1,234 @@
+/* =========================================================================
+   1. SERVER CONFIGURATION & BOOT INITIALIZATION
+   ========================================================================= */
 
-// BOOT
-s.boot;
+s.quit;
 
-~sceneBus = Bus.audio(s, 2);
+// Expand real-time processing memory pool and channel limits drastically
+Server.default.options.memSize = 65536;
+Server.default.options.numAudioBusChannels = 1024;
 
-~ghostEngine = nil;
+s.waitForBoot({
 
-~runtimePath =
-    PathName(
-        thisProcess.nowExecutingPath
-    ).fullPath;
+    /* =====================================================================
+       2. GLOBAL ENVIRONMENT VARIABLES & PATHS
+       ===================================================================== */
 
-~scDir =
-    PathName(
-        ~runtimePath
-    ).pathOnly;
+    ~sceneBus = Bus.audio(s, 2);
+    ~ghostEngine = nil;
 
-~projectRoot =
-    PathName(
-        ~scDir
-    ).parentPath;
+    ~runtimePath = PathName(thisProcess.nowExecutingPath).fullPath;
+    ~scDir       = PathName(~runtimePath).pathOnly;
+    ~projectRoot = PathName(~scDir).parentPath;
 
-
-~leftPath = "";
-~rightPath = "";
-
-~finishedCount = 0;
-
-~backend = NetAddr(
-    "127.0.0.1",
-    9001
-);
-
-"RUNTIME PATH:".postln;
-~runtimePath.postln;
-
-"SC DIR:".postln;
-~scDir.postln;
-
-"PROJECT ROOT:".postln;
-~projectRoot.postln;
-
-~leftBuf = nil;
-~rightBuf = nil;
-
-~leftSynth = nil;
-~rightSynth = nil;
-
-~sceneStarted = false;
-
-~heartbeatRoutine = Routine({
-
-    loop {
-
-        ~backend.sendMsg(
-            "/heartbeat"
-        );
-		//
-        10.wait;
-    };
-
-});
-
-~heartbeatRoutine.play;
-
-~stopScene = {
-
-    "STOPPING SCENE".postln;
-
-    if(~leftSynth.notNil) {
-        ~leftSynth.free;
-        ~leftSynth = nil;
-    };
-
-    if(~rightSynth.notNil) {
-        ~rightSynth.free;
-        ~rightSynth = nil;
-    };
-
-    if(~leftBuf.notNil) {
-        ~leftBuf.free;
-        ~leftBuf = nil;
-    };
-
-    if(~rightBuf.notNil) {
-        ~rightBuf.free;
-        ~rightBuf = nil;
-    };
-
+    ~leftPath      = "";
+    ~rightPath     = "";
     ~finishedCount = 0;
-    ~sceneStarted = false;
+    ~sceneStarted  = false;
 
-    "SCENE STOPPED".postln;
-};
+    ~backend = NetAddr("127.0.0.1", 9001);
 
-~runtimePath =
-    PathName(
-        thisProcess.nowExecutingPath
-    ).fullPath;
+    ~leftBuf    = nil;
+    ~rightBuf   = nil;
+    ~leftSynth  = nil;
+    ~rightSynth = nil;
 
+    // Diagnostic console logging
+    "RUNTIME PATH:".postln;  ~runtimePath.postln;
+    "SC DIR:".postln;       ~scDir.postln;
+    "PROJECT ROOT:".postln; ~projectRoot.postln;
 
-// PLAYER
+    /* =====================================================================
+       3. BACKGROUND ROUTINES & STATE MANAGEMENT FUNCTIONS
+       ===================================================================== */
 
-SynthDef(\scenePlayer, {
+    // Heartbeat clock routine alerting the Python backend every 10 seconds
+    ~heartbeatRoutine = Routine({
+        loop {
+            ~backend.sendMsg("/heartbeat");
+            10.wait;
+        };
+    });
+    ~heartbeatRoutine.play;
 
-    |buf, playerId = 0|
+    // Safety cleanup function to flush active voices, RAM buffers, and tracking flags
+    ~stopScene = {
+        "STOPPING SCENE".postln;
 
-    var sig;
-    var done;
+        if(~leftSynth.notNil)  { ~leftSynth.free;  ~leftSynth = nil;  };
+        if(~rightSynth.notNil) { ~rightSynth.free; ~rightSynth = nil; };
+        if(~leftBuf.notNil)    { ~leftBuf.free;    ~leftBuf = nil;    };
+        if(~rightBuf.notNil)   { ~rightBuf.free;   ~rightBuf = nil;   };
 
-    sig = PlayBuf.ar(
-        1,
-        buf,
-        doneAction: 2
-    );
+        ~finishedCount = 0;
+        ~sceneStarted  = false;
 
-    done = Done.kr(sig);
+        "SCENE STOPPED".postln;
+    };
 
-    SendReply.kr(
-        done,
-        '/playerDone',
-        [playerId]
-    );
+    /* =====================================================================
+       4. AUDIO DSP ENGINE DEFINITIONS (SYNTHDEFS)
+       ===================================================================== */
 
-    Out.ar(
-        ~sceneBus,
-        [sig, sig]
-    );
+    // Mono File Voice Player
+    SynthDef(\scenePlayer, {
 
-}).add;
+        |buf, playerId = 0, outChannel = 0|
+        var sig, done;
 
-// GHOST ENGINE
+        sig  = PlayBuf.ar(1, buf, doneAction: 2);
+        done = Done.kr(sig);
 
-SynthDef(\ghostEngine, {
+        SendReply.kr(done, '/playerDone', [playerId]);
 
-	|inBus=0,
-    gain=1.0,
-	delayEnabled=1,
-    delayTime=0.05,
-    delayFeedback=0.1,
-    delayMix=0.0|
+        // Isolates outputs perfectly onto discrete stereo lanes using audio-rate selection
+        Out.ar(
+            ~sceneBus,
+            Select.ar(outChannel, [[sig, Silent.ar()], [Silent.ar(), sig]])
+        );
+    }).add;
 
-    var sig;
-    var delayed;
-	var wet;
+    // Global Stereo FX Master Processor Chain
+    SynthDef(\ghostEngine, {
 
-    var gainSmooth;
-    var delayTimeSmooth;
-    var delayMixSmooth;
-    var delayFeedbackSmooth;
+        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0|
+        var sig, delayed, wet;
+        var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 
-    gainSmooth = Lag.kr(
-        gain,
-        1.0
-    );
+        // Smooth parameters continuously to protect against sudden real-time value transitions
+        gainSmooth          = Lag.kr(gain, 1.0);
+        delayMixSmooth       = Lag.kr(delayMix, 1.0);
+        delayTimeSmooth     = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
+        delayFeedbackSmooth = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
 
-    delayTimeSmooth = Lag.kr(
-        delayTime,
-        1.0
-    );
+        sig     = In.ar(inBus, 2);
+        delayed = CombL.ar(sig, 0.5, delayTimeSmooth, delayFeedbackSmooth);
+        wet     = XFade2.ar(sig, delayed, (delayMixSmooth * 2) - 1);
 
-    delayMixSmooth = Lag.kr(
-        delayMix,
-        1.0
-    );
+        sig     = SelectX.ar(Lag.kr(delayEnabled, 0.2), [sig, wet]);
+        sig     = sig * gainSmooth;
 
-    delayFeedbackSmooth = Lag.kr(
-        delayFeedback,
-        1.0
-    );
+        Out.ar(0, sig);
+    }).add;
 
-    sig = In.ar(
-        inBus,
-        2
-    );
+    /* =====================================================================
+       5. INTER-PROCESS COMMUNICATIONS DEFS (OSC RECEIVERS)
+       ===================================================================== */
 
-    delayed = CombL.ar(
-        sig,
-        0.5,
-        delayTimeSmooth,
-        delayFeedbackSmooth
-    );
-
-	wet = XFade2.ar(
-		sig,
-		delayed,
-		(delayMixSmooth * 2) - 1
-	);
-
-	sig = SelectX.ar(
-		Lag.kr(delayEnabled, 0.2),
-		[
-			sig,
-			wet
-		]
-	);
-
-    sig = sig * gainSmooth;
-
-    Out.ar(
-        0,
-        sig
-    );
-
-}).add;
-
-OSCdef(
-    \playerDone,
-
-    { |msg|
-
-        var playerId;
-
-        playerId = msg[3];
+    // Tracking trigger parsing voice completions
+    OSCdef(\playerDone, { |msg|
+        var playerId = msg[3];
 
         ("PLAYER DONE: " ++ playerId).postln;
-
         ~finishedCount = ~finishedCount + 1;
 
         if(~finishedCount >= 2) {
-
-            "SCENE COMPLETE".postln;
-
-            "SENDING TO PYTHON".postln;
-
-            ~backend.sendMsg(
-                "/scene/finished"
-            );
-
+            "SCENE COMPLETE. SENDING TO PYTHON".postln;
+            ~backend.sendMsg("/scene/finished");
             ~finishedCount = 0;
         };
+    }, '/playerDone', s.addr);
 
-    },
-
-    '/playerDone',
-    s.addr
-);
-
-
-// PLAYBACK FUNCTION
-
-~playScene = {
-
-    var leftReady = false;
-    var rightReady = false;
-
-    ~stopScene.value;
-
-    "Loading Scene".postln;
-    ("Left : " ++ ~leftPath).postln;
-    ("Right: " ++ ~rightPath).postln;
-
-    ~leftBuf = Buffer.read(
-        s,
-        ~leftPath,
-
-        action: { |buf|
-
-            ~leftBuf = buf;
-
-            leftReady = true;
-
-            "LEFT LOADED".postln;
-
-            if(
-                (leftReady && rightReady)
-                &&
-                (~sceneStarted.not)
-            ) {
-
-                ~sceneStarted = true;
-
-                "Playing Scene".postln;
-
-                ~finishedCount = 0;
-
-                ~leftSynth = Synth(
-                    \scenePlayer,
-                    [
-                        \buf, ~leftBuf.bufnum,
-                        \playerId, 1
-                    ]
-                );
-
-                ~rightSynth = Synth(
-                    \scenePlayer,
-                    [
-                        \buf, ~rightBuf.bufnum,
-                        \playerId, 2
-                    ]
-                );
-
-            };
-
-        }
-    );
-
-    ~rightBuf = Buffer.read(
-        s,
-        ~rightPath,
-
-        action: { |buf|
-
-            ~rightBuf = buf;
-
-            rightReady = true;
-
-            "RIGHT LOADED".postln;
-
-            if(
-                (leftReady && rightReady)
-                &&
-                (~sceneStarted.not)
-            ) {
-
-                ~sceneStarted = true;
-
-                "Playing Scene".postln;
-
-                ~finishedCount = 0;
-
-                ~leftSynth = Synth(
-                    \scenePlayer,
-                    [
-                        \buf, ~leftBuf.bufnum,
-                        \playerId, 1
-                    ]
-                );
-
-                ~rightSynth = Synth(
-                    \scenePlayer,
-                    [
-                        \buf, ~rightBuf.bufnum,
-                        \playerId, 2
-                    ]
-                );
-
-            };
-
-        }
-    );
-
-};
-
-// OSC RECEIVERS
-
-OSCdef(
-    \sceneLeft,
-    { |msg|
-
+    // Structural input streams handling environment variables
+    OSCdef(\sceneLeft, { |msg|
         ~leftPath = msg[1];
-
         "LEFT RECEIVED".postln;
         ~leftPath.postln;
+    }, '/scene/left');
 
-    },
-    '/scene/left'
-);
-
-OSCdef(
-    \sceneRight,
-    { |msg|
-
+    OSCdef(\sceneRight, { |msg|
         ~rightPath = msg[1];
-
         "RIGHT RECEIVED".postln;
         ~rightPath.postln;
 
-        if(
-            (~leftPath != "")
-            &&
-            (~rightPath != "")
-        )
-        {
+        if((~leftPath != "") && (~rightPath != "")) {
             "AUTO PLAY".postln;
-
-			//~playScene.class.postln;
-
-			~playScene.value;
+            ~playScene.value;
         };
+    }, '/scene/right');
 
-    },
-    '/scene/right'
-);
+    OSCdef(\sceneStop, { ~stopScene.value; }, '/scene/stop');
 
-OSCdef(
-    \sceneStop,
-    {
+    // Real-Time Control parameters modifying the FX processor nodes
+    OSCdef(\ghostGain, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\gain, msg[1]); };
+        ("gain: " ++ msg[1]).postln;
+    }, "/ghost/gain");
+
+    OSCdef(\ghostDelayEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\delayEnabled, msg[1]); };
+        ("delayEnabled: " ++ msg[1]).postln;
+    }, "/ghost/delayEnabled");
+
+    OSCdef(\ghostDelayTime, { |msg|
+        msg.postln;
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\delayTime, msg[1]); };
+    }, "/ghost/delayTime");
+
+    OSCdef(\ghostDelayMix, { |msg|
+        var val = msg[1];
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\delayMix, val); };
+        ("delayMix: " ++ val).postln;
+    }, "/ghost/delayMix");
+
+    OSCdef(\ghostDelayFeedback, { |msg|
+        var val = msg[1];
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\delayFeedback, val); };
+        ("delayFeedback: " ++ val).postln;
+    }, "/ghost/delayFeedback");
+
+    /* =====================================================================
+       6. CENTRAL ASYNCHRONOUS PLAYBACK ENGINE
+       ===================================================================== */
+
+    ~playScene = {
+        var leftReady = false, rightReady = false;
 
         ~stopScene.value;
+        "Loading Scene".postln;
 
-    },
-	'/scene/stop'
-);
+        // Asynchronous multi-threaded buffer disk load loops
+        ~leftBuf = Buffer.read(s, ~leftPath, action: { |buf|
+            ~leftBuf  = buf;
+            leftReady = true;
+            "LEFT LOADED".postln;
 
-// REAL TIME OSC SYNTH
+            if(leftReady && rightReady && ~sceneStarted.not) {
+                ~sceneStarted = true;
+                "Playing Scene".postln;
+                ~finishedCount = 0;
 
-OSCdef(
-    \ghostGain,
-    {
-        |msg|
+				~leftSynth  = Synth(\scenePlayer, [\buf, ~leftBuf.bufnum,  \playerId, 1, \outChannel, 0]);
+                ~rightSynth = Synth(\scenePlayer, [\buf, ~rightBuf.bufnum, \playerId, 2, \outChannel, 1]);
+            };
+        });
 
-        if(~ghostEngine.notNil)
-        {
-            ~ghostEngine.set(
-                \gain,
-                msg[1]
-            );
-        };
+        ~rightBuf = Buffer.read(s, ~rightPath, action: { |buf|
+            ~rightBuf  = buf;
+            rightReady = true;
+            "RIGHT LOADED".postln;
 
-        ("gain: " ++ msg[1]).postln;
+            if(leftReady && rightReady && ~sceneStarted.not) {
+                ~sceneStarted = true;
+                "Playing Scene".postln;
+                ~finishedCount = 0;
 
-    },
-    "/ghost/gain"
-);
+                ~leftSynth  = Synth(\scenePlayer, [\buf, ~leftBuf.bufnum,  \playerId, 1, \outChannel, 0]);
+                ~rightSynth = Synth(\scenePlayer, [\buf, ~rightBuf.bufnum, \playerId, 2, \outChannel, 1]);
+            };
+        });
+    };
 
-OSCdef(
-    \ghostDelayEnabled,
-    {
-        |msg|
+    /* =====================================================================
+       7. POST-INITIALIZATION SYSTEM EXECUTION
+       ===================================================================== */
 
-        if(~ghostEngine.notNil)
-        {
-            ~ghostEngine.set(
-                \delayEnabled,
-                msg[1]
-            );
-        };
+    "Scene Receiver Ready".postln;
+    s.sync; // Block thread smoothly to ensure all background configs register
 
-        ("delayEnabled: " ++ msg[1]).postln;
+    if(~ghostEngine.notNil) { ~ghostEngine.free; };
+    ~ghostEngine = Synth.tail(s, \ghostEngine, [\inBus, ~sceneBus, \gain, 1.0]);
+    "Ghost Engine Started".postln;
 
-    },
-    "/ghost/delayEnabled"
-);
-
-OSCdef(
-    \ghostDelayEnabled,
-    {
-        |msg|
-
-        if(~ghostEngine.notNil)
-        {
-            ~ghostEngine.set(
-                \delayEnabled,
-                msg[1]
-            );
-        };
-
-        ("delayEnabled: " ++ msg[1]).postln;
-
-    },
-    "/ghost/delayEnabled"
-);
-
-OSCdef(
-    \ghostDelayTime,
-    {
-        |msg|
-
-        msg.postln;
-
-        ~ghostEngine.set(
-            \delayTime,
-            msg[1]
-        );
-
-    },
-    "/ghost/delayTime"
-);
-
-OSCdef(
-    \ghostDelayMix,
-    {
-        |msg|
-
-        var value;
-
-        value = msg[1];
-
-        ~ghostEngine.set(
-            \delayMix,
-            value
-        );
-
-        ("delayMix: " ++ value)
-        .postln;
-
-    },
-    "/ghost/delayMix"
-);
-
-OSCdef(
-    \ghostDelayFeedback,
-    {
-        |msg|
-
-        var value;
-
-        value = msg[1];
-
-        ~ghostEngine.set(
-            \delayFeedback,
-            value
-        );
-
-        ("delayFeedback: " ++ value)
-        .postln;
-
-    },
-    "/ghost/delayFeedback"
-);
-
-"Scene Receiver Ready".postln;
-
-// PLOT LOADED BUFFER
-
-//s.plotTree;
-//s.queryAllNodes;
-
-if(~ghostEngine.notNil) {
-    ~ghostEngine.free;
-};
-
-~ghostEngine = Synth.tail(
-    s,
-    \ghostEngine,
-    [
-        \inBus, ~sceneBus,
-        \gain, 1.0
-    ]
-);
-
-"Ghost Engine Started".postln;
-
-n = NetAddr(
-    "127.0.0.1",
-    NetAddr.langPort
-);
-
-//OSCdef.all;
+    n = NetAddr("127.0.0.1", NetAddr.langPort);
+});

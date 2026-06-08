@@ -1,11 +1,11 @@
 {
     "global": {
-        "masterGain": 1.43
+        "masterGain": 2
     },
     "delay": {
-        "enabled": true,
+        "enabled": false,
         "time": {
-            "master": 0.05,
+            "master": 0.02,
             "sensor": "none",
             "amount": 0.5
         },
