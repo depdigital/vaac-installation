@@ -136,12 +136,14 @@ SynthDef(\ghostEngine, {
 
 	|inBus=0,
     gain=1.0,
+	delayEnabled=1,
     delayTime=0.05,
     delayFeedback=0.1,
     delayMix=0.0|
 
     var sig;
     var delayed;
+	var wet;
 
     var gainSmooth;
     var delayTimeSmooth;
@@ -180,11 +182,19 @@ SynthDef(\ghostEngine, {
         delayFeedbackSmooth
     );
 
-    sig = XFade2.ar(
-        sig,
-        delayed,
-        (delayMixSmooth * 2) - 1
-    );
+	wet = XFade2.ar(
+		sig,
+		delayed,
+		(delayMixSmooth * 2) - 1
+	);
+
+	sig = SelectX.ar(
+		Lag.kr(delayEnabled, 0.2),
+		[
+			sig,
+			wet
+		]
+	);
 
     sig = sig * gainSmooth;
 
@@ -403,6 +413,44 @@ OSCdef(
 
     },
     "/ghost/gain"
+);
+
+OSCdef(
+    \ghostDelayEnabled,
+    {
+        |msg|
+
+        if(~ghostEngine.notNil)
+        {
+            ~ghostEngine.set(
+                \delayEnabled,
+                msg[1]
+            );
+        };
+
+        ("delayEnabled: " ++ msg[1]).postln;
+
+    },
+    "/ghost/delayEnabled"
+);
+
+OSCdef(
+    \ghostDelayEnabled,
+    {
+        |msg|
+
+        if(~ghostEngine.notNil)
+        {
+            ~ghostEngine.set(
+                \delayEnabled,
+                msg[1]
+            );
+        };
+
+        ("delayEnabled: " ++ msg[1]).postln;
+
+    },
+    "/ghost/delayEnabled"
 );
 
 OSCdef(

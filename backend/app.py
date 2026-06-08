@@ -481,6 +481,13 @@ def send_osc(packet):
         "/ghost/gain",
         gain
     )
+
+    delay_enabled = 1 if config["delay"]["enabled"] else 0
+
+    osc.send(
+        "/ghost/delayEnabled",
+        delay_enabled
+    )
     
     osc.send(
         "/ghost/delayTime",
