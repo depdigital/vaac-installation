@@ -76,9 +76,13 @@ def generate_scene():
     global _previous_scene
     global recent_scenes
 
+    pool = audio_manager.get_active_pool()
+
     assets = [
         str(
-            ASSET_DIR / a["name"]
+            ASSET_DIR /
+            pool /
+            a["name"]
         )
         for a in audio_manager.get_audio_assets()
     ]
