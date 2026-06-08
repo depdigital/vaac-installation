@@ -83,6 +83,13 @@ def generate_scene():
         for a in audio_manager.get_audio_assets()
     ]
 
+    if not assets:
+
+        raise RuntimeError(
+            f"No assets found in active pool: "
+            f"{audio_manager.get_active_pool()}"
+        )
+
     for _ in range(100):
 
         left = random.choice(assets)
@@ -123,7 +130,19 @@ def start_scene():
 
     scene_start_time = time.time()
     
-    current_scene = generate_scene()
+    try:
+
+        current_scene = generate_scene()
+
+    except RuntimeError as e:
+
+        print(e)
+
+        return {
+
+            "error": str(e)
+
+        }
 
     scene_history.append(
         current_scene

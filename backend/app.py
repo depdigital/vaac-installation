@@ -249,6 +249,10 @@ def scene_send():
 
     scene = scene_manager.start_scene()
 
+    if "error" in scene:
+
+        return scene
+
     osc.send_scene(scene)
 
     return scene
@@ -648,7 +652,17 @@ async def websocket_endpoint(ws: WebSocket):
 @app.get("/test-scene")
 def test_scene():
 
-    return scene_manager.generate_scene()
+    try:
+
+        return scene_manager.generate_scene()
+
+    except RuntimeError as e:
+
+        return {
+
+            "error": str(e)
+
+        }
 
 @app.get("/scene/history")
 def scene_history_endpoint():
