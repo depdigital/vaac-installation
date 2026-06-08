@@ -91,6 +91,12 @@ def set_active_pool(pool_name):
 
     global ACTIVE_POOL
 
+    if pool_name not in get_pools():
+
+        raise ValueError(
+            f"Pool not found: {pool_name}"
+        )
+
     ACTIVE_POOL = pool_name
 
     save_active_pool()
