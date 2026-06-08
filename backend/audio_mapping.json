@@ -1,21 +1,21 @@
 {
     "global": {
-        "masterGain": 0.82
+        "masterGain": 1.43
     },
     "delay": {
         "enabled": true,
         "time": {
-            "master": 0.29,
+            "master": 0.05,
             "sensor": "none",
             "amount": 0.5
         },
         "feedback": {
-            "master": 1.4,
+            "master": 5,
             "sensor": "none",
             "amount": 5
         },
         "mix": {
-            "master": 0.59,
+            "master": 0.73,
             "sensor": "none",
             "amount": 2
         }

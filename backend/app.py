@@ -419,10 +419,12 @@ def send_osc(packet):
 
     config = runtime_audio_config
 
+    """
     print(
     "RUNTIME CONFIG MIX:",
     config["delay"]["mix"]["master"]
     )
+    """
 
     delay_time = compute_parameter(
         packet,
@@ -467,6 +469,18 @@ def send_osc(packet):
     round(delay_mix, 3)
     )
     """
+
+    delay_time = max(
+    0.01,
+    min(0.50, delay_time)
+)
+    
+    gain = config["global"]["masterGain"]
+
+    osc.send(
+        "/ghost/gain",
+        gain
+    )
     
     osc.send(
         "/ghost/delayTime",
@@ -483,13 +497,13 @@ def send_osc(packet):
         delay_mix
     )
 
-    #"""
+    """
     print(
     "TIME", round(delay_time, 3),
     "FB", round(delay_feedback, 3),
     "MIX", round(delay_mix, 3)
     )
-    #"""
+    """
     
     
 

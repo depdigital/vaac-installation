@@ -387,6 +387,25 @@ OSCdef(
 // REAL TIME OSC SYNTH
 
 OSCdef(
+    \ghostGain,
+    {
+        |msg|
+
+        if(~ghostEngine.notNil)
+        {
+            ~ghostEngine.set(
+                \gain,
+                msg[1]
+            );
+        };
+
+        ("gain: " ++ msg[1]).postln;
+
+    },
+    "/ghost/gain"
+);
+
+OSCdef(
     \ghostDelayTime,
     {
         |msg|
