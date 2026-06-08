@@ -5,12 +5,19 @@ ASSET_DIR = (
     / "assets"
 )
 
+ACTIVE_POOL = "pool1"
+
 def get_audio_assets():
 
     assets = []
 
+    pool_dir = (
+    ASSET_DIR /
+    ACTIVE_POOL
+)
+
     for f in sorted(
-        ASSET_DIR.glob("*.wav")
+        pool_dir.glob("*.wav")
     ):
 
         assets.append(
@@ -48,3 +55,28 @@ def get_audio_summary():
 
         "assets": assets
     }
+
+def get_pools():
+
+    pools = []
+
+    for item in sorted(
+        ASSET_DIR.iterdir()
+    ):
+        if item.is_dir():
+
+            pools.append(
+                item.name
+            )
+
+    return pools
+
+def set_active_pool(pool_name):
+
+    global ACTIVE_POOL
+
+    ACTIVE_POOL = pool_name
+
+def get_active_pool():
+
+    return ACTIVE_POOL

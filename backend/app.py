@@ -165,6 +165,39 @@ def osc_status():
         "rate": "20 Hz"
     }
 
+@app.get("/asset-pools")
+def asset_pools():
+
+    return {
+        "pools":
+        audio_manager.get_pools()
+    }
+
+
+@app.get("/active-pool")
+def active_pool():
+
+    return {
+        "pool":
+        audio_manager.get_active_pool()
+    }
+
+
+@app.post("/active-pool")
+def set_active_pool(
+    data: dict = Body(...)
+):
+
+    pool = data["pool"]
+
+    audio_manager.set_active_pool(
+        pool
+    )
+
+    return {
+        "status": "ok"
+    }
+
 @app.get("/audio-assets")
 def audio_assets():
 

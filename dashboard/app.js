@@ -1383,6 +1383,99 @@ document
     loadAudioAssets
 );
 
+async function loadPools()
+{
+    const response =
+        await fetch(
+            "/asset-pools"
+        );
+
+    const data =
+        await response.json();
+
+    const select =
+        document.getElementById(
+            "assetPoolSelect"
+        );
+
+    select.innerHTML = "";
+
+    data.pools.forEach(
+        pool =>
+    {
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            pool;
+
+        option.textContent =
+            pool;
+
+        select.appendChild(
+            option
+        );
+    });
+
+    const active =
+        await fetch(
+            "/active-pool"
+        );
+
+    const activeData =
+        await active.json();
+
+    select.value =
+        activeData.pool;
+}
+
+const applyPoolBtn =
+document.getElementById(
+    "applyPoolBtn"
+);
+
+if(applyPoolBtn)
+{
+    applyPoolBtn.addEventListener(
+        "click",
+        async () =>
+    {
+        const pool =
+        document.getElementById(
+            "assetPoolSelect"
+        ).value;
+
+        await fetch(
+            "/active-pool",
+            {
+                method:"POST",
+
+                headers:
+                {
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                JSON.stringify(
+                {
+                    pool: pool
+                })
+            }
+        );
+
+        await loadAudioAssets();
+
+        alert(
+            "Pool Loaded"
+        );
+    }
+);
+}
+
+loadPools();
 loadAudioAssets();
 
 async function updateRuntimeStatus()
