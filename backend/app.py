@@ -40,7 +40,13 @@ def scene_finished_callback(
 
     scene = scene_manager.start_scene()
 
-    osc.send_scene(scene)
+    if "error" not in scene:
+
+        osc.send_scene(scene)
+
+        time.sleep(0.2)
+
+        apply_runtime_audio_state()
 
 
 last_osc_send = time.time()
@@ -255,6 +261,10 @@ def scene_send():
 
     osc.send_scene(scene)
 
+    time.sleep(0.2)
+
+    apply_runtime_audio_state()
+
     return scene
 
 @app.get("/scene/stop")
@@ -428,6 +438,19 @@ def compute_parameter(
     )
 
     return value
+
+
+def apply_runtime_audio_state():
+
+    packet = calibration.apply_calibration(
+        dict(sensor_deamon.latest_packet)
+    )
+
+    send_osc(packet)
+
+    print(
+        "Runtime audio state applied"
+    )
 
 
 def send_osc(packet):

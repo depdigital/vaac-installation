@@ -1950,12 +1950,8 @@ if(
     delayEnabled
 )
 {
-    delayEnabledBtn.onclick =
-    () =>
+    function refreshDelayButton()
     {
-        delayEnabled.checked =
-            !delayEnabled.checked;
-
         if(delayEnabled.checked)
         {
             delayEnabledBtn.textContent =
@@ -1972,6 +1968,14 @@ if(
             delayEnabledBtn.className =
                 "effect-toggle-btn disabled";
         }
+    }
+
+    delayEnabledBtn.onclick = () =>
+    {
+        delayEnabled.checked =
+            !delayEnabled.checked;
+
+        refreshDelayButton();
     };
 }
 
@@ -2166,6 +2170,8 @@ async function loadAudioMapping()
     Number(
         config.delay.mix.amount
     ).toFixed(2);
+
+    refreshDelayButton();
 }
 
 loadAudioMapping();
