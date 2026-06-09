@@ -373,6 +373,11 @@
 
 </div>
 
+<div
+    id="audioMappingStatus"
+    class="audio-mapping-status">
+</div>
+
 <br>
 
 <div class="panel">
@@ -519,6 +524,12 @@ Do not place System Health inside this block.
 
         </button>
     </div>
+
+    <div
+    id="audioMappingStatus"
+    class="audio-mapping-status">
+    </div>
+
     <br><br>
 
     <!-- AUDIO MAPPING WORKSPACE -->
@@ -576,33 +587,7 @@ Do not place System Health inside this block.
 
         </div>
 
-        <!-- ===================================================== -->
-        <!-- EFFECT PANEL TEMPLATE                                 -->
-        <!-- ===================================================== -->
-        <!--
-
-        Every DSP module follows:
-
-        effect-panel
-        │
-        ├── Enable Button
-        │
-        ├── Parameter Card
-        │
-        ├── Parameter Card
-        │
-        └── Parameter Card
-
-        Copy this structure when creating:
-
-        Flanger
-        Reverb
-        Filter
-        Granular
-        Pitch Shift
-        etc.
-
-        -->
+        <!--DELAY MODULE STARTS-->
 
         <div class="effect-editor">
 
@@ -877,16 +862,286 @@ Reverb Mix
                 </div>
             
             </div>
+    </div>
+
+<!--DELAY MODULE ENDS-->
+
+<!--FLANGER MODULE STARTS-->
 
             <div
                 id="flangerPanel"
                 class="effect-panel">
 
-                <h3>Flanger</h3>
+                <div class="effect-toggle-row">
 
-                Coming Soon
+    <button
+        id="flangerEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="flangerEnabled"
+        checked
+        hidden>
+
+</div>
+
+                <hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Flanger Rate</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="flangerRateMaster"
+                        min="0.05"
+                        max="5.0"
+                        step="0.05"
+                        value="0.05">
+
+                    <span id="flangerRateMasterValue">
+                        0.05
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="flangerRateSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="flangerRateAmount"
+                    min="0.05"
+                    max="5.0"
+                    step="0.05"
+                    value="0.05">
+
+                <span id="flangerRateAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Flanger Depth</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="flangerDepthMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.1">
+
+                <span id="flangerDepthMasterValue">
+                    0.1
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="flangerDepthSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="flangerDepthAmount"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value="0">
+
+                <span id="flangerDepthAmountValue">
+                    0.0
+                </span>
+                
+                </div>
 
             </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Flanger Mix</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="flangerMixMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="flangerMixMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="flangerMixSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="flangerMixAmount"
+                    min="0"
+                    max="2"
+                    step="0.01"
+                    value="1">
+
+                <span id="flangerMixAmountValue">
+                    1.00
+                </span>
+
+                </div>
+            
+            </div>
+        </div>
+
+<!--FLANGER MODULE ENDS-->
 
             <div
                 id="reverbPanel"
@@ -900,10 +1155,6 @@ Reverb Mix
 
         </div>
 
-    </div>
-
-</div>
-    </div>
     </div>
 
 <div

@@ -1468,8 +1468,8 @@ if(applyPoolBtn)
 
         await loadAudioAssets();
 
-        alert(
-            "Pool Loaded"
+        showAudioStatus(
+            "✓ Pool Loaded"
         );
     }
 );
@@ -1718,6 +1718,8 @@ if(masterGain)
     );
 }
 
+//DELAY MODULE SLIDER
+
 const delayTimeMaster =
 document.getElementById(
     "delayTimeMaster"
@@ -1844,6 +1846,138 @@ if(delayMixAmount)
     );
 }
 
+//DELAY MODULE SLIDER
+
+//FLANGER MODULE SLIDER
+
+const flangerRateMaster =
+document.getElementById(
+    "flangerRateMaster"
+);
+
+if(flangerRateMaster)
+{
+    flangerRateMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerRateMasterValue"
+            ).textContent =
+            Number(
+                flangerRateMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const flangerRateAmount =
+document.getElementById(
+    "flangerRateAmount"
+);
+
+if(flangerRateAmount)
+{
+    flangerRateAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerRateAmountValue"
+            ).textContent =
+            Number(
+                flangerRateAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const flangerDepthMaster =
+document.getElementById(
+    "flangerDepthMaster"
+);
+
+if(flangerDepthMaster)
+{
+    flangerDepthMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerDepthMasterValue"
+            ).textContent =
+            Number(
+                flangerDepthMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const flangerDepthAmount =
+document.getElementById(
+    "flangerDepthAmount"
+);
+
+if(flangerDepthAmount)
+{
+    flangerDepthAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerDepthAmountValue"
+            ).textContent =
+            Number(
+                flangerDepthAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const flangerMixMaster =
+document.getElementById(
+    "flangerMixMaster"
+);
+
+if(flangerMixMaster)
+{
+    flangerMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerMixMasterValue"
+            ).textContent =
+            Number(
+                flangerMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const flangerMixAmount =
+document.getElementById(
+    "flangerMixAmount"
+);
+
+if(flangerMixAmount)
+{
+    flangerMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "flangerMixAmountValue"
+            ).textContent =
+            Number(
+                flangerMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+//FLANGER MODULE SLIDER
+
 function buildAudioConfig()
 {
     return {
@@ -1931,7 +2065,81 @@ function buildAudioConfig()
                     ).value
                 )
             }
+        },
+
+        flanger:
+    {
+        enabled:
+        document.getElementById(
+            "flangerEnabled"
+        ).checked,
+
+        rate:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "flangerRateMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "flangerRateSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "flangerRateAmount"
+                ).value
+            )
+        },
+
+        depth:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "flangerDepthMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "flangerDepthSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "flangerDepthAmount"
+                ).value
+            )
+        },
+
+        mix:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "flangerMixMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "flangerMixSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "flangerMixAmount"
+                ).value
+            )
         }
+    }
     };
 }
 
@@ -1979,6 +2187,50 @@ if(
     };
 }
 
+const flangerEnabledBtn =
+document.getElementById(
+    "flangerEnabledBtn"
+);
+
+const flangerEnabled =
+document.getElementById(
+    "flangerEnabled"
+);
+
+if(
+    flangerEnabledBtn &&
+    flangerEnabled
+)
+{
+    function refreshFlangerButton()
+    {
+        if(flangerEnabled.checked)
+        {
+            flangerEnabledBtn.textContent =
+                "ENABLED";
+
+            flangerEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            flangerEnabledBtn.textContent =
+                "DISABLED";
+
+            flangerEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    flangerEnabledBtn.onclick = () =>
+    {
+        flangerEnabled.checked =
+            !flangerEnabled.checked;
+
+        refreshFlangerButton();
+    };
+}
+
 const applyAudioMappingBtn =
 document.getElementById(
     "applyAudioMapping"
@@ -2016,8 +2268,8 @@ if(applyAudioMappingBtn)
                 }
             );
 
-            alert(
-                "Audio Mapping Applied"
+            showAudioStatus(
+                "✓ Mapping Applied"
             );
         }
     );
@@ -2050,8 +2302,8 @@ if(saveAudioMappingBtn)
                 }
             );
 
-            alert(
-                "Audio Mapping Saved"
+            showAudioStatus(
+                "✓ Mapping Saved"
             );
         }
     );
@@ -2078,6 +2330,8 @@ async function loadAudioMapping()
     Number(
         config.global.masterGain
     ).toFixed(2);
+
+    //DELAY MODULE STARTS
 
     document.getElementById(
         "delayEnabled"
@@ -2171,7 +2425,106 @@ async function loadAudioMapping()
         config.delay.mix.amount
     ).toFixed(2);
 
+    //DELEY MODULE ENDS
+
+    //FLANGER MODULE STARTS
+
+    document.getElementById(
+        "flangerEnabled"
+    ).checked =
+    config.flanger.enabled;
+
+    document.getElementById(
+    "flangerRateMaster"
+    ).value =
+    config.flanger.rate.master;
+
+    document.getElementById(
+        "flangerRateMasterValue"
+    ).textContent =
+    Number(
+        config.flanger.rate.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "flangerRateSensor"
+    ).value =
+    config.flanger.rate.sensor;
+
+    document.getElementById(
+        "flangerRateAmount"
+    ).value =
+    config.flanger.rate.amount;
+
+    document.getElementById(
+        "flangerRateAmountValue"
+    ).textContent =
+    Number(
+        config.flanger.rate.amount
+    ).toFixed(2);
+
+    document.getElementById(
+    "flangerDepthMaster"
+    ).value =
+    config.flanger.depth.master;
+
+    document.getElementById(
+        "flangerDepthMasterValue"
+    ).textContent =
+    Number(
+        config.flanger.depth.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "flangerDepthSensor"
+    ).value =
+    config.flanger.depth.sensor;
+
+    document.getElementById(
+        "flangerDepthAmount"
+    ).value =
+    config.flanger.depth.amount;
+
+    document.getElementById(
+        "flangerDepthAmountValue"
+    ).textContent =
+    Number(
+        config.flanger.depth.amount
+    ).toFixed(1);
+
+    document.getElementById(
+        "flangerMixMaster"
+        ).value =
+        config.flanger.mix.master;
+
+    document.getElementById(
+        "flangerMixMasterValue"
+        ).textContent =
+        Number(
+        config.flanger.mix.master
+        ).toFixed(2);
+
+    document.getElementById(
+        "flangerMixSensor"
+    ).value =
+    config.flanger.mix.sensor;
+
+    document.getElementById(
+        "flangerMixAmount"
+    ).value =
+    config.flanger.mix.amount;
+
+    document.getElementById(
+        "flangerMixAmountValue"
+    ).textContent =
+    Number(
+        config.flanger.mix.amount
+    ).toFixed(2);
+
+    //FLANGER MODULE ENDS
+
     refreshDelayButton();
+    refreshFlangerButton();
 }
 
 loadAudioMapping();
@@ -2219,3 +2572,27 @@ document
         );
     });
 });
+
+function showAudioStatus(message)
+{
+    const status =
+    document.getElementById(
+        "audioMappingStatus"
+    );
+
+    if(!status)
+    {
+        return;
+    }
+
+    status.textContent =
+        message;
+
+    setTimeout(
+        () =>
+        {
+            status.textContent = "";
+        },
+        3000
+    );
+}

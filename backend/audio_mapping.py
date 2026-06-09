@@ -48,6 +48,33 @@ DEFAULT_CONFIG = {
 
         }
 
+    },
+
+    
+    "flanger": {
+
+        "enabled": False,
+
+        "rate": {
+
+            "master": 0.20,
+            "sensor": "none",
+            "amount": 0.00
+        },
+
+        "depth": {
+
+            "master": 0.50,
+            "sensor": "none",
+            "amount": 0.00
+        },
+
+        "mix": {
+
+            "master": 0.30,
+            "sensor": "none",
+            "amount": 0.00
+        }
     }
 
 }

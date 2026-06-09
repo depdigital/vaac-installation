@@ -485,7 +485,7 @@ def send_osc(packet):
     config["delay"]["mix"]["master"]
     )
     """
-
+    #DELAY MODULE
     delay_time = compute_parameter(
         packet,
         config["delay"].get(
@@ -534,6 +534,7 @@ def send_osc(packet):
     0.01,
     min(0.50, delay_time)
 )
+#DELAY MODULE ENDS
     
     gain = config["global"]["masterGain"]
 
@@ -571,6 +572,58 @@ def send_osc(packet):
     "MIX", round(delay_mix, 3)
     )
     """
+
+    # FLANGER MODULE
+
+    flanger_rate = compute_parameter(
+        packet,
+        config["flanger"]["rate"]
+    )
+
+    flanger_depth = compute_parameter(
+        packet,
+        config["flanger"]["depth"]
+    )
+
+    flanger_mix = compute_parameter(
+        packet,
+        config["flanger"]["mix"]
+    )
+
+    flanger_rate = max(
+        0.05,
+        min(5.0, flanger_rate)
+    )
+
+    flanger_depth = max(
+        0.0,
+        min(1.0, flanger_depth)
+    )
+
+    flanger_mix = max(
+        0.0,
+        min(1.0, flanger_mix)
+    )
+
+    osc.send(
+    "/ghost/flangerEnabled",
+        1 if config["flanger"]["enabled"] else 0
+    )
+
+    osc.send(
+        "/ghost/flangerRate",
+        flanger_rate
+    )
+
+    osc.send(
+        "/ghost/flangerDepth",
+        flanger_depth
+    )
+
+    osc.send(
+        "/ghost/flangerMix",
+        flanger_mix
+    )
     
     
 
