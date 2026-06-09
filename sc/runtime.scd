@@ -106,13 +106,20 @@ s.waitForBoot({
 		flangerMixSmooth       = Lag.kr(flangerMix, 1.0);
 
         sig     = In.ar(inBus, 2);
+
+		//Delay
+
         delayed = CombL.ar(sig, 0.5, delayTimeSmooth, delayFeedbackSmooth);
         wet     = XFade2.ar(sig, delayed, (delayMixSmooth * 2) - 1);
-		flanger = DelayC.ar(sig, 0.03, SinOsc.kr(flangerRateSmooth).range(0.001, flangerDepthSmooth * 0.01));
-		flangerWet     = XFade2.ar(sig, flanger, (flangerMixSmooth * 2) - 1);
+		sig     = SelectX.ar(Lag.kr(delayEnabled, 0.2), [sig, wet]);
 
-        sig     = SelectX.ar(Lag.kr(delayEnabled, 0.2), [sig, wet]);
+		//Flanger
+
+		flanger = DelayC.ar(sig, 0.03, SinOsc.kr(flangerRateSmooth).range(0.001, flangerDepthSmooth * 0.01));
+		flangerWet  = XFade2.ar(sig, flanger, (flangerMixSmooth * 2) - 1);
 		sig     = SelectX.ar(flangerEnabled, [sig, flangerWet]);
+
+		// Apply global gain
         sig     = sig * gainSmooth;
 
         Out.ar(0, sig);
@@ -189,11 +196,6 @@ s.waitForBoot({
         ("flangerEnabled: " ++ msg[1]).postln;
     }, "/ghost/flangerEnabled");
 
-	OSCdef(\ghostFlangerEnabled, { |msg|
-        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerEnabled, msg[1]); };
-        ("flangerEnabled: " ++ msg[1]).postln;
-    }, "/ghost/flangerEnabled");
-
 	OSCdef(\ghostFlangerRate, { |msg|
         msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerRate, msg[1]); };
@@ -207,7 +209,7 @@ s.waitForBoot({
 	OSCdef(\ghostFlangerMix, { |msg|
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerMix, val); };
-        ("delayMix: " ++ val).postln;
+        ("flangerMix: " ++ val).postln;
     }, "/ghost/flangerMix");
 
 
