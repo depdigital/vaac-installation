@@ -2107,7 +2107,7 @@ if(reverbMixAmount)
     );
 }
 
-// REVERB MODULE SLIDER
+// REVERB MODULE SLIDER/
 
 
 function buildAudioConfig()
