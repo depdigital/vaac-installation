@@ -1978,6 +1978,138 @@ if(flangerMixAmount)
 
 //FLANGER MODULE SLIDER
 
+
+// REVERB MODULE SLIDER
+
+const reverbRoomMaster =
+document.getElementById(
+    "reverbRoomMaster"
+);
+
+if(reverbRoomMaster)
+{
+    reverbRoomMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbRoomMasterValue"
+            ).textContent =
+            Number(
+                reverbRoomMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const reverbRoomAmount =
+document.getElementById(
+    "reverbRoomAmount"
+);
+
+if(reverbRoomAmount)
+{
+    reverbRoomAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbRoomAmountValue"
+            ).textContent =
+            Number(
+                reverbRoomAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const reverbDampingMaster =
+document.getElementById(
+    "reverbDampingMaster"
+);
+
+if(reverbDampingMaster)
+{
+    reverbDampingMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbDampingMasterValue"
+            ).textContent =
+            Number(
+                reverbDampingMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const reverbDampingAmount =
+document.getElementById(
+    "reverbDampingAmount"
+);
+
+if(reverbDampingAmount)
+{
+    reverbDampingAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbDampingAmountValue"
+            ).textContent =
+            Number(
+                reverbDampingAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const reverbMixMaster =
+document.getElementById(
+    "reverbMixMaster"
+);
+
+if(reverbMixMaster)
+{
+    reverbMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbMixMasterValue"
+            ).textContent =
+            Number(
+                reverbMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const reverbMixAmount =
+document.getElementById(
+    "reverbMixAmount"
+);
+
+if(reverbMixAmount)
+{
+    reverbMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "reverbMixAmountValue"
+            ).textContent =
+            Number(
+                reverbMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+// REVERB MODULE SLIDER
+
+
 function buildAudioConfig()
 {
     return {
@@ -2139,10 +2271,85 @@ function buildAudioConfig()
                 ).value
             )
         }
+    },
+
+    reverb:
+    {
+        enabled:
+        document.getElementById(
+            "reverbEnabled"
+        ).checked,
+
+        room:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "reverbRoomMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "reverbRoomSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "reverbRoomAmount"
+                ).value
+            )
+        },
+
+        damping:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "reverbDampingMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "reverbDampingSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "reverbDampingAmount"
+                ).value
+            )
+        },
+
+        mix:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "reverbMixMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "reverbMixSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "reverbMixAmount"
+                ).value
+            )
+        }
     }
     };
 }
 
+// DELAY REFRESH
 const delayEnabledBtn =
 document.getElementById(
     "delayEnabledBtn"
@@ -2187,6 +2394,7 @@ if(
     };
 }
 
+//FLANGER REFRESH
 const flangerEnabledBtn =
 document.getElementById(
     "flangerEnabledBtn"
@@ -2230,6 +2438,53 @@ if(
         refreshFlangerButton();
     };
 }
+
+//REVERB REFRESH
+const reverbEnabledBtn =
+document.getElementById(
+    "reverbEnabledBtn"
+);
+
+const reverbEnabled =
+document.getElementById(
+    "reverbEnabled"
+);
+
+if(
+    reverbEnabledBtn &&
+    reverbEnabled
+)
+{
+    function refreshReverbButton()
+    {
+        if(reverbEnabled.checked)
+        {
+            reverbEnabledBtn.textContent =
+                "ENABLED";
+
+            reverbEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            reverbEnabledBtn.textContent =
+                "DISABLED";
+
+            reverbEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    reverbEnabledBtn.onclick = () =>
+    {
+        reverbEnabled.checked =
+            !reverbEnabled.checked;
+
+        refreshReverbButton();
+    };
+}
+
+
 
 const applyAudioMappingBtn =
 document.getElementById(
@@ -2431,7 +2686,7 @@ async function loadAudioMapping()
 
     //DELEY MODULE ENDS
 
-    //FLANGER MODULE STARTS
+        //FLANGER MODULE STARTS
 
     document.getElementById(
         "flangerEnabled"
@@ -2527,8 +2782,105 @@ async function loadAudioMapping()
 
     //FLANGER MODULE ENDS
 
+    //REVERB MODULE STARTS
+
+    document.getElementById(
+        "reverbEnabled"
+    ).checked =
+    config.reverb.enabled;
+
+    document.getElementById(
+    "reverbRoomMaster"
+    ).value =
+    config.reverb.room.master;
+
+    document.getElementById(
+        "reverbRoomMasterValue"
+    ).textContent =
+    Number(
+        config.reverb.room.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "reverbRoomSensor"
+    ).value =
+    config.reverb.room.sensor;
+
+    document.getElementById(
+        "reverbRoomAmount"
+    ).value =
+    config.reverb.room.amount;
+
+    document.getElementById(
+        "reverbRoomAmountValue"
+    ).textContent =
+    Number(
+        config.reverb.room.amount
+    ).toFixed(2);
+
+    document.getElementById(
+    "reverbDampingMaster"
+    ).value =
+    config.reverb.damping.master;
+
+    document.getElementById(
+        "reverbDampingMasterValue"
+    ).textContent =
+    Number(
+        config.reverb.damping.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "reverbDampingSensor"
+    ).value =
+    config.reverb.damping.sensor;
+
+    document.getElementById(
+        "reverbDampingAmount"
+    ).value =
+    config.reverb.damping.amount;
+
+    document.getElementById(
+        "reverbDampingAmountValue"
+    ).textContent =
+    Number(
+        config.reverb.damping.amount
+    ).toFixed(1);
+
+    document.getElementById(
+        "reverbMixMaster"
+        ).value =
+        config.reverb.mix.master;
+
+    document.getElementById(
+        "reverbMixMasterValue"
+        ).textContent =
+        Number(
+        config.reverb.mix.master
+        ).toFixed(2);
+
+    document.getElementById(
+        "reverbMixSensor"
+    ).value =
+    config.reverb.mix.sensor;
+
+    document.getElementById(
+        "reverbMixAmount"
+    ).value =
+    config.reverb.mix.amount;
+
+    document.getElementById(
+        "reverbMixAmountValue"
+    ).textContent =
+    Number(
+        config.reverb.mix.amount
+    ).toFixed(2);
+
+    //REVERB MODULE ENDS
+
     refreshDelayButton();
     refreshFlangerButton();
+    refreshReverbButton();
 }
 
 loadAudioMapping();

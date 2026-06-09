@@ -624,6 +624,59 @@ def send_osc(packet):
         "/ghost/flangerMix",
         flanger_mix
     )
+
+# REVERB MODULE
+
+    reverb_room = compute_parameter(
+        packet,
+        config["reverb"]["room"]
+    )
+
+    reverb_damping = compute_parameter(
+        packet,
+        config["reverb"]["damping"]
+    )
+
+    reverb_mix = compute_parameter(
+        packet,
+        config["reverb"]["mix"]
+    )
+
+    reverb_room = max(
+        0.0,
+        min(1.0, reverb_room)
+    )
+
+    reverb_damping = max(
+        0.0,
+        min(1.0, reverb_damping)
+    )
+
+    reverb_mix = max(
+        0.0,
+        min(1.0, reverb_mix)
+    )
+
+    osc.send(
+        "/ghost/reverbEnabled",
+        1 if config["reverb"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/reverbRoom",
+        reverb_room
+    )
+
+    osc.send(
+        "/ghost/reverbDamping",
+        reverb_damping
+    )
+
+    osc.send(
+        "/ghost/reverbMix",
+        reverb_mix
+    )
     
     
 

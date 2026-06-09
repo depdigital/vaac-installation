@@ -613,7 +613,7 @@ Do not place System Health inside this block.
 
 </div>
 
-                <hr>
+<hr>
 
 <!-- ===================================================== -->
 <!-- PARAMETER CARD TEMPLATE                               -->
@@ -1143,16 +1143,283 @@ Reverb Mix
 
 <!--FLANGER MODULE ENDS-->
 
+<!--REVERB MODULE STARTS-->
+
             <div
                 id="reverbPanel"
                 class="effect-panel">
 
-                <h3>Reverb</h3>
+                <div class="effect-toggle-row">
 
-                Coming Soon
+    <button
+        id="reverbEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="reverbEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Room Size</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="reverbRoomMaster"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="0.01">
+
+                    <span id="reverbRoomMasterValue">
+                        0.05
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="reverbRoomSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="reverbRoomAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.01">
+
+                <span id="reverbRoomAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Damping</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="reverbDampingMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.1">
+
+                <span id="reverbDampingMasterValue">
+                    0.1
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="reverbDampingSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="reverbDampingAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="reverbDampingAmountValue">
+                    0.0
+                </span>
+                
+                </div>
 
             </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Reverb Mix</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="reverbMixMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="reverbMixMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="reverbMixSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="reverbMixAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="reverbMixAmountValue">
+                    1.00
+                </span>
+
+                </div>
+            
+            </div>
         </div>
+
+<!--REVERB MODULE ENDS-->
+                </div>
             </div>
     </div>
 </div>

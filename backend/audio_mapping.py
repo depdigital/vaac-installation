@@ -75,6 +75,32 @@ DEFAULT_CONFIG = {
             "sensor": "none",
             "amount": 0.00
         }
+    },
+
+    "reverb": {
+
+        "enabled": False,
+
+        "room": {
+
+            "master": 0.5,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "damping": {
+
+            "master": 0.5,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "mix": {
+
+            "master": 0.3,
+            "sensor": "none",
+            "amount": 0.0
+        }
     }
 
 }
