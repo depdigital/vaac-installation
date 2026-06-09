@@ -1468,7 +1468,7 @@ if(applyPoolBtn)
 
         await loadAudioAssets();
 
-        showAudioStatus(
+        showPoolStatus(
             "✓ Pool Loaded"
         );
     }
@@ -2247,8 +2247,10 @@ if(applyAudioMappingBtn)
         "click",
         async () =>
         {
+            console.log("APPLY CLICKED");
             const config =
             buildAudioConfig();
+            console.log(config);
 
             await fetch(
                 "/audio-config/apply",
@@ -2281,8 +2283,10 @@ if(saveAudioMappingBtn)
         "click",
         async () =>
         {
+            console.log("SAVE CLICKED");
             const config =
             buildAudioConfig();
+            console.log(config);
 
             await fetch(
                 "/audio-config",
@@ -2578,6 +2582,30 @@ function showAudioStatus(message)
     const status =
     document.getElementById(
         "audioMappingStatus"
+    );
+
+    if(!status)
+    {
+        return;
+    }
+
+    status.textContent =
+        message;
+
+    setTimeout(
+        () =>
+        {
+            status.textContent = "";
+        },
+        3000
+    );
+}
+
+function showPoolStatus(message)
+{
+    const status =
+    document.getElementById(
+        "audioPoolStatus"
     );
 
     if(!status)

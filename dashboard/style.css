@@ -1095,3 +1095,18 @@ cursor: pointer;
 
     color: #4caf50;
 }
+
+.audio-pool-status
+{
+    text-align: center;
+
+    min-height: 24px;
+
+    margin-top: 10px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #4caf50;
+}

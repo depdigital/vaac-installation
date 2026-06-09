@@ -91,21 +91,28 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0|
-        var sig, delayed, wet;
+        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3|
+        var sig, delayed, wet, flanger, flangerWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
+		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
         gainSmooth          = Lag.kr(gain, 1.0);
         delayMixSmooth       = Lag.kr(delayMix, 1.0);
         delayTimeSmooth     = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
         delayFeedbackSmooth = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
+		flangerRateSmooth       = Lag.kr(flangerRate, 1.0);
+		flangerDepthSmooth       = Lag.kr(flangerDepth, 1.0);
+		flangerMixSmooth       = Lag.kr(flangerMix, 1.0);
 
         sig     = In.ar(inBus, 2);
         delayed = CombL.ar(sig, 0.5, delayTimeSmooth, delayFeedbackSmooth);
         wet     = XFade2.ar(sig, delayed, (delayMixSmooth * 2) - 1);
+		flanger = DelayC.ar(sig, 0.03, SinOsc.kr(flangerRateSmooth).range(0.001, flangerDepthSmooth * 0.01));
+		flangerWet     = XFade2.ar(sig, flanger, (flangerMixSmooth * 2) - 1);
 
         sig     = SelectX.ar(Lag.kr(delayEnabled, 0.2), [sig, wet]);
+		sig     = SelectX.ar(flangerEnabled, [sig, flangerWet]);
         sig     = sig * gainSmooth;
 
         Out.ar(0, sig);
@@ -176,6 +183,33 @@ s.waitForBoot({
         if(~ghostEngine.notNil) { ~ghostEngine.set(\delayFeedback, val); };
         ("delayFeedback: " ++ val).postln;
     }, "/ghost/delayFeedback");
+
+	OSCdef(\ghostFlangerEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerEnabled, msg[1]); };
+        ("flangerEnabled: " ++ msg[1]).postln;
+    }, "/ghost/flangerEnabled");
+
+	OSCdef(\ghostFlangerEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerEnabled, msg[1]); };
+        ("flangerEnabled: " ++ msg[1]).postln;
+    }, "/ghost/flangerEnabled");
+
+	OSCdef(\ghostFlangerRate, { |msg|
+        msg.postln;
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerRate, msg[1]); };
+    }, "/ghost/flangerRate");
+
+	OSCdef(\ghostFlangerDepth, { |msg|
+        msg.postln;
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerDepth, msg[1]); };
+    }, "/ghost/flangerDepth");
+
+	OSCdef(\ghostFlangerMix, { |msg|
+        var val = msg[1];
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerMix, val); };
+        ("delayMix: " ++ val).postln;
+    }, "/ghost/flangerMix");
+
 
     /* =====================================================================
        6. CENTRAL ASYNCHRONOUS PLAYBACK ENGINE
