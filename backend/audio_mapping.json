@@ -5,17 +5,17 @@
     "delay": {
         "enabled": false,
         "time": {
-            "master": 0.04,
+            "master": 0.03,
             "sensor": "distance",
             "amount": 0.5
         },
         "feedback": {
-            "master": 5,
+            "master": 2.3,
             "sensor": "none",
             "amount": 5
         },
         "mix": {
-            "master": 0.73,
+            "master": 1,
             "sensor": "none",
             "amount": 2
         }
@@ -42,34 +42,31 @@
         "enabled": false,
         "room": {
             "master": 1,
-            "sensor": "none",
-            "amount": 0
+            "sensor": "lux",
+            "amount": 1
         },
         "damping": {
-            "master": 0.21,
+            "master": 0.52,
+            "sensor": "none",
+            "amount": 1
+        },
+        "mix": {
+            "master": 1,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
+    "limiter": {
+        "enabled": false,
+        "level": {
+            "master": 0.5,
             "sensor": "none",
             "amount": 0
         },
-        "mix": {
-            "master": 0,
-            "sensor": "none",
-            "amount": 1
-        }
-    },
-
-    "limiter": {
-        "enabled": false,
-
-        "level": {
-            "master": 0.95,
-            "sensor": "none",
-            "amount": 0.0
-        },
-
         "release": {
-            "master": 0.01,
+            "master": 0.001,
             "sensor": "none",
-            "amount": 0.0
+            "amount": 0.001
         }
     }
 }

@@ -677,7 +677,44 @@ def send_osc(packet):
         "/ghost/reverbMix",
         reverb_mix
     )
-    
+
+# LIMITER MODULE
+
+    limiter_level = compute_parameter(
+        packet,
+        config["limiter"]["level"]
+    )
+
+    limiter_release = compute_parameter(
+        packet,
+        config["limiter"]["release"]
+    )
+
+    limiter_level = max(
+        0.50,
+        min(1.0, limiter_level)
+    )
+
+    limiter_release = max(
+        0.001,
+        min(0.10, limiter_release)
+    )
+
+    osc.send(
+        "/ghost/limiterEnabled",
+        1 if config["limiter"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/limiterLevel",
+        limiter_level
+    )
+
+    osc.send(
+        "/ghost/limiterRelease",
+        limiter_release
+    )
     
 
 @app.get("/health")

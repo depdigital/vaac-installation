@@ -91,23 +91,29 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3|
-        var sig, delayed, wet, flanger, flangerWet, reverb, reverbWet;
+        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+
+        var sig, delayed, wet, flanger, flangerWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
+		var limiterLevelSmooth, limiterReleaseSmooth;
+
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
-        gainSmooth           = Lag.kr(gain, 1.0);
-        delayMixSmooth       = Lag.kr(delayMix, 1.0);
-        delayTimeSmooth      = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
-		delayFeedbackSmooth  = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
-		flangerRateSmooth    = Lag.kr(flangerRate, 1.0);
-		flangerDepthSmooth   = Lag.kr(flangerDepth, 1.0);
-		flangerMixSmooth     = Lag.kr(flangerMix, 1.0);
-		reverbRoomSmooth     = Lag.kr(reverbRoom, 1.0);
-		reverbDampingSmooth  = Lag.kr(reverbDamping, 1.0);
-		reverbMixSmooth      = Lag.kr(reverbMix, 1.0);
+		gainSmooth             = Lag.kr(gain, 1.0);
+        delayMixSmooth         = Lag.kr(delayMix, 1.0);
+        delayTimeSmooth        = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
+		delayFeedbackSmooth    = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
+		flangerRateSmooth      = Lag.kr(flangerRate, 1.0);
+		flangerDepthSmooth     = Lag.kr(flangerDepth, 1.0);
+		flangerMixSmooth       = Lag.kr(flangerMix, 1.0);
+		reverbRoomSmooth       = Lag.kr(reverbRoom, 1.0);
+		reverbDampingSmooth    = Lag.kr(reverbDamping, 1.0);
+		reverbMixSmooth        = Lag.kr(reverbMix, 1.0);
+		limiterLevelSmooth     = Lag.kr(limiterLevel, 1.0);
+		limiterReleaseSmooth   = Lag.kr(limiterRelease, 1.0);
+
 
         sig     = In.ar(inBus, 2);
 
@@ -133,6 +139,18 @@ s.waitForBoot({
 				reverbWet
 			]
 		);
+
+		//Limiter
+
+		limiterWet = Limiter.ar(sig, limiterLevelSmooth, limiterReleaseSmooth);
+
+		sig = SelectX.ar(Lag.kr(limiterEnabled, 0.2),
+			[
+				sig,
+				limiterWet
+			]
+		);
+
 
 		// Apply global gain
         sig     = sig * gainSmooth;
@@ -241,7 +259,7 @@ s.waitForBoot({
 	OSCdef(\ghostReverbDamping, { |msg|
 		var val = msg[1];
         msg.postln;
-        if(~ghostEngine.notNil) { ~ghostEngine.set(\ReverbDamping, val); };
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbDamping, val); };
     }, "/ghost/reverbDamping");
 
 	OSCdef(\ghostReverbMix, { |msg|
@@ -249,6 +267,22 @@ s.waitForBoot({
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbMix, val); };
         ("flangerMix: " ++ val).postln;
     }, "/ghost/reverbMix");
+
+	OSCdef(\ghostLimiterEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\limiterEnabled, msg[1]); };
+        ("limiterEnabled: " ++ msg[1]).postln;
+    }, "/ghost/limiterEnabled");
+
+	OSCdef(\ghostLimiterLevel, { |msg|
+		var val = msg[1];
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\limiterLevel, val); };
+    }, "/ghost/limiterLevel");
+
+	OSCdef(\ghostLimiterRelease, { |msg|
+		var val = msg[1];
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\limiterRelease, val); };
+    }, "/ghost/limiterRelease");
+
 
 
     /* =====================================================================
