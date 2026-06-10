@@ -101,6 +101,26 @@ DEFAULT_CONFIG = {
             "sensor": "none",
             "amount": 0.0
         }
+    },
+
+    
+    "limiter": {
+
+        "enabled": False,
+
+        "level": {
+
+            "master": 0.95,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "release": {
+
+            "master": 0.01,
+            "sensor": "none",
+            "amount": 0.0
+        }
     }
 
 }

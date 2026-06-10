@@ -639,9 +639,13 @@ Do not place System Health inside this block.
             OUTPUT DSP
         </div>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="limiterPanel">
+
             11 Limiter
-        </div>
+
+        </button>
 
                 </div>
 
@@ -1477,9 +1481,224 @@ Reverb Mix
         </div>
 
 <!--REVERB MODULE ENDS-->
+
+    <!--LIMITER MODULE STARTS-->
+
+            <div
+                id="limiterPanel"
+                class="effect-panel">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="limiterEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="limiterEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Limiter Level</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="limiterLevelMaster"
+                        min="0.50"
+                        max="1.00"
+                        step="0.01"
+                        value="0.95">
+
+                    <span id="limiterLevelMasterValue">
+                        0.95
+                    </span>
+
                 </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="limiterLevelSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="limiterLevelAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="limiterLevelAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Release</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="limiterReleaseMaster"
+                    min="0.001"
+                    max="0.10"
+                    step="0.001"
+                    value="0.01">
+
+                <span id="limiterReleaseMasterValue">
+                    0.01
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="limiterReleaseSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="limiterReleaseAmount"
+                    min="0.001"
+                    max="0.10"
+                    step="0.001"
+                    value="0.01">
+
+                <span id="limiterReleaseAmountValue">
+                    0.01
+                </span>
+                
+                </div>
+
             </div>
+
+                <hr>
+            
+            </div>
+        </div>
     </div>
+    </div>
+
+<!--LIMITER MODULE ENDS-->
+
+
 </div>
 
 <div

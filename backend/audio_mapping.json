@@ -55,5 +55,21 @@
             "sensor": "none",
             "amount": 1
         }
+    },
+
+    "limiter": {
+        "enabled": false,
+
+        "level": {
+            "master": 0.95,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "release": {
+            "master": 0.01,
+            "sensor": "none",
+            "amount": 0.0
+        }
     }
 }

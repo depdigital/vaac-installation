@@ -2109,6 +2109,96 @@ if(reverbMixAmount)
 
 // REVERB MODULE SLIDER/
 
+// LIMITER MODULE SLIDER
+
+const limiterLevelMaster =
+document.getElementById(
+    "limiterLevelMaster"
+);
+
+if(limiterLevelMaster)
+{
+    limiterLevelMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "limiterLevelMasterValue"
+            ).textContent =
+            Number(
+                limiterLevelMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const limiterLevelAmount =
+document.getElementById(
+    "limiterLevelAmount"
+);
+
+if(limiterLevelAmount)
+{
+    limiterLevelAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "limiterLevelAmountValue"
+            ).textContent =
+            Number(
+                limiterLevelAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const limiterReleaseMaster =
+document.getElementById(
+    "limiterReleaseMaster"
+);
+
+if(limiterReleaseMaster)
+{
+    limiterReleaseMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "limiterReleaseMasterValue"
+            ).textContent =
+            Number(
+                limiterReleaseMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const limiterReleaseAmount =
+document.getElementById(
+    "limiterReleaseAmount"
+);
+
+if(limiterReleaseAmount)
+{
+    limiterReleaseAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "limiterReleaseAmountValue"
+            ).textContent =
+            Number(
+                limiterReleaseAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+// LIMITER MODULE SLIDER/
+
+
+
 
 function buildAudioConfig()
 {
@@ -2345,7 +2435,60 @@ function buildAudioConfig()
                 ).value
             )
         }
+    },
+
+    limiter:
+    {
+        enabled:
+        document.getElementById(
+            "limiterEnabled"
+        ).checked,
+
+        level:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "limiterLevelMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "limiterLevelSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "limiterLevelAmount"
+                ).value
+            )
+        },
+
+        release:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "limiterReleaseMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "limiterReleaseSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "limiterReleaseAmount"
+                ).value
+            )
+        }
     }
+
     };
 }
 
@@ -2481,6 +2624,51 @@ if(
             !reverbEnabled.checked;
 
         refreshReverbButton();
+    };
+}
+
+//LIMITER REFRESH
+const limiterEnabledBtn =
+document.getElementById(
+    "limiterEnabledBtn"
+);
+
+const limiterEnabled =
+document.getElementById(
+    "limiterEnabled"
+);
+
+if(
+    limiterEnabledBtn &&
+    limiterEnabled
+)
+{
+    function refreshLimiterButton()
+    {
+        if(limiterEnabled.checked)
+        {
+            limiterEnabledBtn.textContent =
+                "ENABLED";
+
+            limiterEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            limiterEnabledBtn.textContent =
+                "DISABLED";
+
+            limiterEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    limiterEnabledBtn.onclick = () =>
+    {
+        limiterEnabled.checked =
+            !limiterEnabled.checked;
+
+        refreshLimiterButton();
     };
 }
 
@@ -2686,7 +2874,7 @@ async function loadAudioMapping()
 
     //DELEY MODULE ENDS
 
-        //FLANGER MODULE STARTS
+    //FLANGER MODULE STARTS
 
     document.getElementById(
         "flangerEnabled"
@@ -2878,9 +3066,78 @@ async function loadAudioMapping()
 
     //REVERB MODULE ENDS
 
+    //LIMITER MODULE STARTS
+
+    document.getElementById(
+        "limiterEnabled"
+    ).checked =
+        config.limiter.enabled;
+
+    document.getElementById(
+        "limiterLevelMaster"
+    ).value =
+        config.limiter.level.master;
+
+    document.getElementById(
+        "limiterLevelMasterValue"
+    ).textContent =
+    Number(
+        config.limiter.level.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "limiterLevelSensor"
+    ).value =
+        config.limiter.level.sensor;
+
+    document.getElementById(
+        "limiterLevelAmount"
+    ).value =
+        config.limiter.level.amount;
+
+    document.getElementById(
+        "limiterLevelAmountValue"
+    ).textContent =
+    Number(
+        config.limiter.level.amount
+    ).toFixed(2);
+
+    document.getElementById(
+        "limiterReleaseMaster"
+    ).value =
+        config.limiter.release.master;
+
+    document.getElementById(
+        "limiterReleaseMasterValue"
+    ).textContent =
+    Number(
+        config.limiter.release.master
+    ).toFixed(3);
+
+    document.getElementById(
+        "limiterReleaseSensor"
+    ).value =
+        config.limiter.release.sensor;
+
+    document.getElementById(
+        "limiterReleaseAmount"
+    ).value =
+        config.limiter.release.amount;
+
+    document.getElementById(
+        "limiterReleaseAmountValue"
+    ).textContent =
+    Number(
+        config.limiter.release.amount
+    ).toFixed(2);
+
+    //LIMITER MODULE ENDS
+
     refreshDelayButton();
     refreshFlangerButton();
     refreshReverbButton();
+    refreshLimiterButton();
+
 }
 
 loadAudioMapping();
