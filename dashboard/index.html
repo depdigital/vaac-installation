@@ -523,14 +523,31 @@ Do not place System Health inside this block.
             💾 Save Audio Mapping
 
         </button>
+
     </div>
+
+    <br>
+
+    <div class="signal-flow-bar">
+
+            EQ →
+            COMP →
+            GATE →
+            DELAY →
+            FLANGER →
+            CHORUS →
+            PHASER →
+            PITCH →
+            REVERB →
+            MAGNETO →
+            LIMITER
+
+        </div>
 
     <div
     id="audioMappingStatus"
     class="audio-mapping-status">
     </div>
-
-    <br><br>
 
     <!-- AUDIO MAPPING WORKSPACE -->
 
@@ -561,31 +578,72 @@ Do not place System Health inside this block.
 
         <div class="effect-sidebar">
 
-            <button
-                class="effect-tab active"
+            <div class="effect-group">
+            UTILITY DSP
+        </div>
+
+        <div class="effect-placeholder">
+            01 EQ
+        </div>
+
+        <div class="effect-placeholder">
+            02 Compressor
+        </div>
+
+        <div class="effect-placeholder">
+            03 Gate
+        </div>
+
+        <div class="effect-group">
+            CREATIVE DSP
+        </div>
+
+        <button class="effect-tab active"
                 data-effect="delayPanel">
 
-                Delay
+            04 Delay
 
-            </button>
+        </button>
 
-            <button
-                class="effect-tab"
+        <button class="effect-tab"
                 data-effect="flangerPanel">
 
-                Flanger
+            05 Flanger
 
-            </button>
+        </button>
 
-            <button
-                class="effect-tab"
+        <button class="effect-tab"
                 data-effect="reverbPanel">
 
-                Reverb
+            09 Reverb
 
-            </button>
+        </button>
 
+        <div class="effect-placeholder">
+            06 Chorus
         </div>
+
+        <div class="effect-placeholder">
+            07 Phaser
+        </div>
+
+        <div class="effect-placeholder">
+            08 Pitch Shift
+        </div>
+
+        <div class="effect-placeholder">
+            10 Magneto
+        </div>
+
+        <div class="effect-group">
+            OUTPUT DSP
+        </div>
+
+        <div class="effect-placeholder">
+            11 Limiter
+        </div>
+
+                </div>
 
         <!--DELAY MODULE STARTS-->
 
