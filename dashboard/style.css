@@ -1021,6 +1021,18 @@ cursor: pointer;
     background:#2e7d32;
 }
 
+.audio-toolbar-btn.fx-on
+{
+    background:#2e7d32;
+    color:white;
+}
+
+.audio-toolbar-btn.fx-off
+{
+    background:#c62828;
+    color:white;
+}
+
 .audio-toolbar-btn.apply
 {
     background:#1565c0;

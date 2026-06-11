@@ -1,7 +1,9 @@
 {
     "global": {
-        "masterGain": 2
+    "masterGain": 2,
+    "dspEnabled": true
     },
+    
     "eq": {
         "enabled": false,
         "low": {

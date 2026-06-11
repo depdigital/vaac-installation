@@ -10,9 +10,10 @@ DEFAULT_CONFIG = {
 
     "global": {
 
-        "masterGain": 1.0
+    "masterGain": 1.0,
+    "dspEnabled": True
 
-    },
+},
 
     "eq": {
 

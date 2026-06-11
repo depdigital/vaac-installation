@@ -703,6 +703,12 @@ def send_osc(packet):
         gain
     )
 
+    osc.send(
+        "/ghost/dspEnabled",
+        1 if config["global"]["dspEnabled"]
+        else 0
+    )
+
     delay_enabled = 1 if config["delay"]["enabled"] else 0
 
     osc.send(

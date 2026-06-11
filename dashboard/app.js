@@ -6,6 +6,9 @@ let ws = null;
 let lastPacketTime = Date.now();
 let reconnectTimer = null;
 
+let dspEnabled = true;
+window.dspEnabled = true;
+
 
 function updateSensorStatus(
     sensor,
@@ -2728,7 +2731,11 @@ function buildAudioConfig()
                 document.getElementById(
                     "masterGain"
                 ).value
-            )
+            ),
+
+            dspEnabled:
+            window.dspEnabled
+
         },
 
         eq:
@@ -3767,6 +3774,9 @@ async function loadAudioMapping()
     ).value =
     config.global.masterGain;
 
+    window.dspEnabled =
+        config.global.dspEnabled ?? true;
+
     document.getElementById(
         "masterGainValue"
     ).textContent =
@@ -4546,6 +4556,7 @@ async function loadAudioMapping()
     refreshChorusButton();
     refreshReverbButton();
     refreshLimiterButton();
+    refreshGlobalFXButton();
 
 }
 
@@ -4641,4 +4652,54 @@ function showPoolStatus(message)
         },
         3000
     );
+}
+
+const globalEffectsBtn =
+document.getElementById(
+    "globalEffectsBtn"
+);
+
+function refreshGlobalFXButton()
+{
+    if(!globalEffectsBtn)
+        return;
+
+    if(window.dspEnabled)
+    {
+        globalEffectsBtn.textContent =
+            "FX ON";
+
+        globalEffectsBtn.classList.remove(
+            "fx-off"
+        );
+
+        globalEffectsBtn.classList.add(
+            "fx-on"
+        );
+    }
+    else
+    {
+        globalEffectsBtn.textContent =
+            "FX OFF";
+
+        globalEffectsBtn.classList.remove(
+            "fx-on"
+        );
+
+        globalEffectsBtn.classList.add(
+            "fx-off"
+        );
+    }
+}
+
+if(globalEffectsBtn)
+{
+    globalEffectsBtn.onclick =
+    () =>
+    {
+        window.dspEnabled =
+            !window.dspEnabled;
+
+        refreshGlobalFXButton();
+    };
 }
