@@ -66,6 +66,32 @@ DEFAULT_CONFIG = {
         }
     },
 
+    "gate": {
+
+        "enabled": False,
+
+        "threshold": {
+
+            "master": -40.0,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "attack": {
+
+            "master": 0.01,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "release": {
+
+            "master": 0.20,
+            "sensor": "none",
+            "amount": 0.0
+        }
+    },
+
     "delay": {
 
         "enabled": True,

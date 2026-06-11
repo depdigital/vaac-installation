@@ -3,7 +3,7 @@
         "masterGain": 2
     },
     "eq": {
-        "enabled": true,
+        "enabled": false,
         "low": {
             "master": 5,
             "sensor": "none",
@@ -21,7 +21,7 @@
         }
     },
     "compressor": {
-        "enabled": true,
+        "enabled": false,
         "threshold": {
             "master": -42,
             "sensor": "none",
@@ -38,8 +38,26 @@
             "amount": 0
         }
     },
+    "gate": {
+        "enabled": false,
+        "threshold": {
+            "master": -48,
+            "sensor": "none",
+            "amount": 0
+        },
+        "attack": {
+            "master": 0.384,
+            "sensor": "none",
+            "amount": 0
+        },
+        "release": {
+            "master": 3.4,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
     "delay": {
-        "enabled": true,
+        "enabled": false,
         "time": {
             "master": 0.03,
             "sensor": "none",

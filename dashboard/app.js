@@ -1978,6 +1978,136 @@ if(compressorMakeupAmount)
 
 // COMPRESSOR MODULE SLIDER
 
+// GATE MODULE SLIDER
+
+const gateThresholdMaster =
+document.getElementById(
+    "gateThresholdMaster"
+);
+
+if(gateThresholdMaster)
+{
+    gateThresholdMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateThresholdMasterValue"
+            ).textContent =
+            Number(
+                gateThresholdMaster.value
+            ).toFixed(0);
+        }
+    );
+}
+
+const gateThresholdAmount =
+document.getElementById(
+    "gateThresholdAmount"
+);
+
+if(gateThresholdAmount)
+{
+    gateThresholdAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateThresholdAmountValue"
+            ).textContent =
+            Number(
+                gateThresholdAmount.value
+            ).toFixed(0);
+        }
+    );
+}
+
+const gateAttackMaster =
+document.getElementById(
+    "gateAttackMaster"
+);
+
+if(gateAttackMaster)
+{
+    gateAttackMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateAttackMasterValue"
+            ).textContent =
+            Number(
+                gateAttackMaster.value
+            ).toFixed(3);
+        }
+    );
+}
+
+const gateAttackAmount =
+document.getElementById(
+    "gateAttackAmount"
+);
+
+if(gateAttackAmount)
+{
+    gateAttackAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateAttackAmountValue"
+            ).textContent =
+            Number(
+                gateAttackAmount.value
+            ).toFixed(3);
+        }
+    );
+}
+
+const gateReleaseMaster =
+document.getElementById(
+    "gateReleaseMaster"
+);
+
+if(gateReleaseMaster)
+{
+    gateReleaseMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateReleaseMasterValue"
+            ).textContent =
+            Number(
+                gateReleaseMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const gateReleaseAmount =
+document.getElementById(
+    "gateReleaseAmount"
+);
+
+if(gateReleaseAmount)
+{
+    gateReleaseAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "gateReleaseAmountValue"
+            ).textContent =
+            Number(
+                gateReleaseAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+// GATE MODULE SLIDER
+
 //DELAY MODULE SLIDER
 
 const delayTimeMaster =
@@ -2622,6 +2752,80 @@ function buildAudioConfig()
             }
         },
 
+        gate:
+        {
+            enabled:
+            document.getElementById(
+                "gateEnabled"
+            ).checked,
+
+            threshold:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "gateThresholdMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "gateThresholdSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "gateThresholdAmount"
+                    ).value
+                )
+            },
+
+            attack:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "gateAttackMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "gateAttackSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "gateAttackAmount"
+                    ).value
+                )
+            },
+
+            release:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "gateReleaseMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "gateReleaseSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "gateReleaseAmount"
+                    ).value
+                )
+            }
+        },
+
         delay:
         {
             enabled:
@@ -2989,6 +3193,52 @@ if(
 
             refreshCompressorButton();
         };
+}
+
+// GATE REFRESH
+
+const gateEnabledBtn =
+document.getElementById(
+    "gateEnabledBtn"
+);
+
+const gateEnabled =
+document.getElementById(
+    "gateEnabled"
+);
+
+if(
+    gateEnabledBtn &&
+    gateEnabled
+)
+{
+    function refreshGateButton()
+    {
+        if(gateEnabled.checked)
+        {
+            gateEnabledBtn.textContent =
+                "ENABLED";
+
+            gateEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            gateEnabledBtn.textContent =
+                "DISABLED";
+
+            gateEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    gateEnabledBtn.onclick = () =>
+    {
+        gateEnabled.checked =
+            !gateEnabled.checked;
+
+        refreshGateButton();
+    };
 }
 
 // DELAY REFRESH
@@ -3481,6 +3731,108 @@ async function loadAudioMapping()
 
     //COMPRESSOR MODULE ENDS
 
+    // GATE MODULE STARTS
+
+    document.getElementById(
+        "gateEnabled"
+    ).checked =
+    config.gate.enabled;
+
+    // THRESHOLD
+
+    document.getElementById(
+        "gateThresholdMaster"
+    ).value =
+    config.gate.threshold.master;
+
+    document.getElementById(
+        "gateThresholdMasterValue"
+    ).textContent =
+    Number(
+        config.gate.threshold.master
+    ).toFixed(0);
+
+    document.getElementById(
+        "gateThresholdSensor"
+    ).value =
+    config.gate.threshold.sensor;
+
+    document.getElementById(
+        "gateThresholdAmount"
+    ).value =
+    config.gate.threshold.amount;
+
+    document.getElementById(
+        "gateThresholdAmountValue"
+    ).textContent =
+    Number(
+        config.gate.threshold.amount
+    ).toFixed(0);
+
+    // ATTACK
+
+    document.getElementById(
+        "gateAttackMaster"
+    ).value =
+    config.gate.attack.master;
+
+    document.getElementById(
+        "gateAttackMasterValue"
+    ).textContent =
+    Number(
+        config.gate.attack.master
+    ).toFixed(3);
+
+    document.getElementById(
+        "gateAttackSensor"
+    ).value =
+    config.gate.attack.sensor;
+
+    document.getElementById(
+        "gateAttackAmount"
+    ).value =
+    config.gate.attack.amount;
+
+    document.getElementById(
+        "gateAttackAmountValue"
+    ).textContent =
+    Number(
+        config.gate.attack.amount
+    ).toFixed(3);
+
+    // RELEASE
+
+    document.getElementById(
+        "gateReleaseMaster"
+    ).value =
+    config.gate.release.master;
+
+    document.getElementById(
+        "gateReleaseMasterValue"
+    ).textContent =
+    Number(
+        config.gate.release.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "gateReleaseSensor"
+    ).value =
+    config.gate.release.sensor;
+
+    document.getElementById(
+        "gateReleaseAmount"
+    ).value =
+    config.gate.release.amount;
+
+    document.getElementById(
+        "gateReleaseAmountValue"
+    ).textContent =
+    Number(
+        config.gate.release.amount
+    ).toFixed(2);
+
+    // GATE MODULE ENDS
+
     //DELAY MODULE STARTS
 
     document.getElementById(
@@ -3838,6 +4190,7 @@ async function loadAudioMapping()
 
     refreshEQButton();
     refreshCompressorButton();
+    refreshGateButton();
     refreshDelayButton();
     refreshFlangerButton();
     refreshReverbButton();

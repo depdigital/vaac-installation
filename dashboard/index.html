@@ -598,9 +598,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="gatePanel">
+
             03 Gate
-        </div>
+
+        </button>
 
         <div class="effect-group">
             CREATIVE DSP
@@ -1211,7 +1215,284 @@ Reverb Mix
             </div>
     </div>
 
-<!--COMPRESSOR MODULE ENDS-->               
+<!--COMPRESSOR MODULE ENDS-->
+
+<!--GATE MODULE STARTS--> 
+
+<div
+                id="gatePanel"
+                class="effect-panel">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="gateEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="gateEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Threshold</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="gateThresholdMaster"
+                        min="-60"
+                        max="0"
+                        step="1"
+                        value="-18">
+
+                    <span id="gateThresholdMasterValue">
+                        0.0
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="gateThresholdSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="gateThresholdAmount"
+                    min="0"
+                    max="60"
+                    step="1"
+                    value="0">
+
+                <span id="gateThresholdAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Attack</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="gateAttackMaster"
+                    min="0.001"
+                    max="1"
+                    step="0.001"
+                    value="0.01">
+
+                <span id="gateAttackMasterValue">
+                    0.0
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="gateAttackSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="gateAttackAmount"
+                    min="0"
+                    max="1"
+                    step="0.001"
+                    value="0">
+
+                <span id="gateAttackAmountValue">
+                    0.0
+                </span>
+                
+                </div>
+
+            </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Release</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="gateReleaseMaster"
+                    min="0.01"
+                    max="5.0"
+                    step="0.01"
+                    value="0.20">
+
+                <span id="gateReleaseMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="gateReleaseSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="gateReleaseAmount"
+                    min="0"
+                    max="5.0"
+                    step="0.01"
+                    value="0">
+
+                <span id="gateReleaseAmountValue">
+                    0.0
+                </span>
+
+                </div>
+            
+            </div>
+    </div>
+
+<!--GATE MODULE ENDS-->
 
 <!--DELAY MODULE STARTS-->
 

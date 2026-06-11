@@ -592,6 +592,59 @@ def send_osc(packet):
         compressor_makeup
     )
 
+    # GATE MODULE
+
+    gate_threshold = compute_parameter(
+        packet,
+        config["gate"]["threshold"]
+    )
+
+    gate_attack = compute_parameter(
+        packet,
+        config["gate"]["attack"]
+    )
+
+    gate_release = compute_parameter(
+        packet,
+        config["gate"]["release"]
+    )
+
+    gate_threshold = max(
+        -60.0,
+        min(0.0, gate_threshold)
+    )
+
+    gate_attack = max(
+        0.001,
+        min(1.0, gate_attack)
+    )
+
+    gate_release = max(
+        0.01,
+        min(5.0, gate_release)
+    )
+
+    osc.send(
+        "/ghost/gateEnabled",
+        1 if config["gate"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/gateThreshold",
+        gate_threshold
+    )
+
+    osc.send(
+        "/ghost/gateAttack",
+        gate_attack
+    )
+
+    osc.send(
+        "/ghost/gateRelease",
+        gate_release
+    )
+
     #DELAY MODULE
     delay_time = compute_parameter(
         packet,
