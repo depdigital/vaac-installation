@@ -539,6 +539,59 @@ def send_osc(packet):
         eq_high
     )
 
+    # COMPRESSOR MODULE
+
+    compressor_threshold = compute_parameter(
+        packet,
+        config["compressor"]["threshold"]
+    )
+
+    compressor_ratio = compute_parameter(
+        packet,
+        config["compressor"]["ratio"]
+    )
+
+    compressor_makeup = compute_parameter(
+        packet,
+        config["compressor"]["makeup"]
+    )
+
+    compressor_threshold = max(
+        -60.0,
+        min(0.0, compressor_threshold)
+    )
+
+    compressor_ratio = max(
+        1.0,
+        min(20.0, compressor_ratio)
+    )
+
+    compressor_makeup = max(
+        0.0,
+        min(24.0, compressor_makeup)
+    )
+
+    osc.send(
+        "/ghost/compressorEnabled",
+        1 if config["compressor"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/compressorThreshold",
+        compressor_threshold
+    )
+
+    osc.send(
+        "/ghost/compressorRatio",
+        compressor_ratio
+    )
+
+    osc.send(
+        "/ghost/compressorMakeup",
+        compressor_makeup
+    )
+
     #DELAY MODULE
     delay_time = compute_parameter(
         packet,

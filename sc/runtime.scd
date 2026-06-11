@@ -91,32 +91,36 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
-        var sig, delayed, wet, flanger, flangerWet, reverb, reverbWet, limiterWet;
+        var sig, delayed, wet, flanger, compressorWet, flangerWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
 		var limiterLevelSmooth, limiterReleaseSmooth;
 		var eqLowSmooth, eqMidSmooth, eqHighSmooth;
+		var compressorThresholdSmooth, compressorRatioSmooth, compressorMakeupSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
-		gainSmooth             = Lag.kr(gain, 1.0);
-		eqLowSmooth            = Lag.kr(eqLow, 1.0);
-		eqMidSmooth            = Lag.kr(eqMid, 1.0);
-		eqHighSmooth           = Lag.kr(eqHigh, 1.0);
-        delayMixSmooth         = Lag.kr(delayMix, 1.0);
-        delayTimeSmooth        = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
-		delayFeedbackSmooth    = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
-		flangerRateSmooth      = Lag.kr(flangerRate, 1.0);
-		flangerDepthSmooth     = Lag.kr(flangerDepth, 1.0);
-		flangerMixSmooth       = Lag.kr(flangerMix, 1.0);
-		reverbRoomSmooth       = Lag.kr(reverbRoom, 1.0);
-		reverbDampingSmooth    = Lag.kr(reverbDamping, 1.0);
-		reverbMixSmooth        = Lag.kr(reverbMix, 1.0);
-		limiterLevelSmooth     = Lag.kr(limiterLevel, 1.0);
-		limiterReleaseSmooth   = Lag.kr(limiterRelease, 1.0);
+		gainSmooth                 = Lag.kr(gain, 1.0);
+		eqLowSmooth                = Lag.kr(eqLow, 1.0);
+		eqMidSmooth                = Lag.kr(eqMid, 1.0);
+		eqHighSmooth               = Lag.kr(eqHigh, 1.0);
+		compressorThresholdSmooth  = Lag.kr(compressorThreshold, 1.0);
+		compressorRatioSmooth      = Lag.kr(compressorRatio, 1.0);
+		compressorMakeupSmooth     = Lag.kr(compressorMakeup, 1.0);
+        delayMixSmooth             = Lag.kr(delayMix, 1.0);
+        delayTimeSmooth            = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
+		delayFeedbackSmooth        = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
+		flangerRateSmooth          = Lag.kr(flangerRate, 1.0);
+		flangerDepthSmooth         = Lag.kr(flangerDepth, 1.0);
+		flangerMixSmooth           = Lag.kr(flangerMix, 1.0);
+		reverbRoomSmooth           = Lag.kr(reverbRoom, 1.0);
+		reverbDampingSmooth        = Lag.kr(reverbDamping, 1.0);
+		reverbMixSmooth            = Lag.kr(reverbMix, 1.0);
+		limiterLevelSmooth         = Lag.kr(limiterLevel, 1.0);
+		limiterReleaseSmooth       = Lag.kr(limiterRelease, 1.0);
 
         sig     = In.ar(inBus, 2);
 
@@ -129,6 +133,20 @@ s.waitForBoot({
 
 				BHiShelf.ar(BPeakEQ.ar(BLowShelf.ar(sig, 200, 1.0, eqLowSmooth), 1000, 1.0, eqMidSmooth), 5000, 1.0, eqHighSmooth)
 
+			]
+		);
+
+		//Compressor
+
+		compressorWet = Compander.ar(sig, sig, compressorThresholdSmooth.dbamp, 1.0, 1.0 / compressorRatioSmooth, 0.01, 0.10);
+
+		compressorWet = compressorWet * compressorMakeupSmooth.dbamp;
+
+		sig = SelectX.ar(Lag.kr(compressorEnabled, 0.2),
+
+			[
+				sig,
+				compressorWet
 			]
 		);
 
@@ -237,6 +255,23 @@ s.waitForBoot({
         if(~ghostEngine.notNil) { ~ghostEngine.set(\eqHigh, msg[1]); };
     }, "/ghost/eqHigh");
 
+	// OSC Compressor
+
+	OSCdef(\ghostCompressorEnabled, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\compressorEnabled, msg[1]); };
+	}, "/ghost/compressorEnabled");
+
+	OSCdef(\ghostCompressorThreshold, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\compressorThreshold, msg[1]); };
+	}, "/ghost/compressorThreshold");
+
+	OSCdef(\ghostCompressorRatio, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\compressorRatio, msg[1]); };
+	}, "/ghost/compressorRatio");
+
+	OSCdef(\ghostCompressorMakeup, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\compressorMakeup, msg[1]); };
+	}, "/ghost/compressorMakeup");
 
 	// OSC for Delay
 

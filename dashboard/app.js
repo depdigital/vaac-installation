@@ -1718,6 +1718,8 @@ if(masterGain)
     );
 }
 
+// EQ MODULE SLIDER
+
 const eqLowMaster =
 document.getElementById(
     "eqLowMaster"
@@ -1843,6 +1845,138 @@ if(eqHighAmount)
         }
     );
 }
+
+//EQ MODULE SLIDER
+
+// COMPRESSOR MODULE SLIDER
+
+const compressorThresholdMaster =
+document.getElementById(
+    "compressorThresholdMaster"
+);
+
+if(compressorThresholdMaster)
+{
+    compressorThresholdMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorThresholdMasterValue"
+            ).textContent =
+            Number(
+                compressorThresholdMaster.value
+            ).toFixed(0);
+        }
+    );
+}
+
+const compressorThresholdAmount =
+document.getElementById(
+    "compressorThresholdAmount"
+);
+
+if(compressorThresholdAmount)
+{
+    compressorThresholdAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorThresholdAmountValue"
+            ).textContent =
+            Number(
+                compressorThresholdAmount.value
+            ).toFixed(0);
+        }
+    );
+}
+
+const compressorRatioMaster =
+document.getElementById(
+    "compressorRatioMaster"
+);
+
+if(compressorRatioMaster)
+{
+    compressorRatioMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorRatioMasterValue"
+            ).textContent =
+            Number(
+                compressorRatioMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const compressorRatioAmount =
+document.getElementById(
+    "compressorRatioAmount"
+);
+
+if(compressorRatioAmount)
+{
+    compressorRatioAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorRatioAmountValue"
+            ).textContent =
+            Number(
+                compressorRatioAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const compressorMakeupMaster =
+document.getElementById(
+    "compressorMakeupMaster"
+);
+
+if(compressorMakeupMaster)
+{
+    compressorMakeupMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorMakeupMasterValue"
+            ).textContent =
+            Number(
+                compressorMakeupMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const compressorMakeupAmount =
+document.getElementById(
+    "compressorMakeupAmount"
+);
+
+if(compressorMakeupAmount)
+{
+    compressorMakeupAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "compressorMakeupAmountValue"
+            ).textContent =
+            Number(
+                compressorMakeupAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+// COMPRESSOR MODULE SLIDER
 
 //DELAY MODULE SLIDER
 
@@ -2414,6 +2548,80 @@ function buildAudioConfig()
             }
         },
 
+        compressor:
+        {
+            enabled:
+            document.getElementById(
+                "compressorEnabled"
+            ).checked,
+
+            threshold:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "compressorThresholdMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "compressorThresholdSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "compressorThresholdAmount"
+                    ).value
+                )
+            },
+
+            ratio:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "compressorRatioMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "compressorRatioSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "compressorRatioAmount"
+                    ).value
+                )
+            },
+
+            makeup:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "compressorMakeupMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "compressorMakeupSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "compressorMakeupAmount"
+                    ).value
+                )
+            }
+        },
+
         delay:
         {
             enabled:
@@ -2735,6 +2943,52 @@ if(
 
         refreshEQButton();
     };
+}
+
+    // COMPRESSOR REFRESH
+
+    const compressorEnabledBtn =
+    document.getElementById(
+        "compressorEnabledBtn"
+    );
+
+    const compressorEnabled =
+    document.getElementById(
+        "compressorEnabled"
+    );
+
+    if(
+        compressorEnabledBtn &&
+        compressorEnabled
+    )
+    {
+        function refreshCompressorButton()
+    {
+        if(compressorEnabled.checked)
+        {
+            compressorEnabledBtn.textContent =
+                "ENABLED";
+
+            compressorEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            compressorEnabledBtn.textContent =
+                "DISABLED";
+
+            compressorEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+        compressorEnabledBtn.onclick = () =>
+        {
+            compressorEnabled.checked =
+                !compressorEnabled.checked;
+
+            refreshCompressorButton();
+        };
 }
 
 // DELAY REFRESH
@@ -3125,6 +3379,108 @@ async function loadAudioMapping()
 
     //EQ MODULE ENDS
 
+    //COMPRESSOR MODULE STARTS
+
+    document.getElementById(
+        "compressorEnabled"
+    ).checked =
+    config.compressor.enabled;
+
+    // THRESHOLD
+
+    document.getElementById(
+        "compressorThresholdMaster"
+    ).value =
+    config.compressor.threshold.master;
+
+    document.getElementById(
+        "compressorThresholdMasterValue"
+    ).textContent =
+    Number(
+        config.compressor.threshold.master
+    ).toFixed(0);
+
+    document.getElementById(
+        "compressorThresholdSensor"
+    ).value =
+    config.compressor.threshold.sensor;
+
+    document.getElementById(
+        "compressorThresholdAmount"
+    ).value =
+    config.compressor.threshold.amount;
+
+    document.getElementById(
+        "compressorThresholdAmountValue"
+    ).textContent =
+    Number(
+        config.compressor.threshold.amount
+    ).toFixed(0);
+
+    // RATIO
+
+    document.getElementById(
+        "compressorRatioMaster"
+    ).value =
+    config.compressor.ratio.master;
+
+    document.getElementById(
+        "compressorRatioMasterValue"
+    ).textContent =
+    Number(
+        config.compressor.ratio.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "compressorRatioSensor"
+    ).value =
+    config.compressor.ratio.sensor;
+
+    document.getElementById(
+        "compressorRatioAmount"
+    ).value =
+    config.compressor.ratio.amount;
+
+    document.getElementById(
+        "compressorRatioAmountValue"
+    ).textContent =
+    Number(
+        config.compressor.ratio.amount
+    ).toFixed(1);
+
+    // MAKEUP
+
+    document.getElementById(
+        "compressorMakeupMaster"
+    ).value =
+    config.compressor.makeup.master;
+
+    document.getElementById(
+        "compressorMakeupMasterValue"
+    ).textContent =
+    Number(
+        config.compressor.makeup.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "compressorMakeupSensor"
+    ).value =
+    config.compressor.makeup.sensor;
+
+    document.getElementById(
+        "compressorMakeupAmount"
+    ).value =
+    config.compressor.makeup.amount;
+
+    document.getElementById(
+        "compressorMakeupAmountValue"
+    ).textContent =
+    Number(
+        config.compressor.makeup.amount
+    ).toFixed(1);
+
+    //COMPRESSOR MODULE ENDS
+
     //DELAY MODULE STARTS
 
     document.getElementById(
@@ -3481,6 +3837,7 @@ async function loadAudioMapping()
     //LIMITER MODULE ENDS
 
     refreshEQButton();
+    refreshCompressorButton();
     refreshDelayButton();
     refreshFlangerButton();
     refreshReverbButton();

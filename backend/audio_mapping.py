@@ -40,6 +40,32 @@ DEFAULT_CONFIG = {
             }
         },
 
+    "compressor": {
+
+        "enabled": False,
+
+        "threshold": {
+
+            "master": -18.0,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "ratio": {
+
+            "master": 4.0,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "makeup": {
+
+            "master": 0.0,
+            "sensor": "none",
+            "amount": 0.0
+        }
+    },
+
     "delay": {
 
         "enabled": True,

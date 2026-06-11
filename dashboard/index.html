@@ -590,9 +590,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="compressorPanel">
+
             02 Compressor
-        </div>
+
+        </button>
 
         <div class="effect-placeholder">
             03 Gate
@@ -930,7 +934,284 @@ Reverb Mix
             </div>
     </div>
 
-<!--EQ MODULE ENDS-->               
+<!--EQ MODULE ENDS--> 
+
+<!--COMPRESSOR MODULE STARTS--> 
+
+<div
+                id="compressorPanel"
+                class="effect-panel">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="compressorEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="compressorEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Threshold</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="compressorThresholdMaster"
+                        min="-60"
+                        max="0"
+                        step="1"
+                        value="-18">
+
+                    <span id="compressorThresholdMasterValue">
+                        0.0
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="compressorThresholdSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="compressorThresholdAmount"
+                    min="0"
+                    max="60"
+                    step="1"
+                    value="0">
+
+                <span id="compressorThresholdAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Ratio</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="compressorRatioMaster"
+                    min="1"
+                    max="20"
+                    step="0.5"
+                    value="4">
+
+                <span id="compressorRatioMasterValue">
+                    0.0
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="compressorRatioSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="compressorRatioAmount"
+                    min="0"
+                    max="10"
+                    step="0.5"
+                    value="0">
+
+                <span id="compressorRatioAmountValue">
+                    0.0
+                </span>
+                
+                </div>
+
+            </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Makeup Gain</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="compressorMakeupMaster"
+                    min="0"
+                    max="24"
+                    step="0.5"
+                    value="0">
+
+                <span id="compressorMakeupMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="compressorMakeupSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="compressorMakeupAmount"
+                    min="0"
+                    max="24"
+                    step="0.5"
+                    value="0">
+
+                <span id="compressorMakeupAmountValue">
+                    0.0
+                </span>
+
+                </div>
+            
+            </div>
+    </div>
+
+<!--COMPRESSOR MODULE ENDS-->               
 
 <!--DELAY MODULE STARTS-->
 

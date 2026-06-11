@@ -3,28 +3,46 @@
         "masterGain": 2
     },
     "eq": {
-        "enabled": false,
+        "enabled": true,
         "low": {
-            "master": 3.5,
+            "master": 5,
             "sensor": "none",
             "amount": 0
         },
         "mid": {
-            "master": -3,
+            "master": -4.5,
             "sensor": "none",
             "amount": 0
         },
         "high": {
-            "master": -9,
+            "master": -6,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
+    "compressor": {
+        "enabled": true,
+        "threshold": {
+            "master": -42,
+            "sensor": "none",
+            "amount": 0
+        },
+        "ratio": {
+            "master": 4,
+            "sensor": "none",
+            "amount": 0
+        },
+        "makeup": {
+            "master": 5,
             "sensor": "none",
             "amount": 0
         }
     },
     "delay": {
-        "enabled": false,
+        "enabled": true,
         "time": {
             "master": 0.03,
-            "sensor": "distance",
+            "sensor": "none",
             "amount": 0.5
         },
         "feedback": {
