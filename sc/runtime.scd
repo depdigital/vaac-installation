@@ -276,7 +276,6 @@ s.waitForBoot({
     // Real-Time Control parameters modifying the FX processor nodes
 
 	OSCdef(\ghostDSPEnabled, { |msg|
-		postln(msg);
         if(~ghostEngine.notNil) { ~ghostEngine.set(\dspEnabled, msg[1]);};
 
     }, "/ghost/dspEnabled");
