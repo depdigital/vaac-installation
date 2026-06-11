@@ -91,9 +91,9 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
-        var sig, delayed, wet, flanger, compressorWet, gateWet, flangerWet, reverb, reverbWet, limiterWet;
+        var sig, delayed, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
@@ -101,6 +101,7 @@ s.waitForBoot({
 		var eqLowSmooth, eqMidSmooth, eqHighSmooth;
 		var compressorThresholdSmooth, compressorRatioSmooth, compressorMakeupSmooth;
 		var gateThresholdSmooth, gateAttackSmooth, gateReleaseSmooth;
+		var chorusRateSmooth, chorusDepthSmooth, chorusMixSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
@@ -120,6 +121,9 @@ s.waitForBoot({
 		flangerRateSmooth          = Lag.kr(flangerRate, 1.0);
 		flangerDepthSmooth         = Lag.kr(flangerDepth, 1.0);
 		flangerMixSmooth           = Lag.kr(flangerMix, 1.0);
+		chorusRateSmooth           = Lag.kr(chorusRate, 1.0);
+		chorusDepthSmooth          = Lag.kr(chorusDepth, 1.0);
+		chorusMixSmooth            = Lag.kr(chorusMix, 1.0);
 		reverbRoomSmooth           = Lag.kr(reverbRoom, 1.0);
 		reverbDampingSmooth        = Lag.kr(reverbDamping, 1.0);
 		reverbMixSmooth            = Lag.kr(reverbMix, 1.0);
@@ -177,6 +181,20 @@ s.waitForBoot({
 		flanger = DelayC.ar(sig, 0.03, SinOsc.kr(flangerRateSmooth).range(0.001, flangerDepthSmooth * 0.01));
 		flangerWet  = XFade2.ar(sig, flanger, (flangerMixSmooth * 2) - 1);
 		sig     = SelectX.ar(flangerEnabled, [sig, flangerWet]);
+
+		//Chorus
+
+		chorusWet = sig + DelayC.ar(sig, 0.05, SinOsc.kr(chorusRateSmooth).range( 0.005, 0.005 + (chorusDepthSmooth * 0.020))) * 0.5 + DelayC.ar(sig, 0.05, SinOsc.kr(chorusRateSmooth * 1.17, pi/2).range(0.005, 0.005 + (chorusDepthSmooth * 0.025))) * 0.5;
+
+		chorusWet = XFade2.ar(sig, chorusWet, (chorusMixSmooth * 2) - 1);
+
+		sig = SelectX.ar(Lag.kr(chorusEnabled, 0.2),
+
+			[
+				sig,
+				chorusWet
+			]
+		);
 
 		//Reverb
 
@@ -345,6 +363,24 @@ s.waitForBoot({
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerMix, val); };
     }, "/ghost/flangerMix");
+
+	// OSC for Chorus
+
+	OSCdef(\ghostChorusEnabled, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\chorusEnabled, msg[1]);};
+	}, "/ghost/chorusEnabled");
+
+	OSCdef(\ghostChorusRate, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\chorusRate, msg[1]);};
+	}, "/ghost/chorusRate");
+
+	OSCdef(\ghostChorusDepth, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\chorusDepth, msg[1]);};
+	}, "/ghost/chorusDepth");
+
+	OSCdef(\ghostChorusMix, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\chorusMix, msg[1]);};
+	}, "/ghost/chorusMix");
 
 	// OSC for Reverb
 

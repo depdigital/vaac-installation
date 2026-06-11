@@ -2368,6 +2368,133 @@ if(flangerMixAmount)
 
 //FLANGER MODULE SLIDER
 
+// CHORUS MODULE SLIDER
+
+const chorusRateMaster =
+document.getElementById(
+    "chorusRateMaster"
+);
+
+if(chorusRateMaster)
+{
+    chorusRateMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusRateMasterValue"
+            ).textContent =
+            Number(
+                chorusRateMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const chorusRateAmount =
+document.getElementById(
+    "chorusRateAmount"
+);
+
+if(chorusRateAmount)
+{
+    chorusRateAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusRateAmountValue"
+            ).textContent =
+            Number(
+                chorusRateAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const chorusDepthMaster =
+document.getElementById(
+    "chorusDepthMaster"
+);
+
+if(chorusDepthMaster)
+{
+    chorusDepthMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusDepthMasterValue"
+            ).textContent =
+            Number(
+                chorusDepthMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const chorusDepthAmount =
+document.getElementById(
+    "chorusDepthAmount"
+);
+
+if(chorusDepthAmount)
+{
+    chorusDepthAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusDepthAmountValue"
+            ).textContent =
+            Number(
+                chorusDepthAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const chorusMixMaster =
+document.getElementById(
+    "chorusMixMaster"
+);
+
+if(chorusMixMaster)
+{
+    chorusMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusMixMasterValue"
+            ).textContent =
+            Number(
+                chorusMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const chorusMixAmount =
+document.getElementById(
+    "chorusMixAmount"
+);
+
+if(chorusMixAmount)
+{
+    chorusMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "chorusMixAmountValue"
+            ).textContent =
+            Number(
+                chorusMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
 
 // REVERB MODULE SLIDER
 
@@ -2975,6 +3102,80 @@ function buildAudioConfig()
         }
     },
 
+        chorus:
+{
+    enabled:
+    document.getElementById(
+        "chorusEnabled"
+    ).checked,
+
+    rate:
+    {
+        master:
+        Number(
+            document.getElementById(
+                "chorusRateMaster"
+            ).value
+        ),
+
+        sensor:
+        document.getElementById(
+            "chorusRateSensor"
+        ).value,
+
+        amount:
+        Number(
+            document.getElementById(
+                "chorusRateAmount"
+            ).value
+        )
+    },
+
+    depth:
+    {
+        master:
+        Number(
+            document.getElementById(
+                "chorusDepthMaster"
+            ).value
+        ),
+
+        sensor:
+        document.getElementById(
+            "chorusDepthSensor"
+        ).value,
+
+        amount:
+        Number(
+            document.getElementById(
+                "chorusDepthAmount"
+            ).value
+        )
+    },
+
+    mix:
+    {
+        master:
+        Number(
+            document.getElementById(
+                "chorusMixMaster"
+            ).value
+        ),
+
+        sensor:
+        document.getElementById(
+            "chorusMixSensor"
+        ).value,
+
+        amount:
+        Number(
+            document.getElementById(
+                "chorusMixAmount"
+            ).value
+        )
+    }
+},
+
     reverb:
     {
         enabled:
@@ -3328,6 +3529,52 @@ if(
             !flangerEnabled.checked;
 
         refreshFlangerButton();
+    };
+}
+
+// CHORUS REFRESH
+
+const chorusEnabledBtn =
+document.getElementById(
+    "chorusEnabledBtn"
+);
+
+const chorusEnabled =
+document.getElementById(
+    "chorusEnabled"
+);
+
+if(
+    chorusEnabledBtn &&
+    chorusEnabled
+)
+{
+    function refreshChorusButton()
+    {
+        if(chorusEnabled.checked)
+        {
+            chorusEnabledBtn.textContent =
+                "ENABLED";
+
+            chorusEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            chorusEnabledBtn.textContent =
+                "DISABLED";
+
+            chorusEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    chorusEnabledBtn.onclick = () =>
+    {
+        chorusEnabled.checked =
+            !chorusEnabled.checked;
+
+        refreshChorusButton();
     };
 }
 
@@ -4025,6 +4272,108 @@ async function loadAudioMapping()
 
     //FLANGER MODULE ENDS
 
+     // CHORUS MODULE STARTS
+
+    document.getElementById(
+        "chorusEnabled"
+    ).checked =
+    config.chorus.enabled;
+
+    // RATE
+
+    document.getElementById(
+        "chorusRateMaster"
+    ).value =
+    config.chorus.rate.master;
+
+    document.getElementById(
+        "chorusRateMasterValue"
+    ).textContent =
+    Number(
+        config.chorus.rate.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "chorusRateSensor"
+    ).value =
+    config.chorus.rate.sensor;
+
+    document.getElementById(
+        "chorusRateAmount"
+    ).value =
+    config.chorus.rate.amount;
+
+    document.getElementById(
+        "chorusRateAmountValue"
+    ).textContent =
+    Number(
+        config.chorus.rate.amount
+    ).toFixed(2);
+
+    // DEPTH
+
+    document.getElementById(
+        "chorusDepthMaster"
+    ).value =
+    config.chorus.depth.master;
+
+    document.getElementById(
+        "chorusDepthMasterValue"
+    ).textContent =
+    Number(
+        config.chorus.depth.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "chorusDepthSensor"
+    ).value =
+    config.chorus.depth.sensor;
+
+    document.getElementById(
+        "chorusDepthAmount"
+    ).value =
+    config.chorus.depth.amount;
+
+    document.getElementById(
+        "chorusDepthAmountValue"
+    ).textContent =
+    Number(
+        config.chorus.depth.amount
+    ).toFixed(2);
+
+    // MIX
+
+    document.getElementById(
+        "chorusMixMaster"
+    ).value =
+    config.chorus.mix.master;
+
+    document.getElementById(
+        "chorusMixMasterValue"
+    ).textContent =
+    Number(
+        config.chorus.mix.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "chorusMixSensor"
+    ).value =
+    config.chorus.mix.sensor;
+
+    document.getElementById(
+        "chorusMixAmount"
+    ).value =
+    config.chorus.mix.amount;
+
+    document.getElementById(
+        "chorusMixAmountValue"
+    ).textContent =
+    Number(
+        config.chorus.mix.amount
+    ).toFixed(2);
+
+    // CHORUS MODULE ENDS
+
     //REVERB MODULE STARTS
 
     document.getElementById(
@@ -4121,6 +4470,7 @@ async function loadAudioMapping()
 
     //REVERB MODULE ENDS
 
+
     //LIMITER MODULE STARTS
 
     document.getElementById(
@@ -4193,6 +4543,7 @@ async function loadAudioMapping()
     refreshGateButton();
     refreshDelayButton();
     refreshFlangerButton();
+    refreshChorusButton();
     refreshReverbButton();
     refreshLimiterButton();
 

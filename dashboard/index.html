@@ -624,16 +624,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <button class="effect-tab"
-                data-effect="reverbPanel">
+        <button
+            class="effect-tab"
+            data-effect="chorusPanel">
 
-            09 Reverb
+            06 Chorus
 
         </button>
-
-        <div class="effect-placeholder">
-            06 Chorus
-        </div>
 
         <div class="effect-placeholder">
             07 Phaser
@@ -642,6 +639,13 @@ Do not place System Health inside this block.
         <div class="effect-placeholder">
             08 Pitch Shift
         </div>
+
+        <button class="effect-tab"
+                data-effect="reverbPanel">
+
+            09 Reverb
+
+        </button>
 
         <div class="effect-placeholder">
             10 Magneto
@@ -2048,6 +2052,220 @@ Reverb Mix
 
 <!--FLANGER MODULE ENDS-->
 
+<!--CHORUS MODULE STARTS-->
+
+<div
+    id="chorusPanel"
+    class="effect-panel">
+
+    <div class="effect-toggle-row">
+
+        <button
+            id="chorusEnabledBtn"
+            class="effect-toggle-btn enabled">
+
+            ENABLED
+
+        </button>
+
+        <input
+            type="checkbox"
+            id="chorusEnabled"
+            checked
+            hidden>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Chorus Rate</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="chorusRateMaster"
+                min="0.05"
+                max="5.0"
+                step="0.05"
+                value="0.20">
+
+            <span id="chorusRateMasterValue">
+                0.20
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="chorusRateSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="chorusRateAmount"
+                min="0"
+                max="5.0"
+                step="0.05"
+                value="0">
+
+            <span id="chorusRateAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Chorus Depth</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="chorusDepthMaster"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.50">
+
+            <span id="chorusDepthMasterValue">
+                0.50
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="chorusDepthSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="chorusDepthAmount"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="chorusDepthAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Chorus Mix</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="chorusMixMaster"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.30">
+
+            <span id="chorusMixMasterValue">
+                0.30
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="chorusMixSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="chorusMixAmount"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="chorusMixAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--CHORUS MODULE ENDS-->
+
 <!--REVERB MODULE STARTS-->
 
             <div
@@ -2325,7 +2543,8 @@ Reverb Mix
 
 <!--REVERB MODULE ENDS-->
 
-    <!--LIMITER MODULE STARTS-->
+
+<!--LIMITER MODULE STARTS-->
 
             <div
                 id="limiterPanel"

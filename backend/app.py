@@ -785,6 +785,59 @@ def send_osc(packet):
         flanger_mix
     )
 
+    # CHORUS MODULE
+
+    chorus_rate = compute_parameter(
+        packet,
+        config["chorus"]["rate"]
+    )
+
+    chorus_depth = compute_parameter(
+        packet,
+        config["chorus"]["depth"]
+    )
+
+    chorus_mix = compute_parameter(
+        packet,
+        config["chorus"]["mix"]
+    )
+
+    chorus_rate = max(
+        0.05,
+        min(5.0, chorus_rate)
+    )
+
+    chorus_depth = max(
+        0.0,
+        min(1.0, chorus_depth)
+    )
+
+    chorus_mix = max(
+        0.0,
+        min(1.0, chorus_mix)
+    )
+
+    osc.send(
+        "/ghost/chorusEnabled",
+        1 if config["chorus"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/chorusRate",
+        chorus_rate
+    )
+
+    osc.send(
+        "/ghost/chorusDepth",
+        chorus_depth
+    )
+
+    osc.send(
+        "/ghost/chorusMix",
+        chorus_mix
+    )
+
 # REVERB MODULE
 
     reverb_room = compute_parameter(
