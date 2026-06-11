@@ -485,6 +485,60 @@ def send_osc(packet):
     config["delay"]["mix"]["master"]
     )
     """
+
+    # EQ MODULE
+
+    eq_low = compute_parameter(
+        packet,
+        config["eq"]["low"]
+    )
+
+    eq_mid = compute_parameter(
+        packet,
+        config["eq"]["mid"]
+    )
+
+    eq_high = compute_parameter(
+        packet,
+        config["eq"]["high"]
+    )
+
+    eq_low = max(
+        -12.0,
+        min(12.0, eq_low)
+    )
+
+    eq_mid = max(
+        -12.0,
+        min(12.0, eq_mid)
+    )
+
+    eq_high = max(
+        -12.0,
+        min(12.0, eq_high)
+    )
+
+    osc.send(
+        "/ghost/eqEnabled",
+        1 if config["eq"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/eqLow",
+        eq_low
+    )
+
+    osc.send(
+        "/ghost/eqMid",
+        eq_mid
+    )
+
+    osc.send(
+        "/ghost/eqHigh",
+        eq_high
+    )
+
     #DELAY MODULE
     delay_time = compute_parameter(
         packet,

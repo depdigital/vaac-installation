@@ -91,17 +91,21 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
         var sig, delayed, wet, flanger, flangerWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
 		var limiterLevelSmooth, limiterReleaseSmooth;
+		var eqLowSmooth, eqMidSmooth, eqHighSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
 		gainSmooth             = Lag.kr(gain, 1.0);
+		eqLowSmooth            = Lag.kr(eqLow, 1.0);
+		eqMidSmooth            = Lag.kr(eqMid, 1.0);
+		eqHighSmooth           = Lag.kr(eqHigh, 1.0);
         delayMixSmooth         = Lag.kr(delayMix, 1.0);
         delayTimeSmooth        = Lag.kr(delayTime, 1.0).clip(0.001, 0.49);
 		delayFeedbackSmooth    = Lag.kr(delayFeedback, 1.0).clip(0.0, 1.5);
@@ -114,8 +118,19 @@ s.waitForBoot({
 		limiterLevelSmooth     = Lag.kr(limiterLevel, 1.0);
 		limiterReleaseSmooth   = Lag.kr(limiterRelease, 1.0);
 
-
         sig     = In.ar(inBus, 2);
+
+		//EQ
+
+		sig = SelectX.ar(Lag.kr(eqEnabled, 0.2),
+
+			[
+				sig,
+
+				BHiShelf.ar(BPeakEQ.ar(BLowShelf.ar(sig, 200, 1.0, eqLowSmooth), 1000, 1.0, eqMidSmooth), 5000, 1.0, eqHighSmooth)
+
+			]
+		);
 
 		//Delay
 
@@ -197,80 +212,96 @@ s.waitForBoot({
     OSCdef(\sceneStop, { ~stopScene.value; }, '/scene/stop');
 
     // Real-Time Control parameters modifying the FX processor nodes
+
+	// OSC for master Gain
+
     OSCdef(\ghostGain, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\gain, msg[1]); };
-        ("gain: " ++ msg[1]).postln;
     }, "/ghost/gain");
+
+	// OSC for EQ
+
+	OSCdef(\ghostEQEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\eqEnabled, msg[1]); };
+    }, "/ghost/eqEnabled");
+
+	OSCdef(\ghostEQLow, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\eqLow, msg[1]); };
+    }, "/ghost/eqLow");
+
+	OSCdef(\ghostEQMid, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\eqMid, msg[1]); };
+    }, "/ghost/eqMid");
+
+	OSCdef(\ghostEQHigh, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\eqHigh, msg[1]); };
+    }, "/ghost/eqHigh");
+
+
+	// OSC for Delay
 
     OSCdef(\ghostDelayEnabled, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\delayEnabled, msg[1]); };
-        ("delayEnabled: " ++ msg[1]).postln;
     }, "/ghost/delayEnabled");
 
     OSCdef(\ghostDelayTime, { |msg|
-        msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\delayTime, msg[1]); };
     }, "/ghost/delayTime");
 
     OSCdef(\ghostDelayMix, { |msg|
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\delayMix, val); };
-        ("delayMix: " ++ val).postln;
     }, "/ghost/delayMix");
 
     OSCdef(\ghostDelayFeedback, { |msg|
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\delayFeedback, val); };
-        ("delayFeedback: " ++ val).postln;
     }, "/ghost/delayFeedback");
+
+	// OSC for Flanger
 
 	OSCdef(\ghostFlangerEnabled, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerEnabled, msg[1]); };
-        ("flangerEnabled: " ++ msg[1]).postln;
     }, "/ghost/flangerEnabled");
 
 	OSCdef(\ghostFlangerRate, { |msg|
-        msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerRate, msg[1]); };
     }, "/ghost/flangerRate");
 
 	OSCdef(\ghostFlangerDepth, { |msg|
-        msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerDepth, msg[1]); };
     }, "/ghost/flangerDepth");
 
 	OSCdef(\ghostFlangerMix, { |msg|
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\flangerMix, val); };
-        ("flangerMix: " ++ val).postln;
     }, "/ghost/flangerMix");
+
+	// OSC for Reverb
 
 	OSCdef(\ghostReverbEnabled, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbEnabled, msg[1]); };
-        ("reverbEnabled: " ++ msg[1]).postln;
     }, "/ghost/reverbEnabled");
 
 	OSCdef(\ghostReverbRoom, { |msg|
 		var val = msg[1];
-        msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbRoom, val); };
     }, "/ghost/reverbRoom");
 
-	OSCdef(\ghostReverbDamping, { |msg|
+	OSCdef(\ghostreverbDamping, { |msg|
 		var val = msg[1];
-        msg.postln;
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbDamping, val); };
     }, "/ghost/reverbDamping");
 
 	OSCdef(\ghostReverbMix, { |msg|
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbMix, val); };
-        ("flangerMix: " ++ val).postln;
     }, "/ghost/reverbMix");
+
+	// OSC for Limiter
 
 	OSCdef(\ghostLimiterEnabled, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\limiterEnabled, msg[1]); };
-        ("limiterEnabled: " ++ msg[1]).postln;
     }, "/ghost/limiterEnabled");
 
 	OSCdef(\ghostLimiterLevel, { |msg|

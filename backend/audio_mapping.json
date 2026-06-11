@@ -2,6 +2,24 @@
     "global": {
         "masterGain": 2
     },
+    "eq": {
+        "enabled": false,
+        "low": {
+            "master": 3.5,
+            "sensor": "none",
+            "amount": 0
+        },
+        "mid": {
+            "master": -3,
+            "sensor": "none",
+            "amount": 0
+        },
+        "high": {
+            "master": -9,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
     "delay": {
         "enabled": false,
         "time": {
@@ -41,17 +59,17 @@
     "reverb": {
         "enabled": false,
         "room": {
-            "master": 1,
+            "master": 0.5,
             "sensor": "lux",
             "amount": 1
         },
         "damping": {
-            "master": 0.52,
+            "master": 0.67,
             "sensor": "none",
             "amount": 1
         },
         "mix": {
-            "master": 1,
+            "master": 0.61,
             "sensor": "none",
             "amount": 0
         }

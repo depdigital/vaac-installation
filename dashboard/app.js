@@ -1718,6 +1718,132 @@ if(masterGain)
     );
 }
 
+const eqLowMaster =
+document.getElementById(
+    "eqLowMaster"
+);
+
+if(eqLowMaster)
+{
+    eqLowMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqLowMasterValue"
+            ).textContent =
+            Number(
+                eqLowMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const eqLowAmount =
+document.getElementById(
+    "eqLowAmount"
+);
+
+if(eqLowAmount)
+{
+    eqLowAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqLowAmountValue"
+            ).textContent =
+            Number(
+                eqLowAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const eqMidMaster =
+document.getElementById(
+    "eqMidMaster"
+);
+
+if(eqMidMaster)
+{
+    eqMidMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqMidMasterValue"
+            ).textContent =
+            Number(
+                eqMidMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const eqMidAmount =
+document.getElementById(
+    "eqMidAmount"
+);
+
+if(eqMidAmount)
+{
+    eqMidAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqMidAmountValue"
+            ).textContent =
+            Number(
+                eqMidAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const eqHighMaster =
+document.getElementById(
+    "eqHighMaster"
+);
+
+if(eqHighMaster)
+{
+    eqHighMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqHighMasterValue"
+            ).textContent =
+            Number(
+                eqHighMaster.value
+            ).toFixed(1);
+        }
+    );
+}
+
+const eqHighAmount =
+document.getElementById(
+    "eqHighAmount"
+);
+
+if(eqHighAmount)
+{
+    eqHighAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "eqHighAmountValue"
+            ).textContent =
+            Number(
+                eqHighAmount.value
+            ).toFixed(1);
+        }
+    );
+}
+
 //DELAY MODULE SLIDER
 
 const delayTimeMaster =
@@ -2214,6 +2340,80 @@ function buildAudioConfig()
             )
         },
 
+        eq:
+        {
+            enabled:
+            document.getElementById(
+                "eqEnabled"
+            ).checked,
+
+            low:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "eqLowMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "eqLowSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "eqLowAmount"
+                    ).value
+                )
+            },
+
+            mid:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "eqMidMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "eqMidSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "eqMidAmount"
+                    ).value
+                )
+            },
+
+            high:
+            {
+                master:
+                Number(
+                    document.getElementById(
+                        "eqHighMaster"
+                    ).value
+                ),
+
+                sensor:
+                document.getElementById(
+                    "eqHighSensor"
+                ).value,
+
+                amount:
+                Number(
+                    document.getElementById(
+                        "eqHighAmount"
+                    ).value
+                )
+            }
+        },
+
         delay:
         {
             enabled:
@@ -2489,6 +2689,51 @@ function buildAudioConfig()
         }
     }
 
+    };
+}
+
+// EQ REFRESH
+const eqEnabledBtn =
+document.getElementById(
+    "eqEnabledBtn"
+);
+
+const eqEnabled =
+document.getElementById(
+    "eqEnabled"
+);
+
+if(
+    eqEnabledBtn &&
+    eqEnabled
+)
+{
+    function refreshEQButton()
+    {
+        if(eqEnabled.checked)
+        {
+            eqEnabledBtn.textContent =
+                "ENABLED";
+
+            eqEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            eqEnabledBtn.textContent =
+                "DISABLED";
+
+            eqEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    eqEnabledBtn.onclick = () =>
+    {
+        eqEnabled.checked =
+            !eqEnabled.checked;
+
+        refreshEQButton();
     };
 }
 
@@ -2777,6 +3022,108 @@ async function loadAudioMapping()
     Number(
         config.global.masterGain
     ).toFixed(2);
+
+    //EQ MODULE STARTS
+
+    document.getElementById(
+        "eqEnabled"
+    ).checked =
+    config.eq.enabled;
+
+    // LOW
+
+    document.getElementById(
+        "eqLowMaster"
+    ).value =
+    config.eq.low.master;
+
+    document.getElementById(
+        "eqLowMasterValue"
+    ).textContent =
+    Number(
+        config.eq.low.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "eqLowSensor"
+    ).value =
+    config.eq.low.sensor;
+
+    document.getElementById(
+        "eqLowAmount"
+    ).value =
+    config.eq.low.amount;
+
+    document.getElementById(
+        "eqLowAmountValue"
+    ).textContent =
+    Number(
+        config.eq.low.amount
+    ).toFixed(1);
+
+    // MID
+
+    document.getElementById(
+        "eqMidMaster"
+    ).value =
+    config.eq.mid.master;
+
+    document.getElementById(
+        "eqMidMasterValue"
+    ).textContent =
+    Number(
+        config.eq.mid.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "eqMidSensor"
+    ).value =
+    config.eq.mid.sensor;
+
+    document.getElementById(
+        "eqMidAmount"
+    ).value =
+    config.eq.mid.amount;
+
+    document.getElementById(
+        "eqMidAmountValue"
+    ).textContent =
+    Number(
+        config.eq.mid.amount
+    ).toFixed(1);
+
+    // HIGH
+
+    document.getElementById(
+        "eqHighMaster"
+    ).value =
+    config.eq.high.master;
+
+    document.getElementById(
+        "eqHighMasterValue"
+    ).textContent =
+    Number(
+        config.eq.high.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "eqHighSensor"
+    ).value =
+    config.eq.high.sensor;
+
+    document.getElementById(
+        "eqHighAmount"
+    ).value =
+    config.eq.high.amount;
+
+    document.getElementById(
+        "eqHighAmountValue"
+    ).textContent =
+    Number(
+        config.eq.high.amount
+    ).toFixed(1);
+
+    //EQ MODULE ENDS
 
     //DELAY MODULE STARTS
 
@@ -3133,6 +3480,7 @@ async function loadAudioMapping()
 
     //LIMITER MODULE ENDS
 
+    refreshEQButton();
     refreshDelayButton();
     refreshFlangerButton();
     refreshReverbButton();

@@ -512,7 +512,7 @@ Do not place System Health inside this block.
             id="applyAudioMapping"
             class="audio-toolbar-btn apply">
 
-            ✔ Apply Audio Mapping
+            ✔  Apply Audio Mapping
 
         </button>
 
@@ -520,7 +520,7 @@ Do not place System Health inside this block.
             id="saveAudioMapping"
             class="audio-toolbar-btn save">
 
-            💾 Save Audio Mapping
+            💾  Save Audio Mapping
 
         </button>
 
@@ -582,9 +582,13 @@ Do not place System Health inside this block.
             UTILITY DSP
         </div>
 
-        <div class="effect-placeholder">
+        <button
+        class="effect-tab active"
+        data-effect="eqPanel">
+
             01 EQ
-        </div>
+
+        </button>
 
         <div class="effect-placeholder">
             02 Compressor
@@ -598,7 +602,7 @@ Do not place System Health inside this block.
             CREATIVE DSP
         </div>
 
-        <button class="effect-tab active"
+        <button class="effect-tab"
                 data-effect="delayPanel">
 
             04 Delay
@@ -649,13 +653,290 @@ Do not place System Health inside this block.
 
                 </div>
 
-        <!--DELAY MODULE STARTS-->
+<!--EQ MODULE STARTS-->
 
         <div class="effect-editor">
 
             <div
-                id="delayPanel"
+                id="eqPanel"
                 class="effect-panel active">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="eqEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="eqEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Low Gain</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="eqLowMaster"
+                        min="-12"
+                        max="12"
+                        step="0.5"
+                        value="0">
+
+                    <span id="eqLowMasterValue">
+                        0.0
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="eqLowSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="eqLowAmount"
+                    min="0"
+                    max="12"
+                    step="0.5"
+                    value="0">
+
+                <span id="eqLowAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Mid Gain</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="eqMidMaster"
+                    min="-12"
+                    max="12"
+                    step="0.5"
+                    value="0">
+
+                <span id="eqMidMasterValue">
+                    0.0
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="eqMidSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="eqMidAmount"
+                    min="0"
+                    max="12"
+                    step="0.5"
+                    value="0">
+
+                <span id="eqMidAmountValue">
+                    0.0
+                </span>
+                
+                </div>
+
+            </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>High Gain</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="eqHighMaster"
+                    min="-12"
+                    max="12"
+                    step="0.5"
+                    value="0">
+
+                <span id="eqHighMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="eqHighSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="eqHighAmount"
+                    min="0"
+                    max="12"
+                    step="0.5"
+                    value="0">
+
+                <span id="eqHighAmountValue">
+                    0.0
+                </span>
+
+                </div>
+            
+            </div>
+    </div>
+
+<!--EQ MODULE ENDS-->               
+
+<!--DELAY MODULE STARTS-->
+
+            <div
+                id="delayPanel"
+                class="effect-panel">
 
                 <div class="effect-toggle-row">
 

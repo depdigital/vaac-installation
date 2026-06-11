@@ -14,6 +14,32 @@ DEFAULT_CONFIG = {
 
     },
 
+    "eq": {
+
+            "enabled": False,
+
+            "low": {
+
+                "master": 0.0,
+                "sensor": "none",
+                "amount": 0.0
+            },
+
+            "mid": {
+
+                "master": 0.0,
+                "sensor": "none",
+                "amount": 0.0
+            },
+
+            "high": {
+
+                "master": 0.0,
+                "sensor": "none",
+                "amount": 0.0
+            }
+        },
+
     "delay": {
 
         "enabled": True,
@@ -121,7 +147,8 @@ DEFAULT_CONFIG = {
             "sensor": "none",
             "amount": 0.0
         }
-    }
+    },
+
 
 }
 
