@@ -2499,6 +2499,134 @@ if(chorusMixAmount)
     );
 }
 
+// PHASER MODULE SLIDER
+
+const phaserRateMaster =
+document.getElementById(
+    "phaserRateMaster"
+);
+
+if(phaserRateMaster)
+{
+    phaserRateMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserRateMasterValue"
+            ).textContent =
+            Number(
+                phaserRateMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const phaserRateAmount =
+document.getElementById(
+    "phaserRateAmount"
+);
+
+if(phaserRateAmount)
+{
+    phaserRateAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserRateAmountValue"
+            ).textContent =
+            Number(
+                phaserRateAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const phaserDepthMaster =
+document.getElementById(
+    "phaserDepthMaster"
+);
+
+if(phaserDepthMaster)
+{
+    phaserDepthMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserDepthMasterValue"
+            ).textContent =
+            Number(
+                phaserDepthMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const phaserDepthAmount =
+document.getElementById(
+    "phaserDepthAmount"
+);
+
+if(phaserDepthAmount)
+{
+    phaserDepthAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserDepthAmountValue"
+            ).textContent =
+            Number(
+                phaserDepthAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const phaserMixMaster =
+document.getElementById(
+    "phaserMixMaster"
+);
+
+if(phaserMixMaster)
+{
+    phaserMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserMixMasterValue"
+            ).textContent =
+            Number(
+                phaserMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const phaserMixAmount =
+document.getElementById(
+    "phaserMixAmount"
+);
+
+if(phaserMixAmount)
+{
+    phaserMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "phaserMixAmountValue"
+            ).textContent =
+            Number(
+                phaserMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
 // REVERB MODULE SLIDER
 
 const reverbRoomMaster =
@@ -3110,78 +3238,152 @@ function buildAudioConfig()
     },
 
         chorus:
-{
-    enabled:
-    document.getElementById(
-        "chorusEnabled"
-    ).checked,
-
-    rate:
     {
-        master:
-        Number(
-            document.getElementById(
-                "chorusRateMaster"
-            ).value
-        ),
-
-        sensor:
+        enabled:
         document.getElementById(
-            "chorusRateSensor"
-        ).value,
+            "chorusEnabled"
+        ).checked,
 
-        amount:
-        Number(
+        rate:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "chorusRateMaster"
+                ).value
+            ),
+
+            sensor:
             document.getElementById(
-                "chorusRateAmount"
-            ).value
-        )
+                "chorusRateSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "chorusRateAmount"
+                ).value
+            )
+        },
+
+        depth:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "chorusDepthMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "chorusDepthSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "chorusDepthAmount"
+                ).value
+            )
+        },
+
+        mix:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "chorusMixMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "chorusMixSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "chorusMixAmount"
+                ).value
+            )
+        }
     },
 
-    depth:
+    phaser:
     {
-        master:
-        Number(
-            document.getElementById(
-                "chorusDepthMaster"
-            ).value
-        ),
-
-        sensor:
+        enabled:
         document.getElementById(
-            "chorusDepthSensor"
-        ).value,
+            "phaserEnabled"
+        ).checked,
 
-        amount:
-        Number(
+        rate:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "phaserRateMaster"
+                ).value
+            ),
+
+            sensor:
             document.getElementById(
-                "chorusDepthAmount"
-            ).value
-        )
+                "phaserRateSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "phaserRateAmount"
+                ).value
+            )
+        },
+
+        depth:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "phaserDepthMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "phaserDepthSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "phaserDepthAmount"
+                ).value
+            )
+        },
+
+        mix:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "phaserMixMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "phaserMixSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "phaserMixAmount"
+                ).value
+            )
+        }
     },
-
-    mix:
-    {
-        master:
-        Number(
-            document.getElementById(
-                "chorusMixMaster"
-            ).value
-        ),
-
-        sensor:
-        document.getElementById(
-            "chorusMixSensor"
-        ).value,
-
-        amount:
-        Number(
-            document.getElementById(
-                "chorusMixAmount"
-            ).value
-        )
-    }
-},
 
     reverb:
     {
@@ -3582,6 +3784,52 @@ if(
             !chorusEnabled.checked;
 
         refreshChorusButton();
+    };
+}
+
+// PHASER REFRESH
+
+const phaserEnabledBtn =
+document.getElementById(
+    "phaserEnabledBtn"
+);
+
+const phaserEnabled =
+document.getElementById(
+    "phaserEnabled"
+);
+
+if(
+    phaserEnabledBtn &&
+    phaserEnabled
+)
+{
+    function refreshPhaserButton()
+    {
+        if(phaserEnabled.checked)
+        {
+            phaserEnabledBtn.textContent =
+                "ENABLED";
+
+            phaserEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            phaserEnabledBtn.textContent =
+                "DISABLED";
+
+            phaserEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    phaserEnabledBtn.onclick = () =>
+    {
+        phaserEnabled.checked =
+            !phaserEnabled.checked;
+
+        refreshPhaserButton();
     };
 }
 
@@ -4282,7 +4530,7 @@ async function loadAudioMapping()
 
     //FLANGER MODULE ENDS
 
-     // CHORUS MODULE STARTS
+    // CHORUS MODULE STARTS
 
     document.getElementById(
         "chorusEnabled"
@@ -4383,6 +4631,108 @@ async function loadAudioMapping()
     ).toFixed(2);
 
     // CHORUS MODULE ENDS
+
+    // PHASER MODULE STARTS
+
+    document.getElementById(
+        "phaserEnabled"
+    ).checked =
+    config.phaser.enabled;
+
+    // RATE
+
+    document.getElementById(
+        "phaserRateMaster"
+    ).value =
+    config.phaser.rate.master;
+
+    document.getElementById(
+        "phaserRateMasterValue"
+    ).textContent =
+    Number(
+        config.phaser.rate.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "phaserRateSensor"
+    ).value =
+    config.phaser.rate.sensor;
+
+    document.getElementById(
+        "phaserRateAmount"
+    ).value =
+    config.phaser.rate.amount;
+
+    document.getElementById(
+        "phaserRateAmountValue"
+    ).textContent =
+    Number(
+        config.phaser.rate.amount
+    ).toFixed(2);
+
+    // DEPTH
+
+    document.getElementById(
+        "phaserDepthMaster"
+    ).value =
+    config.phaser.depth.master;
+
+    document.getElementById(
+        "phaserDepthMasterValue"
+    ).textContent =
+    Number(
+        config.phaser.depth.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "phaserDepthSensor"
+    ).value =
+    config.phaser.depth.sensor;
+
+    document.getElementById(
+        "phaserDepthAmount"
+    ).value =
+    config.phaser.depth.amount;
+
+    document.getElementById(
+        "phaserDepthAmountValue"
+    ).textContent =
+    Number(
+        config.phaser.depth.amount
+    ).toFixed(2);
+
+    // MIX
+
+    document.getElementById(
+        "phaserMixMaster"
+    ).value =
+    config.phaser.mix.master;
+
+    document.getElementById(
+        "phaserMixMasterValue"
+    ).textContent =
+    Number(
+        config.phaser.mix.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "phaserMixSensor"
+    ).value =
+    config.phaser.mix.sensor;
+
+    document.getElementById(
+        "phaserMixAmount"
+    ).value =
+    config.phaser.mix.amount;
+
+    document.getElementById(
+        "phaserMixAmountValue"
+    ).textContent =
+    Number(
+        config.phaser.mix.amount
+    ).toFixed(2);
+
+    // PHASER MODULE ENDS
 
     //REVERB MODULE STARTS
 
@@ -4554,6 +4904,7 @@ async function loadAudioMapping()
     refreshDelayButton();
     refreshFlangerButton();
     refreshChorusButton();
+    refreshPhaserButton();
     refreshReverbButton();
     refreshLimiterButton();
     refreshGlobalFXButton();

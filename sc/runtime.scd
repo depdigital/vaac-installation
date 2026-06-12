@@ -91,9 +91,9 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, phaserEnabled = 0, phaserRate = 0.2, phaserDepth = 0.5, phaserMix = 0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
-        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, reverb, reverbWet, limiterWet;
+        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, phaserWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
@@ -102,6 +102,7 @@ s.waitForBoot({
 		var compressorThresholdSmooth, compressorRatioSmooth, compressorMakeupSmooth;
 		var gateThresholdSmooth, gateAttackSmooth, gateReleaseSmooth;
 		var chorusRateSmooth, chorusDepthSmooth, chorusMixSmooth;
+		var phaserRateSmooth, phaserDepthSmooth, phaserMixSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
@@ -124,6 +125,9 @@ s.waitForBoot({
 		chorusRateSmooth           = Lag.kr(chorusRate, 1.0);
 		chorusDepthSmooth          = Lag.kr(chorusDepth, 1.0);
 		chorusMixSmooth            = Lag.kr(chorusMix, 1.0);
+		phaserRateSmooth           = Lag.kr(phaserRate, 1.0);
+		phaserDepthSmooth          = Lag.kr(phaserDepth, 1.0);
+		phaserMixSmooth            = Lag.kr(phaserMix, 1.0);
 		reverbRoomSmooth           = Lag.kr(reverbRoom, 1.0);
 		reverbDampingSmooth        = Lag.kr(reverbDamping, 1.0);
 		reverbMixSmooth            = Lag.kr(reverbMix, 1.0);
@@ -195,6 +199,22 @@ s.waitForBoot({
 			[
 				sig,
 				chorusWet
+			]
+		);
+
+		//Phaser
+
+		// Phaser
+
+		phaserWet = AllpassC.ar(sig, 0.05, SinOsc.kr(phaserRateSmooth).range(0.001, 0.001 + (phaserDepthSmooth * 0.020)), 1.0);
+
+		phaserWet = XFade2.ar(sig, phaserWet, (phaserMixSmooth * 2) - 1);
+
+		sig = SelectX.ar(Lag.kr(phaserEnabled, 0.2),
+
+			[
+				sig,
+				phaserWet
 			]
 		);
 
@@ -396,6 +416,24 @@ s.waitForBoot({
 	OSCdef(\ghostChorusMix, { |msg|
 		if(~ghostEngine.notNil) { ~ghostEngine.set(\chorusMix, msg[1]);};
 	}, "/ghost/chorusMix");
+
+	// OSC for Phaser
+
+	OSCdef(\ghostPhaserEnabled, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\phaserEnabled, msg[1]);};
+    }, "/ghost/phaserEnabled");
+
+	OSCdef(\ghostPhaserRate, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\phaserRate, msg[1]);};
+    }, "/ghost/phaserRate");
+
+	OSCdef(\ghostPhaserDepth, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\phaserDepth, msg[1]);};
+    }, "/ghost/phaserDepth");
+
+	OSCdef(\ghostPhaserMix, { |msg|
+        if(~ghostEngine.notNil) { ~ghostEngine.set(\phaserMix, msg[1]);};
+    }, "/ghost/phaserMix");
 
 	// OSC for Reverb
 

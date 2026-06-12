@@ -1,9 +1,8 @@
 {
     "global": {
-    "masterGain": 2,
-    "dspEnabled": true
+        "masterGain": 2,
+        "dspEnabled": true
     },
-    
     "eq": {
         "enabled": false,
         "low": {
@@ -66,30 +65,30 @@
             "amount": 0.5
         },
         "feedback": {
-            "master": 2.3,
+            "master": 5,
             "sensor": "none",
             "amount": 5
         },
         "mix": {
             "master": 1,
             "sensor": "none",
-            "amount": 2
+            "amount": 1.01
         }
     },
     "flanger": {
         "enabled": false,
         "rate": {
-            "master": 0.55,
+            "master": 1.3,
             "sensor": "none",
             "amount": 0.05
         },
         "depth": {
-            "master": 0.07,
+            "master": 1,
             "sensor": "none",
             "amount": 0
         },
         "mix": {
-            "master": 0.22,
+            "master": 0.67,
             "sensor": "none",
             "amount": 0
         }
@@ -97,17 +96,35 @@
     "chorus": {
         "enabled": false,
         "rate": {
-            "master": 3.9,
+            "master": 4.65,
             "sensor": "none",
             "amount": 0
         },
         "depth": {
-            "master": 0.34,
+            "master": 1,
             "sensor": "none",
             "amount": 0
         },
         "mix": {
-            "master": 0.57,
+            "master": 1,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
+    "phaser": {
+        "enabled": false,
+        "rate": {
+            "master": 2.1,
+            "sensor": "none",
+            "amount": 0
+        },
+        "depth": {
+            "master": 0.51,
+            "sensor": "none",
+            "amount": 0
+        },
+        "mix": {
+            "master": 0.63,
             "sensor": "none",
             "amount": 0
         }

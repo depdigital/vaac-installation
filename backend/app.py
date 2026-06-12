@@ -844,6 +844,59 @@ def send_osc(packet):
         chorus_mix
     )
 
+# PHASER MODULE
+
+    phaser_rate = compute_parameter(
+        packet,
+        config["phaser"]["rate"]
+    )
+
+    phaser_depth = compute_parameter(
+        packet,
+        config["phaser"]["depth"]
+    )
+
+    phaser_mix = compute_parameter(
+        packet,
+        config["phaser"]["mix"]
+    )
+
+    phaser_rate = max(
+    0.05,
+    min(5.0, phaser_rate)
+    )
+
+    phaser_depth = max(
+        0.0,
+        min(1.0, phaser_depth)
+    )
+
+    phaser_mix = max(
+        0.0,
+        min(1.0, phaser_mix)
+    )
+
+    osc.send(
+    "/ghost/phaserEnabled",
+    1 if config["phaser"]["enabled"]
+    else 0
+    )
+
+    osc.send(
+        "/ghost/phaserRate",
+        phaser_rate
+    )
+
+    osc.send(
+        "/ghost/phaserDepth",
+        phaser_depth
+    )
+
+    osc.send(
+        "/ghost/phaserMix",
+        phaser_mix
+    )
+
 # REVERB MODULE
 
     reverb_room = compute_parameter(

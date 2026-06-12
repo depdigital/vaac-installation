@@ -633,9 +633,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="phaserPanel">
+
             07 Phaser
-        </div>
+
+        </button>
 
         <div class="effect-placeholder">
             08 Pitch Shift
@@ -2266,6 +2270,220 @@ Reverb Mix
 </div>
 
 <!--CHORUS MODULE ENDS-->
+
+<!--PHASER MODULE STARTS-->
+
+<div
+    id="phaserPanel"
+    class="effect-panel">
+
+    <div class="effect-toggle-row">
+
+        <button
+            id="phaserEnabledBtn"
+            class="effect-toggle-btn enabled">
+
+            ENABLED
+
+        </button>
+
+        <input
+            type="checkbox"
+            id="phaserEnabled"
+            checked
+            hidden>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Phaser Rate</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="phaserRateMaster"
+                min="0.05"
+                max="5.0"
+                step="0.05"
+                value="0.20">
+
+            <span id="phaserRateMasterValue">
+                0.20
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="phaserRateSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="phaserRateAmount"
+                min="0"
+                max="5.0"
+                step="0.05"
+                value="0">
+
+            <span id="phaserRateAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Phaser Depth</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="phaserDepthMaster"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.50">
+
+            <span id="phaserDepthMasterValue">
+                0.50
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="phaserDepthSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="phaserDepthAmount"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="phaserDepthAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Phaser Mix</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="phaserMixMaster"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0.30">
+
+            <span id="phaserMixMasterValue">
+                0.30
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="phaserMixSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="phaserMixAmount"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="phaserMixAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--PHASER MODULE ENDS-->
 
 <!--REVERB MODULE STARTS-->
 
