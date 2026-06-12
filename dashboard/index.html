@@ -529,22 +529,6 @@ Do not place System Health inside this block.
 
     <br>
 
-    <div class="signal-flow-bar">
-
-            EQ →
-            COMP →
-            GATE →
-            DELAY →
-            FLANGER →
-            CHORUS →
-            PHASER →
-            PITCH →
-            REVERB →
-            MAGNETO →
-            LIMITER
-
-        </div>
-
     <div
     id="audioMappingStatus"
     class="audio-mapping-status">
@@ -656,9 +640,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="magnetoPanel">
+
             10 Magneto
-        </div>
+
+        </button>
 
         <div class="effect-group">
             OUTPUT DSP
@@ -2980,6 +2968,282 @@ Reverb Mix
 
 <!--REVERB MODULE ENDS-->
 
+<!--MAGNETO MODULE STARTS-->
+
+            <div
+                id="magnetoPanel"
+                class="effect-panel">
+
+                <div class="effect-toggle-row">
+
+    <button
+        id="magnetoEnabledBtn"
+        class="effect-toggle-btn enabled">
+
+        ENABLED
+
+    </button>
+
+    <input
+        type="checkbox"
+        id="magnetoEnabled"
+        checked
+        hidden>
+
+</div>
+
+<hr>
+
+<!-- ===================================================== -->
+<!-- PARAMETER CARD TEMPLATE                               -->
+<!-- ===================================================== -->
+<!--
+
+parameter-card
+│
+├── h4 Parameter Name
+│
+├── Master Value Row
+│
+├── Sensor Row
+│
+└── Sensor Influence Row
+
+Example:
+
+Delay Time
+Delay Feedback
+Delay Mix
+
+Flanger Rate
+Flanger Depth
+Flanger Mix
+
+Reverb Size
+Reverb Damping
+Reverb Mix
+
+-->               
+
+            <div class="parameter-card">
+                <h4>Drive</h4>
+
+                                    
+
+                    <!--parameter-row
+
+                    Column 1
+                    Label
+
+                    Column 2
+                    Control
+
+                    Column 3
+                    Value
+
+                    Example:
+
+                    Master Value      [slider]   0.50
+
+                    Sensor            [dropdown]
+
+                    Sensor Influence  [slider]   0.80
+
+                    Never nest parameter-row
+                    inside another parameter-row.
+
+                    -->
+
+                <div class="parameter-row">
+
+                    <label>
+                        Master Value
+                    </label>
+
+                    <input
+                        type="range"
+                        id="magnetoDriveMaster"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        value="0.0">
+
+                    <span id="magnetoDriveMasterValue">
+                        0.0
+                    </span>
+
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor
+                </label>
+
+                <select id="magnetoDriveSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="magnetoDriveAmount"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value="0.0">
+
+                <span id="magnetoDriveAmountValue">
+                    0.00
+                </span>
+
+                </div>
+        </div>
+                <hr>
+                
+            <div class="parameter-card">
+                <h4>Flutter</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="magnetoFlutterMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.1">
+
+                <span id="magnetoFlutterMasterValue">
+                    0.1
+                </span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="magnetoFlutterSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+                </div>
+
+                <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="magnetoFlutterAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="magnetoFlutterAmountValue">
+                    0.0
+                </span>
+                
+                </div>
+
+            </div>
+
+                <hr>
+
+            <div class="parameter-card">
+                <h4>Mix</h4>
+
+                <div class="parameter-row">
+
+                <label>
+                    Master Value
+                </label>
+
+                <input
+                    type="range"
+                    id="magnetoMixMaster"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="magnetoMixMasterValue">
+                    0.00
+                </span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor
+                </label>
+
+                <select id="magnetoMixSensor">
+
+                    <option value="none">None</option>
+                    <option value="distance">Distance</option>
+                    <option value="lux">Lux</option>
+                    <option value="temp">Temperature</option>
+                    <option value="humidity">Humidity</option>
+
+                </select>
+
+                <span></span>
+
+            </div>
+
+            <div class="parameter-row">
+
+                <label>
+                    Sensor Influence
+                </label>
+
+                <input
+                    type="range"
+                    id="magnetoMixAmount"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0">
+
+                <span id="magnetoMixAmountValue">
+                    0.0
+                </span>
+
+                </div>
+            
+            </div>
+        </div>
+
+<!--MAGNETO MODULE ENDS-->
 
 <!--LIMITER MODULE STARTS-->
 

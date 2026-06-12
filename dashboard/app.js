@@ -2885,6 +2885,136 @@ if(reverbMixAmount)
 
 // REVERB MODULE SLIDER/
 
+// MAGNETO MODULE SLIDER
+
+const magnetoDriveMaster =
+document.getElementById(
+    "magnetoDriveMaster"
+);
+
+if(magnetoDriveMaster)
+{
+    magnetoDriveMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoDriveMasterValue"
+            ).textContent =
+            Number(
+                magnetoDriveMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const magnetoDriveAmount =
+document.getElementById(
+    "magnetoDriveAmount"
+);
+
+if(magnetoDriveAmount)
+{
+    magnetoDriveAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoDriveAmountValue"
+            ).textContent =
+            Number(
+                magnetoDriveAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const magnetoFlutterMaster =
+document.getElementById(
+    "magnetoFlutterMaster"
+);
+
+if(magnetoFlutterMaster)
+{
+    magnetoFlutterMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoFlutterMasterValue"
+            ).textContent =
+            Number(
+                magnetoFlutterMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const magnetoFlutterAmount =
+document.getElementById(
+    "magnetoFlutterAmount"
+);
+
+if(magnetoFlutterAmount)
+{
+    magnetoFlutterAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoFlutterAmountValue"
+            ).textContent =
+            Number(
+                magnetoFlutterAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const magnetoMixMaster =
+document.getElementById(
+    "magnetoMixMaster"
+);
+
+if(magnetoMixMaster)
+{
+    magnetoMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoMixMasterValue"
+            ).textContent =
+            Number(
+                magnetoMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const magnetoMixAmount =
+document.getElementById(
+    "magnetoMixAmount"
+);
+
+if(magnetoMixAmount)
+{
+    magnetoMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "magnetoMixAmountValue"
+            ).textContent =
+            Number(
+                magnetoMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+// MAGNETO MODULE SLIDER/
+
 // LIMITER MODULE SLIDER
 
 const limiterLevelMaster =
@@ -2972,8 +3102,6 @@ if(limiterReleaseAmount)
 }
 
 // LIMITER MODULE SLIDER/
-
-
 
 
 function buildAudioConfig()
@@ -3661,6 +3789,43 @@ function buildAudioConfig()
         }
     },
 
+    magneto: {
+        enabled: document.getElementById("magnetoEnabled").checked,
+
+        drive: {
+            master: parseFloat(
+                document.getElementById("magnetoDriveMaster").value
+            ),
+            sensor:
+                document.getElementById("magnetoDriveSensor").value,
+            amount: parseFloat(
+                document.getElementById("magnetoDriveAmount").value
+            )
+        },
+
+        flutter: {
+            master: parseFloat(
+                document.getElementById("magnetoFlutterMaster").value
+            ),
+            sensor:
+                document.getElementById("magnetoFlutterSensor").value,
+            amount: parseFloat(
+                document.getElementById("magnetoFlutterAmount").value
+            )
+        },
+
+        mix: {
+            master: parseFloat(
+                document.getElementById("magnetoMixMaster").value
+            ),
+            sensor:
+                document.getElementById("magnetoMixSensor").value,
+            amount: parseFloat(
+                document.getElementById("magnetoMixAmount").value
+            )
+        }
+    },
+
     limiter:
     {
         enabled:
@@ -4123,6 +4288,51 @@ if(
             !reverbEnabled.checked;
 
         refreshReverbButton();
+    };
+}
+
+//MAGNETO REFRESH
+const magnetoEnabledBtn =
+document.getElementById(
+    "magnetoEnabledBtn"
+);
+
+const magnetoEnabled =
+document.getElementById(
+    "magnetoEnabled"
+);
+
+if(
+    magnetoEnabledBtn &&
+    magnetoEnabled
+)
+{
+    function refreshMagnetoButton()
+    {
+        if(magnetoEnabled.checked)
+        {
+            magnetoEnabledBtn.textContent =
+                "ENABLED";
+
+            magnetoEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            magnetoEnabledBtn.textContent =
+                "DISABLED";
+
+            magnetoEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    magnetoEnabledBtn.onclick = () =>
+    {
+        magnetoEnabled.checked =
+            !magnetoEnabled.checked;
+
+        refreshMagnetoButton();
     };
 }
 
@@ -5180,6 +5390,102 @@ async function loadAudioMapping()
 
     //REVERB MODULE ENDS
 
+    //MAGNETO MODULE STARTS
+
+    document.getElementById(
+        "magnetoEnabled"
+    ).checked =
+    config.magneto.enabled;
+
+    document.getElementById(
+    "magnetoDriveMaster"
+    ).value =
+    config.magneto.drive.master;
+
+    document.getElementById(
+        "magnetoDriveMasterValue"
+    ).textContent =
+    Number(
+        config.magneto.drive.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "magnetoDriveSensor"
+    ).value =
+    config.magneto.drive.sensor;
+
+    document.getElementById(
+        "magnetoDriveAmount"
+    ).value =
+    config.magneto.drive.amount;
+
+    document.getElementById(
+        "magnetoDriveAmountValue"
+    ).textContent =
+    Number(
+        config.magneto.drive.amount
+    ).toFixed(2);
+
+    document.getElementById(
+    "magnetoFlutterMaster"
+    ).value =
+    config.magneto.flutter.master;
+
+    document.getElementById(
+        "magnetoFlutterMasterValue"
+    ).textContent =
+    Number(
+        config.magneto.flutter.master
+    ).toFixed(1);
+
+    document.getElementById(
+        "magnetoFlutterSensor"
+    ).value =
+    config.magneto.flutter.sensor;
+
+    document.getElementById(
+        "magnetoFlutterAmount"
+    ).value =
+    config.magneto.flutter.amount;
+
+    document.getElementById(
+        "magnetoFlutterAmountValue"
+    ).textContent =
+    Number(
+        config.magneto.flutter.amount
+    ).toFixed(1);
+
+    document.getElementById(
+        "magnetoMixMaster"
+        ).value =
+        config.magneto.mix.master;
+
+    document.getElementById(
+        "magnetoMixMasterValue"
+        ).textContent =
+        Number(
+        config.magneto.mix.master
+        ).toFixed(2);
+
+    document.getElementById(
+        "magnetoMixSensor"
+    ).value =
+    config.magneto.mix.sensor;
+
+    document.getElementById(
+        "magnetoMixAmount"
+    ).value =
+    config.magneto.mix.amount;
+
+    document.getElementById(
+        "magnetoMixAmountValue"
+    ).textContent =
+    Number(
+        config.magneto.mix.amount
+    ).toFixed(2);
+
+    //MAGNETO MODULE ENDS
+
     //LIMITER MODULE STARTS
 
     document.getElementById(
@@ -5256,6 +5562,7 @@ async function loadAudioMapping()
     refreshPhaserButton();
     refreshPitchButton();
     refreshReverbButton();
+    refreshMagnetoButton();
     refreshLimiterButton();
     refreshGlobalFXButton();
 

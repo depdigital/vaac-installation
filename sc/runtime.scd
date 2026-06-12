@@ -91,9 +91,9 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, phaserEnabled = 0, phaserRate = 0.2, phaserDepth = 0.5, phaserMix = 0.3, pitchEnabled = 0, pitchSemitones = 0, pitchWindow = 0.20, pitchMix = 0.0, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, phaserEnabled = 0, phaserRate = 0.2, phaserDepth = 0.5, phaserMix = 0.3, pitchEnabled = 0, pitchSemitones = 0, pitchWindow = 0.20, pitchMix = 0.0, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, magnetoEnabled = 0, magnetoDrive = 2.0, magnetoFlutter = 0.10, magnetoMix = 0.25, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
-        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, phaserWet, pitchWet, reverb, reverbWet, limiterWet;
+        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, phaserWet, pitchWet, reverb, reverbWet,  magnetoWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
@@ -105,6 +105,7 @@ s.waitForBoot({
 		var phaserRateSmooth, phaserDepthSmooth, phaserMixSmooth;
 		var phaserLFOLeft, phaserLFORight;
 		var pitchSemitonesSmooth, pitchWindowSmooth, pitchMixSmooth;
+		var magnetoDriveSmooth, magnetoFlutterSmooth, magnetoMixSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
@@ -136,6 +137,9 @@ s.waitForBoot({
 		reverbRoomSmooth           = Lag.kr(reverbRoom, 1.0);
 		reverbDampingSmooth        = Lag.kr(reverbDamping, 1.0);
 		reverbMixSmooth            = Lag.kr(reverbMix, 1.0);
+		magnetoDriveSmooth         = Lag.kr(magnetoDrive, 1.0);
+		magnetoFlutterSmooth       = Lag.kr(magnetoFlutter, 1.0);
+		magnetoMixSmooth           = Lag.kr(magnetoMix, 1.0);
 		limiterLevelSmooth         = Lag.kr(limiterLevel, 1.0);
 		limiterReleaseSmooth       = Lag.kr(limiterRelease, 1.0);
 
@@ -260,6 +264,23 @@ s.waitForBoot({
 				sig,
 				reverbWet
 			]
+		);
+
+		// Magneto
+
+		magnetoWet = tanh(sig * (1 + magnetoDriveSmooth));
+
+		magnetoWet = DelayC.ar(magnetoWet, 0.01, SinOsc.kr(0.5).range(0.0, magnetoFlutterSmooth * 0.003));
+
+		magnetoWet = XFade2.ar(sig, magnetoWet, (magnetoMixSmooth * 2) - 1);
+
+		sig = SelectX.ar(Lag.kr(magnetoEnabled, 0.2),
+
+			[
+				sig,
+				magnetoWet
+			]
+
 		);
 
 		// Limiter
@@ -506,6 +527,40 @@ s.waitForBoot({
         var val = msg[1];
         if(~ghostEngine.notNil) { ~ghostEngine.set(\reverbMix, val); };
     }, "/ghost/reverbMix");
+
+	// OSC for Magneto
+
+	OSCdef(\ghostMagnetoEnabled, { |msg|
+			if(~ghostEngine.notNil) { ~ghostEngine.set(\magnetoEnabled, msg[1]);};
+
+	}, "/ghost/magnetoEnabled");
+
+	OSCdef(\ghostMagnetoDrive, { |msg|
+			if(~ghostEngine.notNil) { ~ghostEngine.set(\magnetoDrive, msg[1]);};
+		}, "/ghost/magnetoDrive");
+
+	OSCdef(\ghostMagnetoFlutter, { |msg|
+			if(~ghostEngine.notNil) { ~ghostEngine.set(\magnetoFlutter, msg[1]);};
+		}, "/ghost/magnetoFlutter");
+
+	OSCdef(
+
+		\ghostMagnetoMix,
+
+		{ |msg|
+
+			if(~ghostEngine.notNil)
+			{
+				~ghostEngine.set(
+					\magnetoMix,
+					msg[1]
+				);
+			};
+
+		},
+
+		"/ghost/magnetoMix"
+	);
 
 	// OSC for Limiter
 

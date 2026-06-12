@@ -258,6 +258,32 @@ DEFAULT_CONFIG = {
             "amount": 0.0
         }
     },
+
+    "magneto": {
+
+        "enabled": False,
+
+        "drive": {
+
+            "master": 2.0,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "flutter": {
+
+            "master": 0.10,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "mix": {
+
+            "master": 0.25,
+            "sensor": "none",
+            "amount": 0.0
+        }
+    },
     
     "limiter": {
 

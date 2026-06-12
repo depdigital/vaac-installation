@@ -40,7 +40,7 @@
         }
     },
     "gate": {
-        "enabled": false,
+        "enabled": true,
         "threshold": {
             "master": -31,
             "sensor": "none",
@@ -132,7 +132,7 @@
     "pitch": {
         "enabled": false,
         "semitones": {
-            "master": 11,
+            "master": 0,
             "sensor": "none",
             "amount": 0
         },
@@ -165,15 +165,33 @@
             "amount": 0
         }
     },
+    "magneto": {
+        "enabled": false,
+        "drive": {
+            "master": 4,
+            "sensor": "none",
+            "amount": 0
+        },
+        "flutter": {
+            "master": 1,
+            "sensor": "none",
+            "amount": 0
+        },
+        "mix": {
+            "master": 0.31,
+            "sensor": "none",
+            "amount": 0
+        }
+    },
     "limiter": {
         "enabled": false,
         "level": {
-            "master": 0.95,
+            "master": 1,
             "sensor": "none",
             "amount": 0
         },
         "release": {
-            "master": 0.01,
+            "master": 0.1,
             "sensor": "none",
             "amount": 0.01
         }

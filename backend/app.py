@@ -1003,6 +1003,59 @@ def send_osc(packet):
         reverb_mix
     )
 
+# MAGNETO MODULE
+
+    magneto_drive = compute_parameter(
+        packet,
+        config["magneto"]["drive"]
+    )
+
+    magneto_flutter = compute_parameter(
+        packet,
+        config["magneto"]["flutter"]
+    )
+
+    magneto_mix = compute_parameter(
+        packet,
+        config["magneto"]["mix"]
+    )
+
+    magneto_drive = max(
+        0.0,
+        min(10.0, magneto_drive)
+    )
+
+    magneto_flutter = max(
+        0.0,
+        min(1.0, magneto_flutter)
+    )
+
+    magneto_mix = max(
+        0.0,
+        min(1.0, magneto_mix)
+    )
+
+    osc.send(
+        "/ghost/magnetoEnabled",
+        1 if config["magneto"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/magnetoDrive",
+        magneto_drive
+    )
+
+    osc.send(
+        "/ghost/magnetoFlutter",
+        magneto_flutter
+    )
+
+    osc.send(
+        "/ghost/magnetoMix",
+        magneto_mix
+    )
+
 # LIMITER MODULE
 
     limiter_level = compute_parameter(
