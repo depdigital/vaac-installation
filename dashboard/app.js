@@ -2627,6 +2627,134 @@ if(phaserMixAmount)
     );
 }
 
+// PITCH SHIFT MODULE SLIDER
+
+const pitchSemitonesMaster =
+document.getElementById(
+    "pitchSemitonesMaster"
+);
+
+if(pitchSemitonesMaster)
+{
+    pitchSemitonesMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchSemitonesMasterValue"
+            ).textContent =
+            Number(
+                pitchSemitonesMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const pitchSemitonesAmount =
+document.getElementById(
+    "pitchSemitonesAmount"
+);
+
+if(pitchSemitonesAmount)
+{
+    pitchSemitonesAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchSemitonesAmountValue"
+            ).textContent =
+            Number(
+                pitchSemitonesAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const pitchWindowMaster =
+document.getElementById(
+    "pitchWindowMaster"
+);
+
+if(pitchWindowMaster)
+{
+    pitchWindowMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchWindowMasterValue"
+            ).textContent =
+            Number(
+                pitchWindowMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const pitchWindowAmount =
+document.getElementById(
+    "pitchWindowAmount"
+);
+
+if(pitchWindowAmount)
+{
+    pitchWindowAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchWindowAmountValue"
+            ).textContent =
+            Number(
+                pitchWindowAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const pitchMixMaster =
+document.getElementById(
+    "pitchMixMaster"
+);
+
+if(pitchMixMaster)
+{
+    pitchMixMaster.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchMixMasterValue"
+            ).textContent =
+            Number(
+                pitchMixMaster.value
+            ).toFixed(2);
+        }
+    );
+}
+
+const pitchMixAmount =
+document.getElementById(
+    "pitchMixAmount"
+);
+
+if(pitchMixAmount)
+{
+    pitchMixAmount.addEventListener(
+        "input",
+        () =>
+        {
+            document.getElementById(
+                "pitchMixAmountValue"
+            ).textContent =
+            Number(
+                pitchMixAmount.value
+            ).toFixed(2);
+        }
+    );
+}
+
 // REVERB MODULE SLIDER
 
 const reverbRoomMaster =
@@ -3385,6 +3513,80 @@ function buildAudioConfig()
         }
     },
 
+    pitch:
+    {
+        enabled:
+        document.getElementById(
+            "pitchEnabled"
+        ).checked,
+
+        semitones:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "pitchSemitonesMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "pitchSemitonesSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "pitchSemitonesAmount"
+                ).value
+            )
+        },
+
+        window:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "pitchWindowMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "pitchWindowSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "pitchWindowAmount"
+                ).value
+            )
+        },
+
+        mix:
+        {
+            master:
+            Number(
+                document.getElementById(
+                    "pitchMixMaster"
+                ).value
+            ),
+
+            sensor:
+            document.getElementById(
+                "pitchMixSensor"
+            ).value,
+
+            amount:
+            Number(
+                document.getElementById(
+                    "pitchMixAmount"
+                ).value
+            )
+        }
+    },
+
     reverb:
     {
         enabled:
@@ -3830,6 +4032,52 @@ if(
             !phaserEnabled.checked;
 
         refreshPhaserButton();
+    };
+}
+
+// PITCH SHIFT REFRESH
+
+const pitchEnabledBtn =
+document.getElementById(
+    "pitchEnabledBtn"
+);
+
+const pitchEnabled =
+document.getElementById(
+    "pitchEnabled"
+);
+
+if(
+    pitchEnabledBtn &&
+    pitchEnabled
+)
+{
+    function refreshPitchButton()
+    {
+        if(pitchEnabled.checked)
+        {
+            pitchEnabledBtn.textContent =
+                "ENABLED";
+
+            pitchEnabledBtn.className =
+                "effect-toggle-btn enabled";
+        }
+        else
+        {
+            pitchEnabledBtn.textContent =
+                "DISABLED";
+
+            pitchEnabledBtn.className =
+                "effect-toggle-btn disabled";
+        }
+    }
+
+    pitchEnabledBtn.onclick = () =>
+    {
+        pitchEnabled.checked =
+            !pitchEnabled.checked;
+
+        refreshPitchButton();
     };
 }
 
@@ -4734,6 +4982,108 @@ async function loadAudioMapping()
 
     // PHASER MODULE ENDS
 
+    // PITCH SHIFT MODULE STARTS
+
+    document.getElementById(
+        "pitchEnabled"
+    ).checked =
+    config.pitch.enabled;
+
+    // SEMITONES
+
+    document.getElementById(
+        "pitchSemitonesMaster"
+    ).value =
+    config.pitch.semitones.master;
+
+    document.getElementById(
+        "pitchSemitonesMasterValue"
+    ).textContent =
+    Number(
+        config.pitch.semitones.master
+    ).toFixed(0);
+
+    document.getElementById(
+        "pitchSemitonesSensor"
+    ).value =
+    config.pitch.semitones.sensor;
+
+    document.getElementById(
+        "pitchSemitonesAmount"
+    ).value =
+    config.pitch.semitones.amount;
+
+    document.getElementById(
+        "pitchSemitonesAmountValue"
+    ).textContent =
+    Number(
+        config.pitch.semitones.amount
+    ).toFixed(2);
+
+    // WINDOW
+
+    document.getElementById(
+        "pitchWindowMaster"
+    ).value =
+    config.pitch.window.master;
+
+    document.getElementById(
+        "pitchWindowMasterValue"
+    ).textContent =
+    Number(
+        config.pitch.window.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "pitchWindowSensor"
+    ).value =
+    config.pitch.window.sensor;
+
+    document.getElementById(
+        "pitchWindowAmount"
+    ).value =
+    config.pitch.window.amount;
+
+    document.getElementById(
+        "pitchWindowAmountValue"
+    ).textContent =
+    Number(
+        config.pitch.window.amount
+    ).toFixed(2);
+
+    // MIX
+
+    document.getElementById(
+        "pitchMixMaster"
+    ).value =
+    config.pitch.mix.master;
+
+    document.getElementById(
+        "pitchMixMasterValue"
+    ).textContent =
+    Number(
+        config.pitch.mix.master
+    ).toFixed(2);
+
+    document.getElementById(
+        "pitchMixSensor"
+    ).value =
+    config.pitch.mix.sensor;
+
+    document.getElementById(
+        "pitchMixAmount"
+    ).value =
+    config.pitch.mix.amount;
+
+    document.getElementById(
+        "pitchMixAmountValue"
+    ).textContent =
+    Number(
+        config.pitch.mix.amount
+    ).toFixed(2);
+
+    // PITCH SHIFT MODULE ENDS
+
     //REVERB MODULE STARTS
 
     document.getElementById(
@@ -4830,7 +5180,6 @@ async function loadAudioMapping()
 
     //REVERB MODULE ENDS
 
-
     //LIMITER MODULE STARTS
 
     document.getElementById(
@@ -4905,6 +5254,7 @@ async function loadAudioMapping()
     refreshFlangerButton();
     refreshChorusButton();
     refreshPhaserButton();
+    refreshPitchButton();
     refreshReverbButton();
     refreshLimiterButton();
     refreshGlobalFXButton();

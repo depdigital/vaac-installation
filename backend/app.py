@@ -897,6 +897,59 @@ def send_osc(packet):
         phaser_mix
     )
 
+# PITCH SHIFT MODULE
+
+    pitch_semitones = compute_parameter(
+        packet,
+        config["pitch"]["semitones"]
+    )
+
+    pitch_window = compute_parameter(
+        packet,
+        config["pitch"]["window"]
+    )
+
+    pitch_mix = compute_parameter(
+        packet,
+        config["pitch"]["mix"]
+    )
+
+    pitch_semitones = max(
+        -24.0,
+        min(24.0, pitch_semitones)
+    )
+
+    pitch_window = max(
+        0.05,
+        min(0.50, pitch_window)
+    )
+
+    pitch_mix = max(
+        0.0,
+        min(1.0, pitch_mix)
+    )
+
+    osc.send(
+        "/ghost/pitchEnabled",
+        1 if config["pitch"]["enabled"]
+        else 0
+    )
+
+    osc.send(
+        "/ghost/pitchSemitones",
+        pitch_semitones
+    )
+
+    osc.send(
+        "/ghost/pitchWindow",
+        pitch_window
+    )
+
+    osc.send(
+        "/ghost/pitchMix",
+        pitch_mix
+    )
+
 # REVERB MODULE
 
     reverb_room = compute_parameter(

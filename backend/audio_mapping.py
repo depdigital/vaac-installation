@@ -155,7 +155,7 @@ DEFAULT_CONFIG = {
         }
     },
 
-       "chorus": {
+    "chorus": {
 
         "enabled": False,
 
@@ -204,6 +204,32 @@ DEFAULT_CONFIG = {
             "master": 0.30,
             "sensor": "none",
             "amount": 0.00
+        }
+    },
+
+    "pitch": {
+
+        "enabled": False,
+
+        "semitones": {
+
+            "master": 0,
+            "sensor": "none",
+            "amount": 0
+        },
+
+        "window": {
+
+            "master": 0.20,
+            "sensor": "none",
+            "amount": 0.0
+        },
+
+        "mix": {
+
+            "master": 0.0,
+            "sensor": "none",
+            "amount": 0.0
         }
     },
 

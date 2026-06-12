@@ -91,9 +91,9 @@ s.waitForBoot({
     // Global Stereo FX Master Processor Chain
     SynthDef(\ghostEngine, {
 
-        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, phaserEnabled = 0, phaserRate = 0.2, phaserDepth = 0.5, phaserMix = 0.3, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
+        |inBus = 0, gain = 1.0, dspEnabled = 1, eqEnabled = 0, eqLow = 0, eqMid = 0, eqHigh = 0, compressorEnabled = 0, compressorThreshold = -18, compressorRatio = 4, compressorMakeup = 0, gateEnabled = 0, gateThreshold = -40, gateAttack = 0.01, gateRelease = 0.20, delayEnabled = 1, delayTime = 0.05, delayFeedback = 0.1, delayMix = 0.0, flangerEnabled=0, flangerRate=0.2, flangerDepth=0.5, flangerMix=0.3, chorusEnabled = 0, chorusRate = 0.2, chorusDepth = 0.5, chorusMix = 0.3, phaserEnabled = 0, phaserRate = 0.2, phaserDepth = 0.5, phaserMix = 0.3, pitchEnabled = 0, pitchSemitones = 0, pitchWindow = 0.20, pitchMix = 0.0, reverbEnabled = 0, reverbRoom = 0.5, reverbDamping = 0.5, reverbMix = 0.3, limiterEnabled = 0, limiterLevel = 0.95, limiterRelease = 0.01|
 
-        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, phaserWet, reverb, reverbWet, limiterWet;
+        var sig, delayed, drySig, wet, flanger, compressorWet, gateWet, flangerWet, chorusWet, phaserWet, pitchWet, reverb, reverbWet, limiterWet;
         var gainSmooth, delayTimeSmooth, delayMixSmooth, delayFeedbackSmooth;
 		var flangerRateSmooth, flangerDepthSmooth, flangerMixSmooth;
 		var reverbRoomSmooth, reverbDampingSmooth, reverbMixSmooth;
@@ -104,6 +104,7 @@ s.waitForBoot({
 		var chorusRateSmooth, chorusDepthSmooth, chorusMixSmooth;
 		var phaserRateSmooth, phaserDepthSmooth, phaserMixSmooth;
 		var phaserLFOLeft, phaserLFORight;
+		var pitchSemitonesSmooth, pitchWindowSmooth, pitchMixSmooth;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
@@ -129,6 +130,9 @@ s.waitForBoot({
 		phaserRateSmooth           = Lag.kr(phaserRate, 1.0);
 		phaserDepthSmooth          = Lag.kr(phaserDepth, 1.0);
 		phaserMixSmooth            = Lag.kr(phaserMix, 1.0);
+		pitchSemitonesSmooth       = Lag.kr(pitchSemitones, 1.0);
+		pitchWindowSmooth          = Lag.kr(pitchWindow, 1.0);
+		pitchMixSmooth             = Lag.kr(pitchMix, 1.0);
 		reverbRoomSmooth           = Lag.kr(reverbRoom, 1.0);
 		reverbDampingSmooth        = Lag.kr(reverbDamping, 1.0);
 		reverbMixSmooth            = Lag.kr(reverbMix, 1.0);
@@ -205,8 +209,6 @@ s.waitForBoot({
 
 		// Phaser
 
-		// Phaser
-
 		phaserLFOLeft = SinOsc.kr(phaserRateSmooth).range(0.001, 0.001 + (phaserDepthSmooth * 0.020));
 
 		phaserLFORight = SinOsc.kr(phaserRateSmooth, pi).range(0.001, 0.001 + (phaserDepthSmooth * 0.020));
@@ -230,6 +232,21 @@ s.waitForBoot({
 			[
 				sig,
 				phaserWet
+			]
+
+		);
+
+		// Pitch Shift
+
+		pitchWet = PitchShift.ar(sig, pitchWindowSmooth, 2.pow(pitchSemitonesSmooth / 12), 0, 0.01);
+
+		pitchWet = XFade2.ar(sig, pitchWet, (pitchMixSmooth * 2) - 1);
+
+		sig = SelectX.ar(Lag.kr(pitchEnabled, 0.2),
+
+			[
+				sig,
+				pitchWet
 			]
 
 		);
@@ -450,6 +467,24 @@ s.waitForBoot({
 	OSCdef(\ghostPhaserMix, { |msg|
         if(~ghostEngine.notNil) { ~ghostEngine.set(\phaserMix, msg[1]);};
     }, "/ghost/phaserMix");
+
+	// OSC for Pitch Shift
+
+	OSCdef(\ghostPitchEnabled, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\pitchEnabled, msg[1]);};
+	}, "/ghost/pitchEnabled");
+
+	OSCdef(\ghostPitchSemitones, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\pitchSemitones, msg[1]);};
+	}, "/ghost/pitchSemitones");
+
+	OSCdef(\ghostPitchWindow, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\pitchWindow, msg[1]);};
+	}, "/ghost/pitchWindow");
+
+	OSCdef(\ghostPitchMix, { |msg|
+		if(~ghostEngine.notNil) { ~ghostEngine.set(\pitchMix, msg[1]);};
+	}, "/ghost/pitchMix");
 
 	// OSC for Reverb
 

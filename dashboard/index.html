@@ -641,9 +641,13 @@ Do not place System Health inside this block.
 
         </button>
 
-        <div class="effect-placeholder">
+        <button
+            class="effect-tab"
+            data-effect="pitchPanel">
+
             08 Pitch Shift
-        </div>
+
+        </button>
 
         <button class="effect-tab"
                 data-effect="reverbPanel">
@@ -2484,6 +2488,220 @@ Reverb Mix
 </div>
 
 <!--PHASER MODULE ENDS-->
+
+<!--PITCH SHIFT MODULE STARTS-->
+
+<div
+    id="pitchPanel"
+    class="effect-panel">
+
+    <div class="effect-toggle-row">
+
+        <button
+            id="pitchEnabledBtn"
+            class="effect-toggle-btn enabled">
+
+            ENABLED
+
+        </button>
+
+        <input
+            type="checkbox"
+            id="pitchEnabled"
+            checked
+            hidden>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Semitones</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="pitchSemitonesMaster"
+                min="-24"
+                max="24"
+                step="1"
+                value="0">
+
+            <span id="pitchSemitonesMasterValue">
+                0
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="pitchSemitonesSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="pitchSemitonesAmount"
+                min="0"
+                max="5.0"
+                step="0.05"
+                value="0">
+
+            <span id="pitchSemitonesAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Window Size</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="pitchWindowMaster"
+                min="0.05"
+                max="0.50"
+                step="0.01"
+                value="0.20">
+
+            <span id="pitchWindowMasterValue">
+                0.20
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="pitchWindowSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="pitchWindowAmount"
+                min="0"
+                max="0.50"
+                step="0.01"
+                value="0">
+
+            <span id="pitchWindowAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="parameter-card">
+
+        <h4>Pitch Mix</h4>
+
+        <div class="parameter-row">
+
+            <label>Master Value</label>
+
+            <input
+                type="range"
+                id="pitchMixMaster"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="pitchMixMasterValue">
+                0.00
+            </span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor</label>
+
+            <select id="pitchMixSensor">
+
+                <option value="none">None</option>
+                <option value="distance">Distance</option>
+                <option value="lux">Lux</option>
+                <option value="temp">Temperature</option>
+                <option value="humidity">Humidity</option>
+
+            </select>
+
+            <span></span>
+
+        </div>
+
+        <div class="parameter-row">
+
+            <label>Sensor Influence</label>
+
+            <input
+                type="range"
+                id="pitchMixAmount"
+                min="0"
+                max="1"
+                step="0.01"
+                value="0">
+
+            <span id="pitchMixAmountValue">
+                0.00
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!--PITCH SHIFT MODULE ENDS-->
 
 <!--REVERB MODULE STARTS-->
 
