@@ -103,6 +103,7 @@ s.waitForBoot({
 		var gateThresholdSmooth, gateAttackSmooth, gateReleaseSmooth;
 		var chorusRateSmooth, chorusDepthSmooth, chorusMixSmooth;
 		var phaserRateSmooth, phaserDepthSmooth, phaserMixSmooth;
+		var phaserLFOLeft, phaserLFORight;
 
 
         // Smooth parameters continuously to protect against sudden real-time value transitions
@@ -138,7 +139,7 @@ s.waitForBoot({
 
 		drySig  = sig;
 
-		//EQ
+		// EQ
 
 		sig = SelectX.ar(Lag.kr(eqEnabled, 0.2),
 
@@ -150,7 +151,7 @@ s.waitForBoot({
 			]
 		);
 
-		//Compressor
+		// Compressor
 
 		compressorWet = Compander.ar(sig, sig, compressorThresholdSmooth.dbamp, 1.0, 1.0 / compressorRatioSmooth, 0.01, 0.10);
 
@@ -164,7 +165,7 @@ s.waitForBoot({
 			]
 		);
 
-		//Gate
+		// Gate
 
 		gateWet = Compander.ar(sig, sig, gateThresholdSmooth.dbamp, 0.05, 1.0, gateAttackSmooth, gateReleaseSmooth);
 
@@ -176,19 +177,19 @@ s.waitForBoot({
 			]
 		);
 
-		//Delay
+		// Delay
 
         delayed = CombL.ar(sig, 0.5, delayTimeSmooth, delayFeedbackSmooth);
         wet     = XFade2.ar(sig, delayed, (delayMixSmooth * 2) - 1);
 		sig     = SelectX.ar(Lag.kr(delayEnabled, 0.2), [sig, wet]);
 
-		//Flanger
+		// Flanger
 
 		flanger = DelayC.ar(sig, 0.03, SinOsc.kr(flangerRateSmooth).range(0.001, flangerDepthSmooth * 0.01));
 		flangerWet  = XFade2.ar(sig, flanger, (flangerMixSmooth * 2) - 1);
 		sig     = SelectX.ar(flangerEnabled, [sig, flangerWet]);
 
-		//Chorus
+		// Chorus
 
 		chorusWet = sig + DelayC.ar(sig, 0.05, SinOsc.kr(chorusRateSmooth).range( 0.005, 0.005 + (chorusDepthSmooth * 0.020))) * 0.5 + DelayC.ar(sig, 0.05, SinOsc.kr(chorusRateSmooth * 1.17, pi/2).range(0.005, 0.005 + (chorusDepthSmooth * 0.025))) * 0.5;
 
@@ -202,11 +203,25 @@ s.waitForBoot({
 			]
 		);
 
-		//Phaser
+		// Phaser
 
 		// Phaser
 
-		phaserWet = AllpassC.ar(sig, 0.05, SinOsc.kr(phaserRateSmooth).range(0.001, 0.001 + (phaserDepthSmooth * 0.020)), 1.0);
+		phaserLFOLeft = SinOsc.kr(phaserRateSmooth).range(0.001, 0.001 + (phaserDepthSmooth * 0.020));
+
+		phaserLFORight = SinOsc.kr(phaserRateSmooth, pi).range(0.001, 0.001 + (phaserDepthSmooth * 0.020));
+
+		phaserWet = sig;
+
+		4.do({phaserWet = AllpassC.ar(phaserWet, 0.05,
+
+				[
+					phaserLFOLeft,
+					phaserLFORight
+				],
+
+				1.0);
+		});
 
 		phaserWet = XFade2.ar(sig, phaserWet, (phaserMixSmooth * 2) - 1);
 
@@ -216,9 +231,10 @@ s.waitForBoot({
 				sig,
 				phaserWet
 			]
+
 		);
 
-		//Reverb
+		// Reverb
 
 		reverbWet = FreeVerb2.ar(sig[0], sig[1], reverbMixSmooth, reverbRoomSmooth, reverbDampingSmooth);
 
@@ -229,7 +245,7 @@ s.waitForBoot({
 			]
 		);
 
-		//Limiter
+		// Limiter
 
 		limiterWet = Limiter.ar(sig, limiterLevelSmooth, limiterReleaseSmooth);
 
