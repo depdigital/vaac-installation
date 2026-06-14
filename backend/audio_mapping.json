@@ -40,7 +40,7 @@
         }
     },
     "gate": {
-        "enabled": true,
+        "enabled": false,
         "threshold": {
             "master": -31,
             "sensor": "none",
