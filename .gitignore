@@ -52,15 +52,3 @@ build/
 
 # SuperCollider
 scsynth_*.log
-
-# Runtime State
-runtime_state.json
-runtime.log
-
-# Future deployment files
-*.pid
-*.lock
-
-# Keep user-editable configuration
-!audio_mapping.json
-!config.json
